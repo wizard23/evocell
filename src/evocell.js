@@ -41,6 +41,8 @@ function loadEvoCellFile(arrayBuffer) {
 		evoCellData.ruleTable = ruleTable;
 		evoCellData.ruleTableSize = ruleTableSize; // convinient to have but redundant
 	}
+	else
+		evoCellData.containsRule = false;
 	
 	if (containsNeighbourhood) {
 		var neighbourhoodMagic = dv.getUint32(index); index += 4;
@@ -64,6 +66,8 @@ function loadEvoCellFile(arrayBuffer) {
 		evoCellData.nrDimensions = nrDimensions;
 		evoCellData.neighbourhood = neighbourhood;
 	}
+	else
+		evoCellData.containsNeighbourhood = false;
 	
 	if (containsPattern) {
 		var patternMagic = dv.getUint32(index); index += 4;
@@ -82,6 +86,8 @@ function loadEvoCellFile(arrayBuffer) {
 		evoCellData.patternHeight = sizeY;
 		evoCellData.patternData = pattern;
 	}
+	else
+		evoCellData.containsPattern = false;
 	
 	return evoCellData;
 }
