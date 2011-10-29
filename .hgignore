@@ -1,3 +1,4 @@
 syntax: glob
 ccc_rules/*
 patterns/*
+rules/*
