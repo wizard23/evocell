@@ -182,7 +182,7 @@ function handleCanvasClick(evt) {
 			var newRule = myClone(rule);
 			newRule.ruleTable = new Uint8Array(rule.ruleTable);
 			
-			EvoCell.mutateEvoCellRule(newRule, ["?", "?", "?", "?", "?", "?", 0, 0, 0], 500);
+			EvoCell.mutateEvoCellRule(newRule, ["?", "?", "?", "?", "?", "?", 0, 0, 0], 150);
 			caSims[i].setRule(newRule);
 		}
 	}

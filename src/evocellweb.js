@@ -421,23 +421,39 @@ function rot90(xy)
 	return [-xy[1], xy[0]];
 }
 
-/*
-function mutRotSym(evoCellData, vals)
+
+function mutRotSym(evoCellData, vals, targetState)
 {
 	var localRot = rot90;
 	
 	for (var rot = 0; rot < 4; rot++)
 	{
+		var rotVals = [];
 		for (var i = 0; i < evoCellData.nrNreighbours; i++) 
 		{
-			var roted = 
+			var roted = evoCellData.neighbours[i];
 			for (var r = 0; r < rot; r++)
+				roted = rot90(roted);
 			
-			evoCellData
+			for (var s = 0; s < evoCellData.nrNreighbours; s++) 
+			{
+				if (evoCellData.neighbours[i][0] == roted[0] && evoCellData.neighbours[i][1] == roted[1])
+				{
+					rotVals.push(s);
+				}
+			
+			}
+		}
+		var idx = 0;
+		for (var j = evoCellData.nrNeighbours-1; j >= 0; j--)
+		{
+			idx = idx * evoCellData.nrStates + rotVals[j];
+		}
+		evoCellData.ruleTable.set([targetState], idx);
+	}
 	
-		
 }
-*/
+
 
 EvoCell.mutateEvoCellRule = function(evoCellData, regExprs, n)
 {
@@ -462,7 +478,7 @@ EvoCell.mutateEvoCellRule = function(evoCellData, regExprs, n)
 		}
 				
 		var targetState = getRandInt(0, evoCellData.nrStates);
+		mutRotSym(evoCellData, vals, targetState);
 		
-		evoCellData.ruleTable.set([targetState], idx);
 	}
 }
