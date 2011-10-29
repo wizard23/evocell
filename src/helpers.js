@@ -1,22 +1,4 @@
-var delay=5;
 
-requestAnimFrame = (function(){
-  return  window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    function(callback, element){ setTimeout(callback, 1000 / 60); }
-})();
-
-function anim(){
-   updateFrame();
-   setTimeout("requestAnimFrame(anim)", delay);
-}
-
-function fr(){
-  var ti = new Date().getTime();
-  var fps = Math.round(1000*frames/(ti - time));
-  document.getElementById("framerate").value = fps;
-  frames = 0;  time = ti;
-}
 
 function index2GOL(index)
 {
@@ -183,59 +165,3 @@ function ruleSelected(e) {
 
 }
 
-
-function updateFrame()
-{
-	gl.useProgram(progCA);
-
-	if (frameFlip > 0)
-	{
-		gl.uniform1i(gl.getUniformLocation(progCA, "texFrame"), 0);
-		gl.activeTexture(gl.TEXTURE0);    
-		gl.bindTexture(gl.TEXTURE_2D, texture1);
-		
-		gl.uniform1i(gl.getUniformLocation(progCA, "texRule"), 1);
-		gl.activeTexture(gl.TEXTURE1);    
-		gl.bindTexture(gl.TEXTURE_2D, textureGOL);
-
-		gl.bindFramebuffer(gl.FRAMEBUFFER, fb2);
-	}
-	else
-	{
-		gl.uniform1i(gl.getUniformLocation(progCA, "texFrame"), 0);
-		gl.activeTexture(gl.TEXTURE0);    
-		gl.bindTexture(gl.TEXTURE_2D, texture2);
-
-		
-		gl.uniform1i(gl.getUniformLocation(progCA, "texRule"), 1);
-		gl.activeTexture(gl.TEXTURE1);    
-		gl.bindTexture(gl.TEXTURE_2D, textureGOL);
-	
-		gl.bindFramebuffer(gl.FRAMEBUFFER, fb1);
-	}
-	 
-	gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-	gl.flush();
-	
-	gl.useProgram(progShow);
-	if (frameFlip > 0)
-	{
-		gl.uniform1i(gl.getUniformLocation(progShow, "texFrame"), 0);
-		gl.activeTexture(gl.TEXTURE0);    
-		gl.bindTexture(gl.TEXTURE_2D, texture2);
-	}
-	else
-	{
-		gl.uniform1i(gl.getUniformLocation(progShow, "texFrame"), 0);
-		gl.activeTexture(gl.TEXTURE0);    
-		gl.bindTexture(gl.TEXTURE_2D, texture1);
-	}
-	
-	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-	gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-	gl.flush();
-
-	frameFlip = -frameFlip;  
-	frameCount++;
-	frames++;
-}
