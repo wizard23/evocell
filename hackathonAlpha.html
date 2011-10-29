@@ -37,19 +37,25 @@ var caCanvas, caSim;
 var timer, time;
 var width, height;
 var progShow;
+var ctlXRes, ctlYRes, ctlRandomDensity, ctlFramerate;
 
 function setup()
 {
+	ctlXRes = $('#xres')[0];
+	ctlYRes = $('#yres')[0];
+	ctlRandomDensity = $('#randomDensity');
+	ctlFramerate = $('#framerate')[0];
+	
 	$('#evocellFile').change(handleFileSelect);
 	clearInterval(timer);
 
 	width = 800;
 	height = 500;
 	
-	$('#xres').value = width;
-	$('#yres').value = height;
+	ctlXRes.value = width;
+	ctlYRes.value = height;
 	
-	caCanvas = new EvoCell.CACanvas($("#c"));
+	caCanvas = new EvoCell.CACanvas($("#c")[0]);
 	caCanvas.setSize(width, height);
 	
 	progShow = caCanvas.gl.createProgram();
@@ -92,9 +98,9 @@ function setup()
 
 function handleReset()
 {
-	width = parseInt($('#xres').value);
-	height = parseInt($('#yres').value);
-	randomDensity = parseFloat($('#randomDensity').value);
+	width = parseInt(ctlXRes.value);
+	height = parseInt(ctlYRes.value);
+	randomDensity = parseFloat(ctlRandomDensity.value);
 	
 	caCanvas.setSize(width, height);
 	caSim.setSize(width, height);
@@ -120,7 +126,7 @@ function anim(){
 function fr(){
   var ti = new Date().getTime();
   var fps = Math.round(1000*frames/(ti - time));
-  $("#framerate").value = fps;
+  ctlFramerate.value = fps;
   frames = 0;  time = ti;
 }
 
