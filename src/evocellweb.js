@@ -399,3 +399,70 @@ EvoCell.loadEvoCellFile = function(arrayBuffer) {
 	
 	return evoCellData;
 }
+
+function myClone(a)
+{
+	b = {};
+	for (f in a) {
+		b[f] = a[f];
+	}
+	return b;
+}
+	
+
+
+function getRandInt(min, max)
+{
+	return min + parseInt( Math.random() * max);
+}
+
+function rot90(xy)
+{
+	return [-xy[1], xy[0]];
+}
+
+/*
+function mutRotSym(evoCellData, vals)
+{
+	var localRot = rot90;
+	
+	for (var rot = 0; rot < 4; rot++)
+	{
+		for (var i = 0; i < evoCellData.nrNreighbours; i++) 
+		{
+			var roted = 
+			for (var r = 0; r < rot; r++)
+			
+			evoCellData
+	
+		
+}
+*/
+
+EvoCell.mutateEvoCellRule = function(evoCellData, regExprs, n)
+{
+	for (var i = 0; i < n; i++)
+	{
+		//var idx = getRandInt(0, evoCellData.ruleTableSize);
+		
+		var idx = 0;
+		var nr = 0;
+		var vals = [];
+		for (var j = 0; j < evoCellData.nrNeighbours; j++)
+		{
+			if (regExprs[j] == "?")
+			{
+				nr = getRandInt(0, evoCellData.nrStates);
+			}
+			else
+				nr = regExprs[j];
+			
+			vals.push(nr);
+			idx = idx * evoCellData.nrStates + nr;
+		}
+				
+		var targetState = getRandInt(0, evoCellData.nrStates);
+		
+		evoCellData.ruleTable.set([targetState], idx);
+	}
+}
