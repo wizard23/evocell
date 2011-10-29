@@ -429,25 +429,25 @@ function mutRotSym(evoCellData, vals, targetState)
 	for (var rot = 0; rot < 4; rot++)
 	{
 		var rotVals = [];
-		for (var i = 0; i < evoCellData.nrNreighbours; i++) 
+		for (var i = 0; i < evoCellData.nrNeighbours; i++) 
 		{
-			var roted = evoCellData.neighbours[i];
+			var roted = evoCellData.neighbourhood[i];
 			for (var r = 0; r < rot; r++)
 				roted = rot90(roted);
 			
-			for (var s = 0; s < evoCellData.nrNreighbours; s++) 
+			for (var s = 0; s < evoCellData.nrNeighbours; s++) 
 			{
-				if (evoCellData.neighbours[i][0] == roted[0] && evoCellData.neighbours[i][1] == roted[1])
+				if (evoCellData.neighbourhood[s][0] == roted[0] && evoCellData.neighbourhood[s][1] == roted[1])
 				{
 					rotVals.push(s);
+					break;
 				}
-			
 			}
 		}
 		var idx = 0;
 		for (var j = evoCellData.nrNeighbours-1; j >= 0; j--)
 		{
-			idx = idx * evoCellData.nrStates + rotVals[j];
+			idx = idx * evoCellData.nrStates + vals[rotVals[j]];
 		}
 		evoCellData.ruleTable.set([targetState], idx);
 	}
