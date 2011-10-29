@@ -80,7 +80,7 @@ function setup()
 	function (arrayBuffer) {
 		arrayBufferData = arrayBuffer;
 		
-		var evoCellData = loadEvoCellFile(arrayBuffer);
+		var evoCellData = EvoCell.loadEvoCellFile(arrayBuffer);
 		caSim = new EvoCell.CASimulation(caCanvas, evoCellData, width, height);
 	
 		timer = setInterval(fr, 500);
@@ -109,10 +109,10 @@ requestAnimFrame = (function(){
 })();
 
 function anim(){
-   caSim.step();
+   caSim.step(25);
    caCanvas.draw(caSim, progShow);
    
-   
+   frames++;
    
    setTimeout("requestAnimFrame(anim)", delay);
 }
@@ -132,7 +132,7 @@ function handleFileSelect(evt) {
 	var reader = new FileReader();
 	reader.onload = function(evt) {	
 			arrayBufferData = evt.target.result;
-			var evoCellData = loadEvoCellFile(arrayBufferData);
+			var evoCellData = EvoCell.loadEvoCellFile(arrayBufferData);
 			caSim.setRule(evoCellData);
 			handleReset();
 		};

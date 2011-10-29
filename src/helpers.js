@@ -1,42 +1,3 @@
-
-
-function index2GOL(index)
-{
-	var i;
-	var count = 0;
-	var alive = index % 2;
-	index >>= 1;
-	for (i = 0; i<8; i++)
-	{
-		if ((index % 2) == 1)
-		{
-			count++;
-		}
-		index >>= 1;
-	}
-	if (alive == 1 && (count >= 2 && count <= 3))
-		return true;
-	if (count == 3)
-		return true;
-	return false;
-}
-
-function createGOLTexture(gl)
-{
-	var pixelsGOL = [], width = 32, height = 16;
-	for(var i = 0; i<height; i++) // y axis
-	{
-		for(var j = 0; j<width; j++) // x axis
-		{
-			var alive = index2GOL(i*width+j);
-			if (alive) pixelsGOL.push(255, 255,0,255 );
-			else pixelsGOL.push( 0, 0, 0 ,255 );
-		}
-	}
-	return createRGBATexture(gl, width, height, new Uint8Array(pixelsGOL));
-}
-
-
 function getShaderFromElement( gl, id )
 {
 	var shaderScript = document.getElementById (id);
@@ -102,9 +63,6 @@ function createFrameTextureRandom(gl, width, height, density)
 	{
 		for(var j = 0; j < width; j++) // x axis
 		{
-			//if(Math.random() < density) pixels.push(Math.floor(Math.random()*4), 0, 0, 255);
-			//else pixels.push(0, 0, 0, 255);
-			
 			if(Math.random() < density) pixels.push(Math.floor(Math.random()*8));
 			else pixels.push(0);
 		}
@@ -145,6 +103,8 @@ function getFromURL(url, responseType, cb) {
 }
 
 function getGL(c) {
+	var gl = null;
+	
 	try 
 	{ 
 		gl = c.getContext("experimental-webgl", {depth : false });
@@ -157,11 +117,3 @@ function getGL(c) {
 	}
 	return gl;
 }
-
-
-
-function ruleSelected(e) {
-	parseEvoCellFile(arrayBuffer);
-
-}
-
