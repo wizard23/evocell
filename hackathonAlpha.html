@@ -33,7 +33,8 @@
 
 <script type="text/javascript">
 
-var caCanvas, caSim;
+var nrSims = 4;
+var caCanvas, caSims;
 var timer, time;
 var width, height;
 var progShow;
@@ -46,11 +47,13 @@ function setup()
 	ctlRandomDensity = $('#randomDensity');
 	ctlFramerate = $('#framerate')[0];
 	
+	document.getElementById('c').addEventListener('click', handleCanvasClick, false);
+	
 	$('#evocellFile').change(handleFileSelect);
 	clearInterval(timer);
 
-	width = 800;
-	height = 500;
+	width = 1680;
+	height = 1050;
 	
 	ctlXRes.value = width;
 	ctlYRes.value = height;
@@ -87,7 +90,10 @@ function setup()
 		arrayBufferData = arrayBuffer;
 		
 		var evoCellData = EvoCell.loadEvoCellFile(arrayBuffer);
-		caSim = new EvoCell.CASimulation(caCanvas, evoCellData, 200, 200);
+		caSims = [];
+		
+		for (var i = 0; i < nrSims; i++)
+			caSims[i] = new EvoCell.CASimulation(caCanvas, evoCellData, width/2-1, height/2-1);
 		
 	
 		timer = setInterval(fr, 1000);
@@ -116,9 +122,14 @@ requestAnimFrame = (function(){
 })();
 
 function anim(){
-   caSim.step();
-   caCanvas.draw(caSim, progShow, null, [20, 20, 200, 200]);
+	for (var i = 0; i < nrSims; i++)
+		caSims[i].step();
    
+	caCanvas.draw(caSims[0], progShow, null, [0, 0, width/2-1, height/2-1]);
+	caCanvas.draw(caSims[1], progShow, null, [width/2+1, 0, width/2-1, height/2-1]);
+	caCanvas.draw(caSims[2], progShow, null, [0, height/2+1, width/2-1, height/2-1]);
+	caCanvas.draw(caSims[3], progShow, null, [width/2+1, height/2+1, width/2-1, height/2-1]);
+
    frames++;
    
    requestAnimFrame(anim);
@@ -140,11 +151,29 @@ function handleFileSelect(evt) {
 	reader.onload = function(evt) {	
 			arrayBufferData = evt.target.result;
 			var evoCellData = EvoCell.loadEvoCellFile(arrayBufferData);
-			caSim.setRule(evoCellData);
+			caSims[0].setRule(evoCellData);
 			handleReset();
 		};
 	reader.readAsArrayBuffer(files[0]); // start async operation
   }
+  
+function handleCanvasClick(evt) {
+	var canvas = document.getElementById('c');
+	
+	var coords = canvas.relMouseCoords(evt);
+	var x = coords.x;
+	var y = coords.y;
+	
+	var clickedCA = 0;
+	
+	if (coords.y < height/2)
+		clickedCA += 2;
+	
+	if (coords.x > width/2)
+		clickedCA += 1;
+	
+	//alert(clickedCA);
+}  
 </script>
 
 
