@@ -55,7 +55,7 @@ EvoCell.CASimulation.prototype.setRule = function(ruleData)
 	var yN = Math.floor(ruleData.nrNeighbours/2);
 	var width = Math.pow(ruleData.nrStates, xN);
 	var height = Math.pow(ruleData.nrStates, yN);
-	this.ruleTexture  = createCATexture(gl, width, height, ruleData.ruleTable);	
+	this.ruleTexture  = createCATexture(this.gl, width, height, ruleData.ruleTable);	
 
 	this.invalidateProgram();
 }
@@ -109,7 +109,7 @@ EvoCell.CASimulation.prototype.getProgram = function()
 		this.texture1 = createFrameTextureRandom(this.gl, width, height, 0.1);
 		this.texture2 = createFrameTextureRandom(this.gl, width, height, 0.1);
 		
-		this.fb1 = gl.createFramebuffer();
+		this.fb1 = this.gl.createFramebuffer();
 		this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fb1);
 		this.gl.framebufferTexture2D(this.gl.FRAMEBUFFER, this.gl.COLOR_ATTACHMENT0, this.gl.TEXTURE_2D, this.texture1, 0);
 		
