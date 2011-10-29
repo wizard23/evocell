@@ -25,10 +25,10 @@
 		varying vec2 vTexCoord;
 		void main(void) {
 			vec4 color = texture2D(texFrame, vTexCoord);
-			if (color.a == 0.)
-				gl_FragColor = vec4(0., 0., 0., 0.);
-			else
-				gl_FragColor = vec4(color.a*100.0, color.a*color.a*color.a*200000.0, 0., 1.);
+			//if (color.a == 0.)
+			//	gl_FragColor = vec4(0., 0., 0., 0.);
+			//else
+				gl_FragColor = vec4(color.a*600.0, color.a*color.a*color.a*400000.0, 0., 1.);
    
 			//gl_FragColor = texture2D(texFrame, vTexCoord);
 		}
@@ -36,10 +36,13 @@
 
 <script type="text/javascript">
 
-var nrSims = 4;
+var nrSimsRows = 3;
+var nrSimsCols = 2;
+
+var nrSims = nrSimsRows * nrSimsCols;
 var caCanvas, caSims;
 var timer, time;
-var width, height;
+var width, height, colWidth, rowHeight;
 var progShow;
 var ctlXRes, ctlYRes, ctlRandomDensity, ctlFramerate;
 
@@ -55,13 +58,17 @@ function setup()
 	$('#evocellFile').change(handleFileSelect);
 	clearInterval(timer);
 
-	width = 1680;
-	height = 1000;
+	caCanvas = new EvoCell.CACanvas($("#c")[0]);
+	
+	width = 1280;
+	height = 700;
 	
 	ctlXRes.value = width;
 	ctlYRes.value = height;
 	
-	caCanvas = new EvoCell.CACanvas($("#c")[0]);
+	handleReset();
+	
+	
 	caCanvas.setSize(width, height);
 	
 	progShow = caCanvas.gl.createProgram();
@@ -96,7 +103,7 @@ function setup()
 		caSims = [];
 		
 		for (var i = 0; i < nrSims; i++)
-			caSims[i] = new EvoCell.CASimulation(caCanvas, evoCellData, width/2-1, height/2-1);
+			caSims[i] = new EvoCell.CASimulation(caCanvas, evoCellData, colWidth, rowHeight);
 		
 	
 		timer = setInterval(fr, 1000);
@@ -110,8 +117,11 @@ function handleReset()
 {
 	width = parseInt(ctlXRes.value);
 	height = parseInt(ctlYRes.value);
-	randomDensity = parseFloat(ctlRandomDensity.value);
 	
+	colWidth = Math.floor((width / nrSimsCols) - 1);
+	rowHeight = Math.floor((height / nrSimsRows) - 1);
+	
+	randomDensity = parseFloat(ctlRandomDensity.value);
 	caCanvas.setSize(width, height);
 	//caSim.setSize(width, height);
 }
@@ -128,10 +138,15 @@ function anim(){
 	for (var i = 0; i < nrSims; i++)
 		caSims[i].step();
    
-	caCanvas.draw(caSims[0], progShow, null, [0, 0, width/2-1, height/2-1]);
-	caCanvas.draw(caSims[1], progShow, null, [width/2+1, 0, width/2-1, height/2-1]);
-	caCanvas.draw(caSims[2], progShow, null, [0, height/2+1, width/2-1, height/2-1]);
-	caCanvas.draw(caSims[3], progShow, null, [width/2+1, height/2+1, width/2-1, height/2-1]);
+	for (var r = 0; r < nrSimsRows; r++)
+	{
+		for (var c = 0; c < nrSimsCols; c++)
+		{
+			var idx = r*nrSimsCols+c;
+			caCanvas.draw(caSims[idx], progShow, null, 
+				[(width / nrSimsCols) * (c + 0.5) - colWidth/2, (height / nrSimsRows) * (r + 0.5) - rowHeight/2, colWidth, rowHeight]);
+		}
+	}
 
    frames++;
    
@@ -167,14 +182,9 @@ function handleCanvasClick(evt) {
 	var x = coords.x;
 	var y = coords.y;
 	
-	var clickedCA = 0;
-	
-	if (coords.y < height/2)
-		clickedCA += 2;
-	
-	if (coords.x > width/2)
-		clickedCA += 1;
-	
+	var clickedCA;
+	clickedCA = nrSimsCols * Math.floor(nrSimsRows * (height - coords.y) / height);
+	clickedCA += Math.floor(nrSimsCols * coords.x / width);
 	
 	var rule = caSims[clickedCA].ruleData;
 	
