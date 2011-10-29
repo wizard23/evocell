@@ -40,16 +40,16 @@ var progShow;
 
 function setup()
 {
-	document.getElementById('evocellFile').addEventListener('change', handleFileSelect, false);
+	$('#evocellFile').change(handleFileSelect);
 	clearInterval(timer);
 
 	width = 800;
 	height = 500;
 	
-	document.getElementById('xres').value = width;
-	document.getElementById('yres').value = height;
+	$('#xres').value = width;
+	$('#yres').value = height;
 	
-	caCanvas = new EvoCell.CACanvas(document.getElementById("c"));
+	caCanvas = new EvoCell.CACanvas($("#c"));
 	caCanvas.setSize(width, height);
 	
 	progShow = caCanvas.gl.createProgram();
@@ -92,9 +92,9 @@ function setup()
 
 function handleReset()
 {
-	width = parseInt(document.getElementById('xres').value);
-	height = parseInt(document.getElementById('yres').value);
-	randomDensity = parseFloat(document.getElementById('randomDensity').value);
+	width = parseInt($('#xres').value);
+	height = parseInt($('#yres').value);
+	randomDensity = parseFloat($('#randomDensity').value);
 	
 	caCanvas.setSize(width, height);
 	caSim.setSize(width, height);
@@ -120,7 +120,7 @@ function anim(){
 function fr(){
   var ti = new Date().getTime();
   var fps = Math.round(1000*frames/(ti - time));
-  document.getElementById("framerate").value = fps;
+  $("#framerate").value = fps;
   frames = 0;  time = ti;
 }
 
