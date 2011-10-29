@@ -1,44 +1,34 @@
-<html>
+<html lang="en-us">
 <head>
-<style>
-#dropzone {
-height: 150px;
-width: 100%;
--webkit-border-radius: 10px;
--khtml-border-radius: 10px;
--moz-border-radius: 10px;
-border-radius: 10px;
-border: 2px dashed #0687FF;
-}
-</style>
-<script src="src/helpers.js"></script>
-<script src="src/evocell.js"></script>
-<script src="src/jquery-1.6.2.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="style.css" />
+	<script src="src/helpers.js"></script>
+	<script src="src/evocell.js"></script>
+	<script src="src/jquery-1.6.2.min.js"></script>
 
-<script id="shader-vs-passthrough" type="x-shader/x-vertex"> 
-  attribute vec3 aPos;
-  attribute vec2 aTexCoord;
-  varying   vec2 vTexCoord;
-void main(void) {
-   gl_Position = vec4(aPos, 1.);
-   vTexCoord = aTexCoord;
-}
-</script> 
+	<script id="shader-vs-passthrough" type="x-shader/x-vertex"> 
+		attribute vec3 aPos;
+		attribute vec2 aTexCoord;
+		varying   vec2 vTexCoord;
 
-<script id="shader-fs-palette" type="x-shader/x-fragment"> 
-#ifdef GL_ES
-precision highp float;
-#endif
-  uniform sampler2D texFrame;
-  varying vec2 vTexCoord;
-void main(void) 
-{
-   vec4 color = texture2D(texFrame, vTexCoord);
-   gl_FragColor = vec4(color.a*100.0, color.a*color.a*color.a*200000.0, 0., 1.);
+		void main(void) {
+			gl_Position = vec4(aPos, 1.);
+			vTexCoord = aTexCoord;
+		}
+	</script> 
+
+	<script id="shader-fs-palette" type="x-shader/x-fragment"> 
+		#ifdef GL_ES
+		precision highp float;
+		#endif
+		uniform sampler2D texFrame;
+		varying vec2 vTexCoord;
+		void main(void) {
+			vec4 color = texture2D(texFrame, vTexCoord);
+			gl_FragColor = vec4(color.a*100.0, color.a*color.a*color.a*200000.0, 0., 1.);
    
-	//gl_FragColor = texture2D(texFrame, vTexCoord);
-}
-</script> 
+			//gl_FragColor = texture2D(texFrame, vTexCoord);
+		}
+	</script>
 
 <script type="text/javascript">
 
@@ -74,7 +64,6 @@ clearInterval(timer);
 	// TODO get this from canvas initialy
 
 	
-	textureGOL = createGOLTexture(gl);
 	
 //	progCA  = gl.createProgram();
 //	gl.attachShader(progCA, getShaderFromElement( gl, "shader-vs-passthrough" ));
