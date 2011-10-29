@@ -1,0 +1,26 @@
+gl context wie geht man damit um?
+Klasen identifizieren
+
+
+
+CA stuff unabhaengig von canvas
+
+
+Usecases:
+
+ca = loadCA("myRule.ec23")
+ca.setSize(1024, 768);
+ca.clear();
+ca.loadPattern("myPatern.ec23", 100, 100);
+ca.step();
+ca.steps(100);
+
+
+palette = new CAPalette();
+paltette.setColor(0, 255, 0, 0);
+
+caCanvas = new CACanvas(1500, 300);
+caCanvas.setPallette(palette);
+caCanvas.cellSize = 5;
+caCanvas.drawCA(ca, 100, 500);
+

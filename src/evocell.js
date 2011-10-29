@@ -140,8 +140,6 @@ function generateEvoCellTexture(gl, evoCellData) {
 		}
 	}
 	//return createRGBATexture(gl, width, height, new Uint8Array(pixels));
-	
-	
 	var texture = createCATexture(gl, width, height, evoCellData.ruleTable);
 	
 	return texture;	
