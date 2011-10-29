@@ -24,12 +24,21 @@ EvoCell.CACanvas.prototype.draw = function(ca, progShow, sourceRect, destRect)
 {
 	var gl = this.gl;
 	gl.useProgram(progShow);
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+	if (!destRect)
+		destRect = [0, 0, this.canvas.width, this.canvas.height];
+
+
+	//set viewport to match destination rect
+	gl.viewport(destRect[0], destRect[1], destRect[2], destRect[3]);
+	//gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+	
 
 	gl.uniform1i(gl.getUniformLocation(progShow, "texFrame"), 0);
 	gl.activeTexture(gl.TEXTURE0);    
 	gl.bindTexture(gl.TEXTURE_2D, ca.getTexture());
 	
-	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 	gl.flush();
 }
@@ -106,8 +115,8 @@ EvoCell.CASimulation.prototype.getProgram = function()
 		}
 		
 		// TODO get rid of density!!!!
-		this.texture1 = createFrameTextureRandom(this.gl, width, height, 0.1);
-		this.texture2 = createFrameTextureRandom(this.gl, width, height, 0.1);
+		this.texture1 = createFrameTextureRandom(this.gl, this.width, this.height, 0.1);
+		this.texture2 = createFrameTextureRandom(this.gl, this.width, this.height, 0.1);
 		
 		this.fb1 = this.gl.createFramebuffer();
 		this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fb1);
@@ -137,6 +146,7 @@ EvoCell.CASimulation.prototype.step = function(steps)
 	var progCA = this.getProgram();
 	var gl = this.gl;
 		
+	gl.viewport(0,0, this.width, this.height);
 	for (;steps > 0; steps--)
 	{
 		
@@ -240,6 +250,7 @@ EvoCell.EvoCellFragmentShaderTemplate =
 "   vec2 vvvv=vec2(0.5/width + idx*stateScale/width, 0.5/height + idy*stateScale/height); \n" +
 "	vec4 lookup = 	texture2D(texRule, vvvv);\n" +
 "	gl_FragColor =  vec4(0, 0., 0., lookup.a);\n" +
+//"   gl_FragColor = vec4(0, 0., vTexCoord.x, vTexCoord.y);\n" +
 "}";
 
 EvoCell.getFragmentShaderSourceFromEvoCellData = function (gl, evoCellData, xres, yres)

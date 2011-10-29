@@ -87,9 +87,10 @@ function setup()
 		arrayBufferData = arrayBuffer;
 		
 		var evoCellData = EvoCell.loadEvoCellFile(arrayBuffer);
-		caSim = new EvoCell.CASimulation(caCanvas, evoCellData, width, height);
+		caSim = new EvoCell.CASimulation(caCanvas, evoCellData, 200, 200);
+		
 	
-		timer = setInterval(fr, 500);
+		timer = setInterval(fr, 1000);
 		time = new Date().getTime();
    
 		anim();
@@ -103,7 +104,7 @@ function handleReset()
 	randomDensity = parseFloat(ctlRandomDensity.value);
 	
 	caCanvas.setSize(width, height);
-	caSim.setSize(width, height);
+	//caSim.setSize(width, height);
 }
 
 var delay=5;
@@ -115,8 +116,8 @@ requestAnimFrame = (function(){
 })();
 
 function anim(){
-   caSim.step(25);
-   caCanvas.draw(caSim, progShow);
+   caSim.step();
+   caCanvas.draw(caSim, progShow, null, [20, 20, 200, 200]);
    
    frames++;
    
