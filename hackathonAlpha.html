@@ -36,8 +36,8 @@
 
 <script type="text/javascript">
 
-var nrSimsRows = 3;
-var nrSimsCols = 2;
+var nrSimsRows = 5;
+var nrSimsCols = 5;
 
 var nrSims = nrSimsRows * nrSimsCols;
 var caCanvas, caSims;
@@ -60,8 +60,8 @@ function setup()
 
 	caCanvas = new EvoCell.CACanvas($("#c")[0]);
 	
-	width = 1280;
-	height = 700;
+	width = 1200;
+	height = 800;
 	
 	ctlXRes.value = width;
 	ctlYRes.value = height;
@@ -186,6 +186,26 @@ function handleCanvasClick(evt) {
 	clickedCA = nrSimsCols * Math.floor(nrSimsRows * (height - coords.y) / height);
 	clickedCA += Math.floor(nrSimsCols * coords.x / width);
 	
+	var mutReg;
+	var mutTarget;
+	var mutTimes;
+
+	//if (evt.button == 0) 
+	{
+		mutReg = ["?", "?", "?", "?", "?", "?", 0, 0, 0];
+		mutTarget = "?";
+		mutTimes = 100;
+	}
+	/*
+	else
+	{
+		mutReg = ["?", "?", "?", "?", "?", "?", 0, 0, 0];
+		mutTarget = 0;
+		mutTimes = 500;
+	}
+	*/
+
+	
 	var rule = caSims[clickedCA].ruleData;
 	
 	for (var i = 0; i < nrSims; i++)
@@ -195,7 +215,7 @@ function handleCanvasClick(evt) {
 			var newRule = myClone(rule);
 			newRule.ruleTable = new Uint8Array(rule.ruleTable);
 			
-			EvoCell.mutateEvoCellRule(newRule, ["?", "?", "?", "?", "?", "?", 0, 0, 0], 150);
+			EvoCell.mutateEvoCellRule(newRule, mutReg, mutTarget, mutTimes);
 			caSims[i].setRule(newRule);
 		}
 	}

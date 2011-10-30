@@ -373,6 +373,7 @@ EvoCell.loadEvoCellFile = function(arrayBuffer) {
 		evoCellData.containsNeighbourhood = true;
 		evoCellData.nrDimensions = nrDimensions;
 		evoCellData.neighbourhood = neighbourhood;
+		evoCellData.symmetries = calculateSymmetries(evoCellData);
 	}
 	else
 		evoCellData.containsNeighbourhood = false;
@@ -396,8 +397,39 @@ EvoCell.loadEvoCellFile = function(arrayBuffer) {
 	}
 	else
 		evoCellData.containsPattern = false;
-	
+	       
 	return evoCellData;
+}
+
+function calculateSymmetries(evoCellData) 
+{
+	symmetryPermutations = [];
+	
+	for (var rot = 0; rot < 4; rot++)
+	{
+		var rotVals = [];
+		for (var i = 0; i < evoCellData.nrNeighbours; i++) 
+		{
+			var roted = evoCellData.neighbourhood[i];
+			for (var r = 0; r < rot; r++)
+				roted = rot90(roted);
+			
+			for (var s = 0; s < evoCellData.nrNeighbours; s++) 
+			{
+				if (evoCellData.neighbourhood[s][0] == roted[0] && evoCellData.neighbourhood[s][1] == roted[1])
+				{
+					rotVals.push(s);
+					break;
+				}
+			}
+		}
+		// check if rotation was successful
+		if (rotVals.length == evoCellData.neighbourhood.length) 
+		{
+			symmetryPermutations.push(rotVals);
+		}
+	}
+	return symmetryPermutations;
 }
 
 function myClone(a)
@@ -424,61 +456,40 @@ function rot90(xy)
 
 function mutRotSym(evoCellData, vals, targetState)
 {
-	var localRot = rot90;
-	
-	for (var rot = 0; rot < 4; rot++)
-	{
-		var rotVals = [];
-		for (var i = 0; i < evoCellData.nrNeighbours; i++) 
-		{
-			var roted = evoCellData.neighbourhood[i];
-			for (var r = 0; r < rot; r++)
-				roted = rot90(roted);
-			
-			for (var s = 0; s < evoCellData.nrNeighbours; s++) 
-			{
-				if (evoCellData.neighbourhood[s][0] == roted[0] && evoCellData.neighbourhood[s][1] == roted[1])
-				{
-					rotVals.push(s);
-					break;
-				}
-			}
-		}
+	for (sidx in evoCellData.symmetries) {
+		var s = evoCellData.symmetries[sidx];
 		var idx = 0;
-		for (var j = evoCellData.nrNeighbours-1; j >= 0; j--)
+		for (var j = s.length-1; j >= 0; j--)
 		{
-			idx = idx * evoCellData.nrStates + vals[rotVals[j]];
+			idx = idx * evoCellData.nrStates + vals[s[j]];
 		}
 		evoCellData.ruleTable.set([targetState], idx);
+		//break;
 	}
 	
 }
 
+function evalRegexpr(r, evoCellData) 
+{
+	if (r == "?")
+		return getRandInt(0, evoCellData.nrStates);
+	else
+		return r;
+}
 
-EvoCell.mutateEvoCellRule = function(evoCellData, regExprs, n)
+EvoCell.mutateEvoCellRule = function(evoCellData, regExprs, targetRegExpr, n)
 {
 	for (var i = 0; i < n; i++)
 	{
-		//var idx = getRandInt(0, evoCellData.ruleTableSize);
-		
-		var idx = 0;
 		var nr = 0;
 		var vals = [];
 		for (var j = 0; j < evoCellData.nrNeighbours; j++)
 		{
-			if (regExprs[j] == "?")
-			{
-				nr = getRandInt(0, evoCellData.nrStates);
-			}
-			else
-				nr = regExprs[j];
-			
+			nr = evalRegexpr(regExprs[j], evoCellData);
 			vals.push(nr);
-			idx = idx * evoCellData.nrStates + nr;
 		}
 				
-		var targetState = getRandInt(0, evoCellData.nrStates);
+		var targetState = evalRegexpr(targetRegExpr, evoCellData);
 		mutRotSym(evoCellData, vals, targetState);
-		
 	}
 }
