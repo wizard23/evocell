@@ -201,7 +201,7 @@ function handleCanvasClick(evt) {
 	{
 		mutReg = ["?", "?", "?", "?", "?", "?", 0, 0, 0];
 		mutTarget = "?";
-		mutTimes = 100;
+		mutTimes = 300;
 	}
 	/*
 	else
@@ -222,7 +222,7 @@ function handleCanvasClick(evt) {
 			var newRule = myClone(rule);
 			newRule.ruleTable = new Uint8Array(rule.ruleTable);
 			
-			EvoCell.mutateEvoCellRule(newRule, mutReg, mutTarget, mutTimes);
+			EvoCell.mutateEvoCellRule(newRule, mutReg, mutTarget, getRandInt(20, mutTimes));
 			caSims[i].setRule(newRule);
 		}
 	}
