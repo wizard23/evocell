@@ -134,7 +134,18 @@ requestAnimFrame = (function(){
     function(callback, element){ setTimeout(callback, 1000 / 60); }
 })();
 
+var pausePlease = 0;
 function anim(){
+	updateFrame();
+
+   frames++;
+   if (!pausePlease)
+   {
+		requestAnimFrame(anim);
+   }
+}
+
+function updateFrame() {
 	for (var i = 0; i < nrSims; i++)
 		caSims[i].step();
    
@@ -147,10 +158,6 @@ function anim(){
 				[(width / nrSimsCols) * (c + 0.5) - colWidth/2, (height / nrSimsRows) * (r + 0.5) - rowHeight/2, colWidth, rowHeight]);
 		}
 	}
-
-   frames++;
-   
-   requestAnimFrame(anim);
 }
 
 function fr(){
@@ -229,8 +236,8 @@ function handleCanvasClick(evt) {
 	<canvas id="c" width="1000" height="3333"></canvas>
 
 	<form name="controls" action="">
+	<input type="button" id="cmdRunPause" value="run/pause" onclick="pausePlease = !pausePlease; if (!pausePlease) anim();">
 	<input type="button" id="cmdSingleStep" value="one step" onclick="updateFrame();">
-	<input type="button" id="cmdRunPause" value="run" onclick="anim();">
 	<input type="number" id="xres" name="xres" min="100" max="4000" value="1000" onchange="handleReset();" />
 	<input type="number" id="yres" name="yres" min="100" max="4000" value="3333" onchange="handleReset();" />
 	<input type="number" id="randomDensity" min="0" max="1" step="0.001" value="0.01" onchange="handleReset();">
