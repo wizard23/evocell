@@ -45,6 +45,7 @@ var timer, time;
 var width, height, colWidth, rowHeight;
 var progShow;
 var ctlXRes, ctlYRes, ctlRandomDensity, ctlFramerate;
+var evoCellData;
 
 function setup()
 {
@@ -66,7 +67,7 @@ function setup()
 	ctlXRes.value = width;
 	ctlYRes.value = height;
 	
-	handleReset();
+	
 	
 	
 	caCanvas.setSize(width, height);
@@ -99,11 +100,10 @@ function setup()
 	function (arrayBuffer) {
 		arrayBufferData = arrayBuffer;
 		
-		var evoCellData = EvoCell.loadEvoCellFile(arrayBuffer);
-		caSims = [];
+		evoCellData = EvoCell.loadEvoCellFile(arrayBuffer);
 		
-		for (var i = 0; i < nrSims; i++)
-			caSims[i] = new EvoCell.CASimulation(caCanvas, evoCellData, colWidth, rowHeight);
+		
+		handleReset();
 		
 	
 		timer = setInterval(fr, 1000);
@@ -124,6 +124,10 @@ function handleReset()
 	randomDensity = parseFloat(ctlRandomDensity.value);
 	caCanvas.setSize(width, height);
 	//caSim.setSize(width, height);
+	
+	caSims = [];
+	for (var i = 0; i < nrSims; i++)
+		caSims[i] = new EvoCell.CASimulation(caCanvas, evoCellData, colWidth, rowHeight);
 }
 
 var delay=5;
@@ -224,6 +228,10 @@ function handleCanvasClick(evt) {
 			
 			EvoCell.mutateEvoCellRule(newRule, mutReg, mutTarget, getRandInt(20, mutTimes));
 			caSims[i].setRule(newRule);
+		}
+		else
+		{
+			caSims[i].invalidateProgram(); // TODO: this is a hack to trandomize clean this up
 		}
 	}
 	//alert(clickedCA);
