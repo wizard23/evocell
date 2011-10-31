@@ -40,7 +40,7 @@ var nrSimsRows = 5;
 var nrSimsCols = 5;
 
 var nrSims = nrSimsRows * nrSimsCols;
-var caCanvas, caSims;
+var caCanvas, caSims = [];
 var timer, time;
 var width, height, colWidth, rowHeight;
 var progShow;
@@ -129,9 +129,20 @@ function handleReset()
 	caCanvas.setSize(width, height);
 	//caSim.setSize(width, height);
 	
+	oldSims = caSims;
 	caSims = [];
 	for (var i = 0; i < nrSims; i++)
-		caSims[i] = new EvoCell.CASimulation(caCanvas, evoCellData, colWidth, rowHeight);
+	{
+		if (oldSims.length > i)
+		{
+			caSims[i] = oldSims[i];
+			caSims[i].setSize(colWidth, rowHeight);
+		}
+		else
+		{
+			caSims[i] = new EvoCell.CASimulation(caCanvas, evoCellData, colWidth, rowHeight);
+		}
+	}
 }
 
 var delay=5;
@@ -253,7 +264,7 @@ function handleCanvasClick(evt) {
 	<input type="number" id="xres" name="xres" min="100" max="4000" value="1000" onchange="handleReset();" />
 	<input type="number" id="yres" name="yres" min="100" max="4000" value="3333" onchange="handleReset();" />
 	<input type="number" id="randomDensity" min="0" max="1" step="0.001" value="0.01" onchange="handleReset();">
-	<input type="number" id="nrSims" min="1" max="6" step="1" value="5" onchange="handleReset();">
+	<input type="number" id="nrSims" min="1" max="6" step="1" value="5" onchange="handleReset();" style="display:none;">
 	<input type="button" value="Reset" onclick="handleReset();">
 	<input type="file" value="evocellFile" id="evocellFile" />
 	fps<input size="1" id="framerate">
