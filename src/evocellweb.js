@@ -40,7 +40,6 @@ EvoCell.CACanvas.prototype.draw = function(ca, progShow, sourceRect, destRect)
 	gl.bindTexture(gl.TEXTURE_2D, ca.getTexture());
 	
 	gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-	gl.flush();
 }
 
 //////////////////////////////////////////
@@ -179,9 +178,6 @@ EvoCell.CASimulation.prototype.step = function(steps)
 		}
 	 
 		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-		
-		// TODO: ist flush notwendig, eventuell erst nach for schleife oder erst wenn jemand auf die textur zugreift
-		gl.flush();
 		
 		this.frameFlip = -this.frameFlip;
 		this.frameCount++;
