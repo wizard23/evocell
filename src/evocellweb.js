@@ -305,6 +305,67 @@ EvoCell.getFragmentShaderSourceFromEvoCellData = function (gl, evoCellData, xres
 	return getShader(gl, shaderType, shaderSource);
 }
 
+EvoCell.writeEvoCellDataToArrayBuffer = function(evoCellData) {
+	//calculate target size
+	var bufferSize = 20; //magic + contains flags + reserved
+	
+	if (evoCellData.containsRule) {
+		bufferSize += 12; //magic + nrStates + nrNeighbours
+		bufferSize += evoCellData.ruleTableSize;
+	}
+
+	if (evoCellData.containsNeighbourhood) {
+		bufferSize += 12; //magic + nrNeighbours + nrDimensions
+		bufferSize += 8 * evoCellData.neighbourhood.length;
+	}
+
+	if (evoCellData.containsPattern) {
+		bufferSize += 16; //magic + nrDimensions + width + height
+		bufferSize += evoCellData.patternWidth * evoCellData.patternHeight;
+	}
+
+	var arrayBuffer = new ArrayBuffer(bufferSize);
+	var dv = new DataView(arryaBuffer);
+	var index = 0;
+
+	//general part
+	dv.setUint32(index, 0x0000002A); index += 4;
+	dv.setUint32(index, evoCellData.containsRule ? 1 : 0); index += 4;
+	dv.setUint32(index, evoCellData.containsNeighbourhood ? 1 : 0); index += 4;
+	dv.setUint32(index, evoCellData.containsPattern ? 1 : 0); index += 4;
+	dv.setUint32(index, 0); index += 4;
+
+	if (evoCellData.containsRule) {
+		dv.setUint32(index, 0x00000913); index += 4;
+		dv.setUint32(index, evoCellData.nrStates); index += 4;
+		dv.setUint32(index, evoCellData.nrNeighbours); index += 4;
+		var ruleTableBuffer = new Uint8Array(arrayBuffer, index, evoCellData.ruleTableSize);
+		ruleTableBuffer.set(evoCellData.ruleTable, 0);
+		index += Math.pow(evoCellData.nrStates, evoCellData.nrNeighbours);
+	}
+
+	if (evoCellData.containsNeighbourhood) {
+		dv.setUint32(index, 0x0000004E31); index += 4;
+		dv.setUint32(index, evoCellData.nrNeighbours); index += 4;
+		dv.setUint32(index, 2); index += 4;
+		for (var i = 0; i < evoCellData.nrNeighbours; i++) {
+			dv.setUint32(index, evoCellData.neighbourhood[i][0]); index += 4;
+			dv.setUint32(index, evoCellData.neighbourhood[i][1]); index += 4;
+		}
+	}
+
+	if (evoCellData.containsPattern) {
+		dv.setUint32(index, 0x00005ABF); index += 4;
+		dv.setUint32(index, 2); index += 4;
+		dv.setUint32(index, evoCellData.patternWidth); index += 4;
+		dv.setUint32(index, evoCellData.patternHeight); index += 4;
+		var patternDataAlias = new Uint8Array(arrayBuffer, index, evoCellData.patternWidth * evoCellData.patternHeight);
+		patterDataAlias.set(evoCellData.patternData, 0);
+	}
+
+	return arrayBuffer;
+}
+
 // returns an object with up to 3 fileds: neighbourhood, ruletable, pattern
 // or null if a fileformat error is detected
 EvoCell.loadEvoCellFile = function(arrayBuffer) {
