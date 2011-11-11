@@ -56,7 +56,8 @@ function setup()
 	ctlNrSims = $('#nrSims')[0];
 	ctlRandomDensity = $('#randomDensity')[0];
 	ctlFramerate = $('#framerate')[0];
-	
+
+	document.getElementById('c').addEventListener('contextmenu', handleContextMenu, false);
 	document.getElementById('c').addEventListener('click', handleCanvasClick, false);
 	
 	$('#evocellFile').change(handleFileSelect);
@@ -202,8 +203,24 @@ function handleFileSelect(evt) {
 			//handleReset();
 		};
 	reader.readAsArrayBuffer(files[0]); // start async operation
-  }
+}
   
+function handleContextMenu(evt) {
+	evt.preventDefault();
+
+	var canvas = document.getElementById('c');
+	
+	var coords = canvas.relMouseCoords(evt);
+	var x = coords.x;
+	var y = coords.y;
+	
+	var clickedCA;
+	clickedCA = nrSimsCols * Math.floor(nrSimsRows * (height - coords.y) / height);
+	clickedCA += Math.floor(nrSimsCols * coords.x / width);
+
+	EvoCell.saveRule(caSims[clickedCA]);
+}
+
 function handleCanvasClick(evt) {
 	var canvas = document.getElementById('c');
 	
@@ -214,45 +231,51 @@ function handleCanvasClick(evt) {
 	var clickedCA;
 	clickedCA = nrSimsCols * Math.floor(nrSimsRows * (height - coords.y) / height);
 	clickedCA += Math.floor(nrSimsCols * coords.x / width);
-	
-	var mutReg;
-	var mutTarget;
-	var mutTimes;
 
-	//if (evt.button == 0) 
-	{
-		mutReg = ["?", "?", "?", "?", "?", "?", 0, 0, 0];
-		mutTarget = "?";
-		mutTimes = 300;
-	}
-	/*
-	else
-	{
-		mutReg = ["?", "?", "?", "?", "?", "?", 0, 0, 0];
-		mutTarget = 0;
-		mutTimes = 500;
-	}
-	*/
+	if (evt.button == 0) {
+		var mutReg;
+		var mutTarget;
+		var mutTimes;
 
-	
-	var rule = caSims[clickedCA].ruleData;
-	
-	for (var i = 0; i < nrSims; i++)
-	{
-		if (i != clickedCA)
+		//if (evt.button == 0) 
 		{
-			var newRule = myClone(rule);
-			newRule.ruleTable = new Uint8Array(rule.ruleTable);
-			
-			EvoCell.mutateEvoCellRule(newRule, mutReg, mutTarget, getRandInt(20, mutTimes));
-			caSims[i].setRule(newRule);
+			mutReg = ["?", "?", "?", "?", "?", "?", 0, 0, 0];
+			mutTarget = "?";
+			mutTimes = 300;
 		}
+		/*
 		else
 		{
-			caSims[i].invalidateProgram(); // TODO: this is a hack to trandomize clean this up
+			mutReg = ["?", "?", "?", "?", "?", "?", 0, 0, 0];
+			mutTarget = 0;
+			mutTimes = 500;
 		}
+		*/
+
+		
+		var rule = caSims[clickedCA].ruleData;
+		
+		for (var i = 0; i < nrSims; i++)
+		{
+			if (i != clickedCA)
+			{
+				var newRule = myClone(rule);
+				newRule.ruleTable = new Uint8Array(rule.ruleTable);
+				
+				EvoCell.mutateEvoCellRule(newRule, mutReg, mutTarget, getRandInt(20, mutTimes));
+				caSims[i].setRule(newRule);
+			}
+			else
+			{
+				caSims[i].invalidateProgram(); // TODO: this is a hack to trandomize clean this up
+			}
+		}
+		//alert(clickedCA);
+	} else if (evt.button == 0) {
+		EvoCell.saveRule(caSims[clickedCA]);
 	}
-	//alert(clickedCA);
+	evt.preventDefault();
+	evt.stopPropagation();
 }  
 </script>
 
