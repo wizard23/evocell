@@ -305,6 +305,12 @@ EvoCell.getFragmentShaderSourceFromEvoCellData = function (gl, evoCellData, xres
 	return getShader(gl, shaderType, shaderSource);
 }
 
+EvoCell.saveRule = function(sim) {
+	var rawData = EvoCell.writeEvoCellDataToArrayBuffer(sim.ruleData);
+	var base64Encoded = arrayBufferToBase64(rawData);
+	window.location = 'data:application/octet-stream;base64,' + base64Encoded;
+};
+
 EvoCell.writeEvoCellDataToArrayBuffer = function(evoCellData) {
 	//calculate target size
 	var bufferSize = 20; //magic + contains flags + reserved
@@ -325,7 +331,7 @@ EvoCell.writeEvoCellDataToArrayBuffer = function(evoCellData) {
 	}
 
 	var arrayBuffer = new ArrayBuffer(bufferSize);
-	var dv = new DataView(arryaBuffer);
+	var dv = new DataView(arrayBuffer);
 	var index = 0;
 
 	//general part
