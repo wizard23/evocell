@@ -25,7 +25,14 @@ function getShader(gl, shaderType, sourceText)
 	gl.shaderSource(shader, sourceText);
 	gl.compileShader(shader);
 	if (gl.getShaderParameter(shader, gl.COMPILE_STATUS) == 0)
+	{
 		alert(gl.getShaderInfoLog(shader));
+		alert(sourceText);
+		alert(sourceText.substr(500));
+		alert(sourceText.substr(1000));
+		alert(sourceText.substr(1500));
+		alert(sourceText.substr(2000));
+	}
 	return shader;
 }
 

@@ -259,7 +259,7 @@ EvoCell.getFragmentShaderSourceFromEvoCellData = function (gl, evoCellData, xres
 	var widthExpr = "";
 	var heightExpr = "";
 	
-	for (nIndex in evoCellData.neighbourhood)
+	for (var nIndex = 0; nIndex < evoCellData.neighbourhood.length; nIndex++)
 	{
 		var neighbour = evoCellData.neighbourhood[nIndex];
 		
@@ -520,7 +520,7 @@ function rot90(xy)
 
 function mutRotSym(evoCellData, vals, targetState)
 {
-	for (sidx in evoCellData.symmetries) {
+	for (var sidx = 0; sidx < evoCellData.symmetries.length; sidx++) {
 		var s = evoCellData.symmetries[sidx];
 		var idx = 0;
 		for (var j = s.length-1; j >= 0; j--)
