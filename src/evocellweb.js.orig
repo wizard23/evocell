@@ -308,8 +308,7 @@ EvoCell.getFragmentShaderSourceFromEvoCellData = function (gl, evoCellData, xres
 EvoCell.saveRule = function(sim) {
 	var rawData = EvoCell.writeEvoCellDataToArrayBuffer(sim.ruleData);
 	var base64Encoded = arrayBufferToBase64(rawData);
-	
-	window.location = 'data:application/octet-stream;base64,' + base64Encoded;
+	window.location = base64Encoded;
 };
 
 EvoCell.writeEvoCellDataToArrayBuffer = function(evoCellData) {
@@ -538,7 +537,7 @@ function evalRegexpr(r, evoCellData)
 	if (r == "?")
 		return getRandInt(0, evoCellData.nrStates);
 	else
-		return parseInt(r);
+		return r;
 }
 
 EvoCell.mutateEvoCellRule = function(evoCellData, regExprs, targetRegExpr, n)
