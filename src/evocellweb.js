@@ -20,10 +20,21 @@ EvoCell.CACanvas.prototype.setSize = function(width, height)
 	this.gl.viewport(0, 0, width, height);
 }
 
-EvoCell.CACanvas.prototype.draw = function(ca, progShow, sourceRect, destRect) 
+
+EvoCell.CACanvas.prototype.setupPaletteShader = function(paletteShader)
+{
+	this.progShow = this.gl.createProgram();
+	this.gl.attachShader(this.progShow, getShaderFromElement(this.gl, "shader-vs-passthrough" ));
+	this.gl.attachShader(this.progShow,  paletteShader);
+	this.gl.linkProgram(this.progShow);
+	this.caSpace = createCASpace(this.gl);
+	bindCASpaceToShader(this.gl, this.progShow, this.caSpace);
+}
+
+EvoCell.CACanvas.prototype.draw = function(ca, sourceRect, destRect) 
 {
 	var gl = this.gl;
-	gl.useProgram(progShow);
+	gl.useProgram(this.progShow);
 	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 	if (!destRect)
@@ -35,7 +46,7 @@ EvoCell.CACanvas.prototype.draw = function(ca, progShow, sourceRect, destRect)
 	//gl.viewport(0, 0, this.canvas.width, this.canvas.height);
 	
 
-	gl.uniform1i(gl.getUniformLocation(progShow, "texFrame"), 0);
+	gl.uniform1i(gl.getUniformLocation(this.progShow, "texFrame"), 0);
 	gl.activeTexture(gl.TEXTURE0);    
 	gl.bindTexture(gl.TEXTURE_2D, ca.getTexture());
 	
@@ -74,6 +85,7 @@ EvoCell.CASimulation.prototype.setSize = function(width, height)
 	this.height = height;
 	this.invalidateProgram();
 }
+
 
 EvoCell.CASimulation.prototype.invalidateProgram = function() 
 {

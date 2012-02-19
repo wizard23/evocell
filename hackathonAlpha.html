@@ -49,14 +49,14 @@
 
 <script type="text/javascript">
 
-var nrSimsRows = 5;
-var nrSimsCols = 5;
+var nrSimsRows = 3;
+var nrSimsCols = 3;
 
 var nrSims;
-var caCanvas, caSims = [];
+var caCanvas;
+var caSims = [];
 var timer, time;
 var width, height, colWidth, rowHeight;
-var progShow;
 var ctlXRes, ctlYRes, ctlRandomDensity, ctlNrSims, ctlFramerate;
 var evoCellData;
 
@@ -77,6 +77,7 @@ function setup()
 	//document.getElementById('floatingPalette').addEventListener('click', handleFloatingPaletteClick, false);
 
 	caCanvas = new EvoCell.CACanvas(jQuery("#c")[0]);
+	caCanvas.setupPaletteShader(getShaderFromElement(caCanvas.gl, "shader-fs-palette"));
 	
 	new Draggable('floatingPalette');
 	
@@ -85,8 +86,9 @@ function setup()
 
 	new Draggable('c2');
 	//document.getElementById('c2').addEventListener('contextmenu', handleContextMenu, false);
-	document.getElementById('c2').addEventListener('click', handleCanvasClick, false);
-	caCanvas2 = new EvoCell.CACanvas(jQuery("#c2")[0]);
+	//document.getElementById('c2').addEventListener('click', handleCanvasClick, false);
+	//caCanvas2 = new EvoCell.CACanvas(jQuery("#c2")[0]);
+	//caCanvas2.setupPaletteShader(getShaderFromElement(caCanvas2.gl, "shader-fs-palette"));
 	
 	//caCanvas.gl = caCanvas2.gl;
 	
@@ -99,15 +101,17 @@ function setup()
 	
 	
 	
-	caCanvas.setSize(width, height);
+	//caCanvas.setSize(width, height);
 	
+// now in idividual 
+/*
 	progShow = caCanvas.gl.createProgram();
 	caCanvas.gl.attachShader(progShow, getShaderFromElement(caCanvas.gl, "shader-vs-passthrough" ));
 	caCanvas.gl.attachShader(progShow, getShaderFromElement(caCanvas.gl, "shader-fs-palette" ));
 	caCanvas.gl.linkProgram(progShow);
 	var caSpace = createCASpace(caCanvas.gl);
 	bindCASpaceToShader(caCanvas.gl, progShow, caSpace);
-	
+*/	
 	
 	var file = getArrayBufferFromURL(
 	//"http://dl.dropbox.com/u/2297128/22C3_avgextgrowers_cooler",
@@ -146,7 +150,7 @@ function handleReset(cleanStart)
 {
 	width = parseInt(ctlXRes.value);
 	height = parseInt(ctlYRes.value);
-	
+
 	nrSimsCols = parseInt(ctlNrSims.value);
 	nrSimsRows = nrSimsCols;
 	nrSims = nrSimsRows * nrSimsCols;
@@ -157,8 +161,6 @@ function handleReset(cleanStart)
 	randomDensity = parseFloat(ctlRandomDensity.value);
 	caCanvas.setSize(width, height);
 
-	caCanvas2.setSize(colWidth, rowHeight);
-	//caSim.setSize(width, height);
 	
 	oldSims = caSims;
 	caSims = [];
@@ -166,13 +168,18 @@ function handleReset(cleanStart)
 	{
 		if (!cleanStart && oldSims.length > i)
 		{
+			
 			caSims[i] = oldSims[i];
 			caSims[i].setSize(colWidth, rowHeight);
 		}
 		else
 		{
+			//var canvas = EnsureCanvas("genCanvas_" + i);
+			//var caCanvas = new EvoCell.CACanvas(canvas);
 			caSims[i] = new EvoCell.CASimulation(caCanvas, evoCellData, colWidth, rowHeight);
 		}
+		caSims[i].setSize(colWidth, rowHeight);
+		//caSims[i].caCanvas.setSize(colWidth, colWidth);
 	}
 
 	fillPalette(caSims[0].ruleData);
@@ -206,12 +213,12 @@ function updateFrame() {
 		for (var c = 0; c < nrSimsCols; c++)
 		{
 			var idx = r*nrSimsCols+c;
-			caCanvas.draw(caSims[idx], progShow, null, 
-				[(width / nrSimsCols) * (c + 0.5) - colWidth/2, (height / nrSimsRows) * (r + 0.5) - rowHeight/2, colWidth, rowHeight]);
+			//caSims[idx].caCanvas.draw(caSims[idx]);
+			caCanvas.draw(caSims[idx], null, [(width / nrSimsCols) * (c + 0.5) - colWidth/2, (height / nrSimsRows) * (r + 0.5) - rowHeight/2, colWidth, rowHeight]);
 		}
 	}
 
-	caCanvas2.draw(caSims[0], progShow, null, [0, 0, colWidth, rowHeight]);
+	//caCanvas2.draw(caSims[0]);
 	
 }
 
@@ -265,9 +272,9 @@ function handleCanvasClick(evt) {
 	clickedCA = nrSimsCols * Math.floor(nrSimsRows * (height - coords.y) / height);
 	clickedCA += Math.floor(nrSimsCols * coords.x / width);
 
-	if (evt.target == caCanvas2.canvas)
+	if (evt.target == "adasD")
 	{	
-		alert("sss");	
+		//alert("sss");	
 		return;
 	}
 	
@@ -381,6 +388,18 @@ function  OnChangeCheckbox()
 
 }
 
+function EnsureCanvas(id)
+{
+	var container = document.getElementById('canvasContainer');
+	var canvas = document.getElementById(id);
+	if (!canvas)
+	{
+		container.innerHTML += "<canvas id='" + id + "' width='100' height='333'></canvas>";
+		canvas = document.getElementById(id);
+	}
+	return canvas;
+}
+
 </script>
 
 
@@ -394,8 +413,10 @@ function  OnChangeCheckbox()
 	
 	</div>
 
-	<canvas id="c" width="1000" height="3333"></canvas>
-	<canvas id="c2" width="1000" height="3333"></canvas>
+	<div id="canvasContainer" style="pojkhsition:absolute;"></div>
+
+	<canvas id="c" width="10" height="33"></canvas>
+	<canvas id="c2" width="10" height="33" style="position:absolute;"></canvas>
 
 	<form name="controls" action="">
 	<input type="button" id="cmdRunPause" value="run/pause" onclick="pausePlease = !pausePlease; if (!pausePlease) anim();">
@@ -403,7 +424,7 @@ function  OnChangeCheckbox()
 	<input type="number" id="xres" name="xres" min="100" max="4000" value="1000" onchange="handleReset();" />
 	<input type="number" id="yres" name="yres" min="100" max="4000" value="3333" onchange="handleReset();" />
 	<input type="number" id="randomDensity" min="0" max="1" step="0.001" value="0.01" onchange="handleReset();">
-	<input type="number" id="nrSims" min="1" max="6" step="1" value="5" onchange="handleReset();">
+	<input type="number" id="nrSims" min="1" max="6" step="1" value="3" onchange="handleReset();">
 	<input type="button" value="Reset" onclick="handleReset(1);">
 	<input type="file" value="evocellFile" id="evocellFile" />
 	fps<input size="1" id="framerate">
