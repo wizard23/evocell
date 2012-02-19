@@ -151,16 +151,16 @@ EvoCell.CASimulation.prototype.step = function(steps)
 		
 		this.gl.useProgram(progCA);
 
+		gl.uniform1i(gl.getUniformLocation(progCA, "texRule"), 1);
+		gl.activeTexture(gl.TEXTURE1);    
+		gl.bindTexture(gl.TEXTURE_2D, this.ruleTexture);
+
 		if (this.frameFlip > 0)
 		{
 			gl.uniform1i(gl.getUniformLocation(progCA, "texFrame"), 0);
 			gl.activeTexture(gl.TEXTURE0);    
 			gl.bindTexture(gl.TEXTURE_2D, this.texture1);
 			
-			gl.uniform1i(gl.getUniformLocation(progCA, "texRule"), 1);
-			gl.activeTexture(gl.TEXTURE1);    
-			gl.bindTexture(gl.TEXTURE_2D, this.ruleTexture);
-
 			gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb2);
 		}
 		else
@@ -168,11 +168,6 @@ EvoCell.CASimulation.prototype.step = function(steps)
 			gl.uniform1i(gl.getUniformLocation(progCA, "texFrame"), 0);
 			gl.activeTexture(gl.TEXTURE0);    
 			gl.bindTexture(gl.TEXTURE_2D, this.texture2);
-			
-			// TODO: diese 3 zeilen rausziehen
-			gl.uniform1i(gl.getUniformLocation(progCA, "texRule"), 1);
-			gl.activeTexture(gl.TEXTURE1);    
-			gl.bindTexture(gl.TEXTURE_2D, this.ruleTexture);
 		
 			gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb1);
 		}
