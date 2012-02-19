@@ -305,11 +305,15 @@ EvoCell.getFragmentShaderSourceFromEvoCellData = function (gl, evoCellData, xres
 	return getShader(gl, shaderType, shaderSource);
 }
 
-EvoCell.saveRule = function(sim) {
+EvoCell.saveRuleToDataURL = function(sim) {
 	var rawData = EvoCell.writeEvoCellDataToArrayBuffer(sim.ruleData);
 	var base64Encoded = arrayBufferToBase64(rawData);
 	
-	window.location = 'data:application/octet-stream;base64,' + base64Encoded;
+	return 'data:application/octet-stream;base64,' + base64Encoded;
+};
+
+EvoCell.saveRule = function(sim) {
+	window.location = EvoCell.saveRuleToDataURL(sim);
 };
 
 EvoCell.writeEvoCellDataToArrayBuffer = function(evoCellData) {

@@ -70,6 +70,7 @@ function setup()
 
 	document.getElementById('c').addEventListener('contextmenu', handleContextMenu, false);
 	document.getElementById('c').addEventListener('click', handleCanvasClick, false);
+	document.getElementById('paletteStealth').addEventListener ("click", OnChangeCheckbox, false);
 
 	//document.getElementById('floatingPalette').addEventListener('click', handleFloatingPaletteClick, false);
 
@@ -235,7 +236,8 @@ function handleContextMenu(evt) {
 	clickedCA = nrSimsCols * Math.floor(nrSimsRows * (height - coords.y) / height);
 	clickedCA += Math.floor(nrSimsCols * coords.x / width);
 
-	EvoCell.saveRule(caSims[clickedCA]);
+	document.getElementById('downloadRuleFile').href = EvoCell.saveRuleToDataURL(caSims[clickedCA]);
+	//EvoCell.saveRule(caSims[clickedCA]);
 }
 
 function handleCanvasClick(evt) {
@@ -305,8 +307,6 @@ function handleCanvasClick(evt) {
 			}
 		}
 		//alert(clickedCA);
-	} else if (evt.button == 0) {
-		EvoCell.saveRule(caSims[clickedCA]);
 	}
 	evt.preventDefault();
 	evt.stopPropagation();
@@ -337,15 +337,27 @@ function fillPalette(evoCellData)
 	var posy = topOffset;
 	s+="<input type=\"text\" id=\"nPattern_target\" value=\"?\" style=\"position:absolute; width:40px; left:" + posx + "px; top:" + posy + "px;\" />";
 
-	var div = document.getElementById('floatingPalette');
+	var div = document.getElementById('floatingPaletteNeighbours');
 	div.innerHTML = s;
 	//alert(s);
 		
 }
-function handleFloatingPaletteClick(evt)
+
+function  OnChangeCheckbox()
 {
-	var coords = document.relMouseCoords(evt);
-	
+	if (document.getElementById('paletteStealth').checked)
+	{
+		new Effect.Opacity('floatingPalette', { from: 1.0, to: 0.3, duration: 0.5 });
+		
+		//document.getElementById('floatingPalette').style.opacity = "0.2";
+
+	}
+	else
+	{
+		new Effect.Opacity('floatingPalette', { from: 0.3, to: 1.0, duration: 0.5 });
+		//document.getElementById('floatingPalette').style.opacity = "1";
+	}
+
 }
 
 </script>
@@ -354,7 +366,11 @@ function handleFloatingPaletteClick(evt)
 </head>
 <body onload="setup()">
 
-	<div id="floatingPalette" style="position:fixed; width:240px; height:150px; left:200px; top:200px; background-color:#fdd; cursor:move;">hello world</div>
+	<div id="floatingPalette" style="position:fixed; width:240px; height:150px; left:200px; top:200px; background-color:#fdd; cursor:move;">
+	<div id="floatingPaletteHeader"><input type='checkbox' id='paletteStealth' />hide palette</div>
+ 	<div id="floatingPaletteNeighbours"></div>
+	
+	</div>
 
 	<canvas id="c" width="1000" height="3333"></canvas>
 
@@ -368,6 +384,7 @@ function handleFloatingPaletteClick(evt)
 	<input type="button" value="Reset" onclick="handleReset(1);">
 	<input type="file" value="evocellFile" id="evocellFile" />
 	fps<input size="1" id="framerate">
+	<a id="downloadRuleFile">hier kommt dann die regel</a>
 	
 	</form>
 </body>
