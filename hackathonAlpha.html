@@ -267,13 +267,15 @@ function handleCanvasClick(evt) {
 			mutReg = [];
 			for (i = 0; i < rule.neighbourhood.length; i++)
 			{
-				mutReg[i] = document.getElementById('nPattern_' + i).value;
+				mutReg.push(document.getElementById('nPattern_' + i).value);
 			}
-			mutTarget = document.getElementById('nPattern_target').value;
+			mutTarget = mutTimes = document.getElementById('nPattern_target').value;			
+			
+			//alert(document.getElementById('nPattern_all').checked);
 
 			
 
-			mutTimes = 1300;
+			mutTimes = document.getElementById('nPattern_mutations').value;
 		}
 		/*
 		else
@@ -313,8 +315,11 @@ function handleCanvasClick(evt) {
 
 function fillPalette(evoCellData)
 {
+	var leftOffset = 55, topOffset = 75, xOffset = 55;
 	var s="<div style=\"background-color:#ccf;\">Dont hesitate...MUTATE!</div>";
-
+	
+ 
+	s+="mutations: <input type='number' id='nPattern_mutations' value='1000' style='width:70px;' /> <input type='checkbox' id='nPattern_all' /> All rules ";
 	
 	for (var nIndex = 0; nIndex < evoCellData.neighbourhood.length; nIndex++)
 	{
@@ -322,14 +327,14 @@ function fillPalette(evoCellData)
 		
 		var x = neighbour[0];
 		var y = neighbour[1];
-		var posx = 55 + x*55;
-		var posy = 45 + y*25;
+		var posx = leftOffset + x * xOffset;
+		var posy = topOffset + y * 25;
 
 	 	s+= "<input type=\"text\" id=\"nPattern_" + nIndex + "\" value=\"?\" style=\"position:absolute; width:40px; left:" + posx + "px; top:" + posy + "px;\" />";
 	}
 
-	var posx = 55 + 2.5 * 55;
-	var posy = 45;
+	var posx = leftOffset + 2.3 * xOffset;
+	var posy = topOffset;
 	s+="<input type=\"text\" id=\"nPattern_target\" value=\"?\" style=\"position:absolute; width:40px; left:" + posx + "px; top:" + posy + "px;\" />";
 
 	var div = document.getElementById('floatingPalette');
@@ -349,7 +354,7 @@ function handleFloatingPaletteClick(evt)
 </head>
 <body onload="setup()">
 
-	<div id="floatingPalette" style="position:fixed; width:240px; height:100px; left:200px; top:200px; background-color:#fdd; cursor:move;">hello world</div>
+	<div id="floatingPalette" style="position:fixed; width:240px; height:150px; left:200px; top:200px; background-color:#fdd; cursor:move;">hello world</div>
 
 	<canvas id="c" width="1000" height="3333"></canvas>
 

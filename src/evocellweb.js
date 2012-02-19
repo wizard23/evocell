@@ -509,7 +509,7 @@ function myClone(a)
 
 function getRandInt(min, max)
 {
-	return min + parseInt( Math.random() * max);
+	return min + Math.floor(Math.random() * (max-min));
 }
 
 function rot90(xy)
@@ -527,8 +527,15 @@ function mutRotSym(evoCellData, vals, targetState)
 		{
 			idx = idx * evoCellData.nrStates + vals[s[j]];
 		}
+		try
+		{
 		evoCellData.ruleTable.set([targetState], idx);
 		//break;
+		}
+		catch (ex)
+		{
+			alert(vals + " -> " + targetState); 
+		}
 	}
 	
 }
@@ -539,6 +546,26 @@ function evalRegexpr(r, evoCellData)
 		return getRandInt(0, evoCellData.nrStates);
 	else
 		return parseInt(r);
+}
+
+function evalTargetRegexpr(r, evoCellData, vals)
+{
+	if (r.length > 0 && r[0]=='n')
+	{
+		return vals[parseInt(r.substr(1))];
+	}
+	if (r.length > 0 && r[0]=='a')
+	{
+		var sum = parseInt(r.substr(1));
+
+		for (var i = 0; i < vals.length; i++)
+		{	
+			sum += vals[i];
+		}
+		var zS = Math.floor(sum/vals.length);
+		return zS;
+	}
+	return evalRegexpr(r, evoCellData);
 }
 
 EvoCell.mutateEvoCellRule = function(evoCellData, regExprs, targetRegExpr, n)
@@ -553,7 +580,7 @@ EvoCell.mutateEvoCellRule = function(evoCellData, regExprs, targetRegExpr, n)
 			vals.push(nr);
 		}
 				
-		var targetState = evalRegexpr(targetRegExpr, evoCellData);
+		var targetState = evalTargetRegexpr(targetRegExpr, evoCellData, vals);
 		mutRotSym(evoCellData, vals, targetState);
 	}
 }
