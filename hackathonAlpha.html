@@ -49,8 +49,8 @@
 
 <script type="text/javascript">
 
-var nrSimsRows = 3;
-var nrSimsCols = 3;
+var nrSimsRows;
+var nrSimsCols;
 
 var nrSims;
 var caCanvas;
@@ -60,7 +60,7 @@ var width, height, colWidth, rowHeight;
 var ctlXRes, ctlYRes, ctlRandomDensity, ctlNrSims, ctlFramerate;
 var evoCellData;
 
-var caCanvas2;
+var useOneCanvas = true;
 
 function setup()
 {
@@ -76,9 +76,11 @@ function setup()
 
 	//document.getElementById('floatingPalette').addEventListener('click', handleFloatingPaletteClick, false);
 
-	caCanvas = new EvoCell.CACanvas(jQuery("#c")[0]);
-	caCanvas.setupPaletteShader(getShaderFromElement(caCanvas.gl, "shader-fs-palette"));
-	
+	if (useOneCanvas)
+	{
+		caCanvas = new EvoCell.CACanvas(jQuery("#c")[0]);
+		caCanvas.setupPaletteShader(getShaderFromElement(caCanvas.gl, "shader-fs-palette"));
+	}
 	new Draggable('floatingPalette');
 	
 	jQuery('#evocellFile').change(handleFileSelect);
@@ -159,8 +161,11 @@ function handleReset(cleanStart)
 	rowHeight = Math.floor((height / nrSimsRows) - 1);
 	
 	randomDensity = parseFloat(ctlRandomDensity.value);
-	caCanvas.setSize(width, height);
-
+	
+	if (useOneCanvas)
+	{
+		caCanvas.setSize(width, height);
+	}
 	
 	oldSims = caSims;
 	caSims = [];
@@ -174,12 +179,32 @@ function handleReset(cleanStart)
 		}
 		else
 		{
-			//var canvas = EnsureCanvas("genCanvas_" + i);
-			//var caCanvas = new EvoCell.CACanvas(canvas);
-			caSims[i] = new EvoCell.CASimulation(caCanvas, evoCellData, colWidth, rowHeight);
+			if (useOneCanvas)
+			{	
+				caSims[i] = new EvoCell.CASimulation(caCanvas, evoCellData, colWidth, rowHeight);
+			}
+			else
+			{
+				var canvasX = EnsureCanvas("genCanvas_" + i);
+				var caCanvasX = new EvoCell.CACanvas(canvasX);
+				caCanvasX.setupPaletteShader(getShaderFromElement(caCanvasX.gl, "shader-fs-palette"));
+				caSims[i] = new EvoCell.CASimulation(caCanvasX, evoCellData, colWidth, rowHeight);
+			}
+			
 		}
 		caSims[i].setSize(colWidth, rowHeight);
-		//caSims[i].caCanvas.setSize(colWidth, colWidth);
+		if (!useOneCanvas)
+		{
+			caSims[i].caCanvas.setSize(colWidth, rowHeight);
+		}
+	}
+
+	if (!useOneCanvas)
+	{
+		for (var i = nrSims; i < oldSims.length; i++)
+		{
+			//oldSims[i].caCanvas.setSize(10, 10);
+		}
 	}
 
 	fillPalette(caSims[0].ruleData);
@@ -213,8 +238,14 @@ function updateFrame() {
 		for (var c = 0; c < nrSimsCols; c++)
 		{
 			var idx = r*nrSimsCols+c;
-			//caSims[idx].caCanvas.draw(caSims[idx]);
-			caCanvas.draw(caSims[idx], null, [(width / nrSimsCols) * (c + 0.5) - colWidth/2, (height / nrSimsRows) * (r + 0.5) - rowHeight/2, colWidth, rowHeight]);
+			if (useOneCanvas)
+			{
+				caCanvas.draw(caSims[idx], null, [(width / nrSimsCols) * (c + 0.5) - colWidth/2, (height / nrSimsRows) * (r + 0.5) - rowHeight/2, colWidth, rowHeight]);		}
+			else
+			{
+				caSims[idx].caCanvas.draw(caSims[idx]);
+			}
+			
 		}
 	}
 
@@ -394,7 +425,7 @@ function EnsureCanvas(id)
 	var canvas = document.getElementById(id);
 	if (!canvas)
 	{
-		container.innerHTML += "<canvas id='" + id + "' width='100' height='333'></canvas>";
+		container.innerHTML += "<div style='background-color:#cdc; border:2px solid gray;'><canvas id='" + id + "' width='100' height='333'></canvas></div>";
 		canvas = document.getElementById(id);
 	}
 	return canvas;
@@ -415,8 +446,8 @@ function EnsureCanvas(id)
 
 	<div id="canvasContainer" style="pojkhsition:absolute;"></div>
 
-	<canvas id="c" width="10" height="33"></canvas>
-	<canvas id="c2" width="10" height="33" style="position:absolute;"></canvas>
+	<canvas id="c" width="10" height="33" border:1px solid gray;></canvas>
+	<canvas id="c2" width="10" height="33" style="position:absolute;" border:1px solid gray;></canvas>
 
 	<form name="controls" action="">
 	<input type="button" id="cmdRunPause" value="run/pause" onclick="pausePlease = !pausePlease; if (!pausePlease) anim();">
@@ -424,7 +455,7 @@ function EnsureCanvas(id)
 	<input type="number" id="xres" name="xres" min="100" max="4000" value="1000" onchange="handleReset();" />
 	<input type="number" id="yres" name="yres" min="100" max="4000" value="3333" onchange="handleReset();" />
 	<input type="number" id="randomDensity" min="0" max="1" step="0.001" value="0.01" onchange="handleReset();">
-	<input type="number" id="nrSims" min="1" max="6" step="1" value="3" onchange="handleReset();">
+	<input type="number" id="nrSims" min="1" max="6" step="1" value="2" onchange="handleReset();">
 	<input type="button" value="Reset" onclick="handleReset(1);">
 	<input type="file" value="evocellFile" id="evocellFile" />
 	fps<input size="1" id="framerate">
