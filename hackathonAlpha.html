@@ -70,14 +70,15 @@ function setup()
 	ctlRandomDensity = jQuery('#randomDensity')[0];
 	ctlFramerate = jQuery('#framerate')[0];
 
-	document.getElementById('c').addEventListener('contextmenu', handleContextMenu, false);
-	document.getElementById('c').addEventListener('click', handleCanvasClick, false);
+	
 	document.getElementById('paletteStealth').addEventListener ("click", OnChangeCheckbox, false);
 
 	//document.getElementById('floatingPalette').addEventListener('click', handleFloatingPaletteClick, false);
 
 	if (useOneCanvas)
 	{
+		document.getElementById('c').addEventListener('contextmenu', handleContextMenu, false);
+		document.getElementById('c').addEventListener('click', handleCanvasClick, false);
 		caCanvas = new EvoCell.CACanvas(jQuery("#c")[0]);
 		caCanvas.setupPaletteShader(getShaderFromElement(caCanvas.gl, "shader-fs-palette"));
 	}
@@ -185,6 +186,10 @@ function handleReset(cleanStart)
 			else
 			{
 				var canvasX = EnsureCanvas("genCanvas_" + i);
+				canvasX.addEventListener('contextmenu', handleContextMenu2, false);
+				canvasX.addEventListener('click', handleCanvasClick2, false);
+				
+
 				var caCanvasX = new EvoCell.CACanvas(canvasX);
 				caCanvasX.setupPaletteShader(getShaderFromElement(caCanvasX.gl, "shader-fs-palette"));
 				caSims[i] = new EvoCell.CASimulation(caCanvasX, evoCellData, colWidth, rowHeight);
@@ -275,6 +280,41 @@ function handleFileSelect(evt) {
 		};
 	reader.readAsArrayBuffer(files[0]); // start async operation
 }
+
+function extractIdxFromId(id)
+{
+	
+	var nrRegex = /\d+/;
+	var m = nrRegex.exec(id);
+
+	return parseInt(m[0]);
+	
+}
+
+function handleContextMenu2(evt) {
+	evt.preventDefault();
+
+	var clickedCA = extractIdxFromId(evt.target.id);
+
+	//document.getElementById('downloadRuleFile').href = EvoCell.saveRuleToDataURL(caSims[clickedCA]);
+	EvoCell.saveRule(caSims[clickedCA]);
+}
+
+function handleCanvasClick2(evt) {
+	var clickedCA = extractIdxFromId(evt.target.id);
+	var coords = evt.target.relMouseCoords(evt);
+	
+	var x = coords.x;
+	var y = coords.y;
+
+	DoTheMutation(clickedCA);
+	evt.preventDefault();
+	evt.stopPropagation();
+}  
+
+
+
+
   
 function handleContextMenu(evt) {
 	evt.preventDefault();
@@ -312,66 +352,53 @@ function handleCanvasClick(evt) {
 	
 
 	if (evt.button == 0) {
-		var mutReg;
-		var mutTarget;
-		var mutTimes;
-
-		var rule = caSims[clickedCA].ruleData;
-
-		//if (evt.button == 0) 
-		{
-			mutReg = ["?", "?", "?", "?", "?", "?", 0, 0, 0];
-			mutTarget = "?";
-			
-			mutReg = ["?", "3", "?", "3", "?", "?", 0, 0, 0];
-			mutTarget = "3";
-
-			mutReg = [];
-			for (i = 0; i < rule.neighbourhood.length; i++)
-			{
-				mutReg.push(document.getElementById('nPattern_' + i).value);
-			}
-			mutTarget = mutTimes = document.getElementById('nPattern_target').value;			
-			
-			//alert(document.getElementById('nPattern_all').checked);
-
-			
-
-			mutTimes = document.getElementById('nPattern_mutations').value;
-		}
-		/*
-		else
-		{
-			mutReg = ["?", "?", "?", "?", "?", "?", 0, 0, 0];
-			mutTarget = 0;
-			mutTimes = 500;
-		}
-		*/
-
 		
-	
-		
-		for (var i = 0; i < nrSims; i++)
-		{
-			if (i != clickedCA)
-			{
-				var newRule = myClone(rule);
-				newRule.ruleTable = new Uint8Array(rule.ruleTable);
-				
-				EvoCell.mutateEvoCellRule(newRule, mutReg, mutTarget, getRandInt(20, mutTimes));
-				caSims[i].setRule(newRule);
-			}
-			else
-			{
-				caSims[i].invalidateProgram(); // TODO: this is a hack to trandomize clean this up
-			}
-		}
-		//alert(clickedCA);
 	}
 	evt.preventDefault();
 	evt.stopPropagation();
 }  
 
+
+function DoTheMutation(clickedCA)
+{
+	var mutReg;
+	var mutTarget;
+	var mutTimes;
+
+	var rule = caSims[clickedCA].ruleData;
+
+
+	mutReg = ["?", "?", "?", "?", "?", "?", 0, 0, 0];
+	mutTarget = "?";
+
+	mutReg = ["?", "3", "?", "3", "?", "?", 0, 0, 0];
+	mutTarget = "3";
+
+	mutReg = [];
+	for (i = 0; i < rule.neighbourhood.length; i++)
+	{
+		mutReg.push(document.getElementById('nPattern_' + i).value);
+	}
+	mutTarget = mutTimes = document.getElementById('nPattern_target').value;			
+	mutTimes = document.getElementById('nPattern_mutations').value;
+
+
+	for (var i = 0; i < nrSims; i++)
+	{
+		if (i != clickedCA)
+		{
+			var newRule = myClone(rule);
+			newRule.ruleTable = new Uint8Array(rule.ruleTable);
+		
+			EvoCell.mutateEvoCellRule(newRule, mutReg, mutTarget, getRandInt(20, mutTimes));
+			caSims[i].setRule(newRule);
+		}
+		else
+		{
+			caSims[i].invalidateProgram(); // TODO: this is a hack to trandomize clean this up
+		}
+	}
+}
 
 function fillPalette(evoCellData)
 {
