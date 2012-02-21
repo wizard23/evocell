@@ -296,7 +296,7 @@ function handleContextMenu2(evt) {
 
 	var clickedCA = extractIdxFromId(evt.target.id);
 
-	//document.getElementById('downloadRuleFile').href = EvoCell.saveRuleToDataURL(caSims[clickedCA]);
+	document.getElementById('downloadRuleFile').href = EvoCell.saveRuleToDataURL(caSims[clickedCA]);
 	EvoCell.saveRule(caSims[clickedCA]);
 }
 
