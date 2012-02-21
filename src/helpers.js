@@ -28,10 +28,6 @@ function getShader(gl, shaderType, sourceText)
 	{
 		alert(gl.getShaderInfoLog(shader));
 		alert(sourceText);
-		alert(sourceText.substr(500));
-		alert(sourceText.substr(1000));
-		alert(sourceText.substr(1500));
-		alert(sourceText.substr(2000));
 	}
 	return shader;
 }

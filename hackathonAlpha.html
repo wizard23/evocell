@@ -46,6 +46,41 @@
 			//gl_FragColor = texture2D(texFrame, vTexCoord);
 		}
 	</script>
+	
+		<script id="shader-fs-paletteAndScale" type="x-shader/x-fragment"> 
+		#ifdef GL_ES
+		precision highp float;
+		#endif
+		uniform sampler2D texFrame;
+		varying vec2 vTexCoord;
+		void main(void) {
+			vec2 vCT;
+			vCT.x = vTexCoord.x/3.;
+			vCT.y = vTexCoord.y/3.;
+			int xmod = int(vTexCoord.x * 499.0);
+			int xmm = xmod / 3;
+			xmod = xmod - (xmm * 3);
+
+			int ymod = int(vTexCoord.y * 399.0);
+			int ymm = ymod / 3;
+			ymod = ymod - (ymm * 3);
+
+			if (xmod == 0 || ymod == 0)
+			{
+				gl_FragColor = vec4(0.,0.,0.,1.);
+			}
+			else
+			{
+				vec4 color = texture2D(texFrame, vCT);
+				//if (color.a == 0.)
+				//	gl_FragColor = vec4(0., 0., 0., 0.);
+				//else
+					gl_FragColor = vec4(color.a*600.0, color.a*color.a*color.a*400000.0, 0., 1.);
+		
+				//gl_FragColor = texture2D(texFrame, vTexCoord);
+			}
+		}
+	</script>
 
 <script type="text/javascript">
 
@@ -191,7 +226,11 @@ function handleReset(cleanStart)
 				
 
 				var caCanvasX = new EvoCell.CACanvas(canvasX);
-				caCanvasX.setupPaletteShader(getShaderFromElement(caCanvasX.gl, "shader-fs-palette"));
+				if (i != 0)
+					caCanvasX.setupPaletteShader(getShaderFromElement(caCanvasX.gl, "shader-fs-palette"));
+				else				
+					caCanvasX.setupPaletteShader(getShaderFromElement(caCanvasX.gl, "shader-fs-paletteAndScale"));
+
 				caSims[i] = new EvoCell.CASimulation(caCanvasX, evoCellData, colWidth, rowHeight);
 			}
 			
