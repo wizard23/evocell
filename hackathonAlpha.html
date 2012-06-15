@@ -51,21 +51,36 @@
 		#ifdef GL_ES
 		precision highp float;
 		#endif
+
+		#define XSIZE 499.0
+		#define YSIZE 399.0
+		#define SCALE 5.0
+		#define BORDER 2.0
+
+		#define XPIXELSIZE (1.0/XSIZE)
+		#define YPIXELSIZE (1.0/YSIZE)
+
 		uniform sampler2D texFrame;
 		varying vec2 vTexCoord;
 		void main(void) {
 			vec2 vCT;
-			vCT.x = vTexCoord.x/3.;
-			vCT.y = vTexCoord.y/3.;
-			int xmod = int(vTexCoord.x * 499.0);
-			int xmm = xmod / 3;
-			xmod = xmod - (xmm * 3);
+			vCT.x = vTexCoord.x/5.;
+			vCT.y = vTexCoord.y/5.;
 
-			int ymod = int(vTexCoord.y * 399.0);
-			int ymm = ymod / 3;
-			ymod = ymod - (ymm * 3);
+			float xFMod = mod(vTexCoord.x, SCALE*XPIXELSIZE);
+			float yFMod = mod(vTexCoord.y, SCALE*YPIXELSIZE);
 
-			if (xmod == 0 || ymod == 0)
+			//int xmod = int(vTexCoord.x * 499.0);
+			//int xmm = xmod / 5;
+			//xmod = xmod - (xmm * 5);
+			//xmod = xmod % 5;
+
+			//int ymod = int(vTexCoord.y * 399.0);
+			//int ymm = ymod / 5;
+			//ymod = ymod - (ymm * 5);
+
+			//if (xmod == 0 || ymod == 0)
+			if (xFMod <= XPIXELSIZE*BORDER || yFMod <= YPIXELSIZE*BORDER)
 			{
 				gl_FragColor = vec4(0.,0.,0.,1.);
 			}
@@ -154,7 +169,7 @@ function setup()
 	//"http://dl.dropbox.com/u/2297128/22C3_avgextgrowers_cooler",
 	//"http://dl.dropbox.com/u/2297128/Moore4-avg3-sweetship",
 	"rules/moore4_wave",
-	//"ccc_rules/ecoli16",
+	//"rules/ecoli16",
 	//"ccc_rules/annegret2", 
 	//"ccc_rules/g2adapded", 
 	//"ccc_rules/moore5-explosionz-spaceshyp-boxedin-mut",
@@ -429,7 +444,7 @@ function DoTheMutation(clickedCA)
 			var newRule = myClone(rule);
 			newRule.ruleTable = new Uint8Array(rule.ruleTable);
 		
-			EvoCell.mutateEvoCellRule(newRule, mutReg, mutTarget, getRandInt(20, mutTimes));
+			EvoCell.mutateEvoCellRule(newRule, mutReg, mutTarget, mutTimes);
 			caSims[i].setRule(newRule);
 		}
 		else
@@ -509,7 +524,7 @@ function EnsureCanvas(id)
 		
 		container.appendChild(div);
 		
-		new Draggable(div);
+		//new Draggable(div);
 	}
 	return canvas;
 }

@@ -579,6 +579,68 @@ function evalTargetRegexpr(r, evoCellData, vals)
 	return evalRegexpr(r, evoCellData);
 }
 
+/*
+function evalAllRegexpr(r, evoCellData) 
+{
+	if (r == "?")
+	{
+		var i = 0;
+		return function(restart) {
+			if (restart == true)
+			{
+				i = 0;
+			}		
+			val retVal = i;
+			i++;
+			return retVal;
+		};
+	}	
+	else
+		return function(restart) { 
+			return parseInt(r); 
+		};
+}
+
+function evalTargetRegexpr(r, evoCellData, vals)
+{
+	if (r.length > 0 && r[0]=='n')
+	{
+		var idx = r.substr(1);
+		return function(restart, vals) { return vals[parseInt()];
+	}
+	if (r.length > 0 && r[0]=='a')
+	{
+		var sum = parseInt(r.substr(1));
+
+		for (var i = 0; i < vals.length; i++)
+		{	
+			sum += vals[i];
+		}
+		var zS = Math.floor(sum/vals.length);
+		return zS;
+	}
+	return evalRegexpr(r, evoCellData);
+}
+*/
+
+EvoCell.mutateAllEvoCellRule = function(evoCellData, regExprs, targetRegExpr, n)
+{
+	for (var i = 0; i < n; i++)
+	{
+		var nr = 0;
+		var vals = [];
+		for (var j = 0; j < evoCellData.nrNeighbours; j++)
+		{
+			nr = evalRegexpr(regExprs[j], evoCellData);
+			vals.push(nr);
+		}
+				
+		var targetState = evalTargetRegexpr(targetRegExpr, evoCellData, vals);
+		mutRotSym(evoCellData, vals, targetState);
+	}
+}
+
+
 EvoCell.mutateEvoCellRule = function(evoCellData, regExprs, targetRegExpr, n)
 {
 	for (var i = 0; i < n; i++)
