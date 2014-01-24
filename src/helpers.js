@@ -66,11 +66,25 @@ function createFrameTextureRandom(gl, width, height, density)
 	{
 		for(var j = 0; j < width; j++) // x axis
 		{
-			if(Math.random() < density) pixels.push(Math.floor(Math.random()*8));
-			else pixels.push(0);
+			if (Math.random() < density) 
+			{
+				pixels.push(0);
+				pixels.push(0);
+				pixels.push(0);
+				pixels.push(Math.floor(Math.random()*8));
+			}
+			else
+			{
+				pixels.push(0);
+				pixels.push(0);
+				pixels.push(0);
+				pixels.push(0);
+			}
 		}
 	}
-	return createCATexture(gl, width, height, new Uint8Array(pixels));
+	// must be RGBA otherwise we cant use it as color attachment of the framebuffer 
+	//return createCATexture(gl, width, height, new Uint8Array(pixels));
+	return createRGBATexture(gl, width, height, new Uint8Array(pixels))
 }
 
 function createFrameTextureFromPattern(gl, evoCellData, width, height)

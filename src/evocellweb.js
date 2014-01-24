@@ -197,8 +197,8 @@ EvoCell.CASimulation.prototype.step = function(steps)
 // Static functions
 //////////////////////////////////////////////////////////
 
-// used by the ruletable and the state frames
-// RGBA for now could be changed to only one channel
+// used state frames
+// RGBA for now because ALPHA textures can not be rendered into
 function createRGBATexture(gl, width, height, pixels)
 {
 	var texture = gl.createTexture();
