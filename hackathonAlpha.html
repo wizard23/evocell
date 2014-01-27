@@ -16,7 +16,6 @@
 
 
 	<script src="src/helpers.js"></script>
-	<script src="src/evocell.js"></script>
 	<script src="src/evocellweb.js"></script>
 
 	<script id="shader-vs-passthrough" type="x-shader/x-vertex"> 
@@ -110,7 +109,7 @@ var width, height, colWidth, rowHeight;
 var ctlXRes, ctlYRes, ctlRandomDensity, ctlNrSims, ctlFramerate;
 var evoCellData;
 
-var useOneCanvas = true;
+var useOneCanvas = false;
 
 function setup()
 {
@@ -144,8 +143,8 @@ function setup()
 	
 	//caCanvas.gl = caCanvas2.gl;
 	
-	width = 1000;
-	height = 800;
+	width = 512*2;
+	height = 512*2;
 	
 	ctlXRes.value = width;
 	ctlYRes.value = height;
@@ -194,7 +193,7 @@ function setup()
 		timer = setInterval(fr, 1000);
 		time = new Date().getTime();
    
-		anim();
+		//anim();
 	});
 }
 
@@ -207,8 +206,8 @@ function handleReset(cleanStart)
 	nrSimsRows = nrSimsCols;
 	nrSims = nrSimsRows * nrSimsCols;
 	
-	colWidth = Math.floor((width / nrSimsCols) - 1);
-	rowHeight = Math.floor((height / nrSimsRows) - 1);
+	colWidth = Math.floor((width / nrSimsCols));
+	rowHeight = Math.floor((height / nrSimsRows));
 	
 	randomDensity = parseFloat(ctlRandomDensity.value);
 	
