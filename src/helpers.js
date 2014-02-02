@@ -59,7 +59,7 @@ function bindCASpaceToShader(gl, prog, space)
 }
 
 
-function createFrameTextureRandom(gl, width, height, density)
+function createFrameTextureRandom(gl, width, height, states, density)
 {
 	var pixels = [];
 	for(var i = 0; i < height; i++) // y axis
@@ -71,7 +71,7 @@ function createFrameTextureRandom(gl, width, height, density)
 				pixels.push(0);
 				pixels.push(0);
 				pixels.push(0);
-				pixels.push(Math.floor(Math.random()*8));
+				pixels.push(Math.floor(Math.random()*states));
 			}
 			else
 			{

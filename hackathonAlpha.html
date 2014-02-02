@@ -193,8 +193,18 @@ function setup()
 		timer = setInterval(fr, 1000);
 		time = new Date().getTime();
    
-		//anim();
+		anim();
 	});
+}
+
+function handleRandomize(cleanStart)
+{
+	randomDensity = parseFloat(ctlRandomDensity.value);
+
+	for (var i = 0; i < nrSims; i++)
+	{		
+		caSims[i].randomize(randomDensity);
+	}		
 }
 
 function handleReset(cleanStart)
@@ -240,10 +250,10 @@ function handleReset(cleanStart)
 				
 
 				var caCanvasX = new EvoCell.CACanvas(canvasX);
-				if (i != 0)
+				//if (i != 0)
 					caCanvasX.setupPaletteShader(getShaderFromElement(caCanvasX.gl, "shader-fs-palette"));
-				else				
-					caCanvasX.setupPaletteShader(getShaderFromElement(caCanvasX.gl, "shader-fs-paletteAndScale"));
+				//else				
+				//	caCanvasX.setupPaletteShader(getShaderFromElement(caCanvasX.gl, "shader-fs-paletteAndScale"));
 
 				caSims[i] = new EvoCell.CASimulation(caCanvasX, evoCellData, colWidth, rowHeight);
 			}
@@ -421,12 +431,6 @@ function DoTheMutation(clickedCA)
 	var rule = caSims[clickedCA].ruleData;
 
 
-	mutReg = ["?", "?", "?", "?", "?", "?", 0, 0, 0];
-	mutTarget = "?";
-
-	mutReg = ["?", "3", "?", "3", "?", "?", 0, 0, 0];
-	mutTarget = "3";
-
 	mutReg = [];
 	for (i = 0; i < rule.neighbourhood.length; i++)
 	{
@@ -434,21 +438,31 @@ function DoTheMutation(clickedCA)
 	}
 	mutTarget = mutTimes = document.getElementById('nPattern_target').value;			
 	mutTimes = document.getElementById('nPattern_mutations').value;
+	mutAll = document.getElementById('nPattern_all').checked;
 
-
-	for (var i = 0; i < nrSims; i++)
+	if (mutAll)
 	{
-		if (i != clickedCA)
+		var newRule = myClone(rule);
+		newRule.ruleTable = new Uint8Array(rule.ruleTable);
+		EvoCell.mutateAllEvoCellRule(newRule, mutReg, mutTarget, mutTimes);
+		caSims[clickedCA].setRule(newRule);
+	}
+	else
+	{
+		for (var i = 0; i < nrSims; i++)
 		{
-			var newRule = myClone(rule);
-			newRule.ruleTable = new Uint8Array(rule.ruleTable);
+			if (i != clickedCA)
+			{
+				var newRule = myClone(rule);
+				newRule.ruleTable = new Uint8Array(rule.ruleTable);
 		
-			EvoCell.mutateEvoCellRule(newRule, mutReg, mutTarget, mutTimes);
-			caSims[i].setRule(newRule);
-		}
-		else
-		{
-			caSims[i].invalidateProgram(); // TODO: this is a hack to trandomize clean this up
+				EvoCell.mutateEvoCellRule(newRule, mutReg, mutTarget, mutTimes);
+				caSims[i].setRule(newRule);
+			}
+			else
+			{
+				caSims[i].invalidateProgram(); // TODO: this is a hack to trandomize clean this up
+			}
 		}
 	}
 }
@@ -547,6 +561,8 @@ function EnsureCanvas(id)
 	<form name="controls" action="">
 	<input type="button" id="cmdRunPause" value="run/pause" onclick="pausePlease = !pausePlease; if (!pausePlease) anim();">
 	<input type="button" id="cmdSingleStep" value="one step" onclick="updateFrame();">
+	<input type="button" value="Randomize" onclick="handleRandomize();">
+
 	<input type="number" id="xres" name="xres" min="100" max="4000" value="1000" onchange="handleReset();" />
 	<input type="number" id="yres" name="yres" min="100" max="4000" value="3333" onchange="handleReset();" />
 	<input type="number" id="randomDensity" min="0" max="1" step="0.001" value="0.01" onchange="handleReset();">
