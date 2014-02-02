@@ -31,7 +31,7 @@ function setup()
 		caCanvas = new EvoCell.CACanvas(jQuery("#c")[0]);
 		caCanvas.setupPaletteShader(getShaderFromElement(caCanvas.gl, "shader-fs-palette"));
 	}
-	new Draggable('floatingPalette');
+	mutationWindow = new Draggable('floatingPalette');
 	
 	jQuery('#evocellFile').change(handleFileSelect);
 	clearInterval(timer);
@@ -105,6 +105,8 @@ function handleRandomize(cleanStart)
 	{		
 		caSims[i].randomize(randomDensity);
 	}		
+
+	updateFrame();
 }
 
 function handleReset(cleanStart)
@@ -179,8 +181,6 @@ function handleReset(cleanStart)
 	fillPalette(caSims[0].ruleData);
 }
 
-var delay=5;
-
 requestAnimFrame = (function(){
   return  window.webkitRequestAnimationFrame ||
     window.mozRequestAnimationFrame ||
@@ -189,19 +189,24 @@ requestAnimFrame = (function(){
 
 var pausePlease = 0;
 function anim(){
+	oneStep()
 	updateFrame();
 
-   frames++;
-   if (!pausePlease)
-   {
+	frames++;
+	if (!pausePlease)
+	{
 		requestAnimFrame(anim);
-   }
+	}
 }
 
-function updateFrame() {
+function oneStep()
+{
 	for (var i = 0; i < nrSims; i++)
 		caSims[i].step();
-   
+}
+
+function updateFrame() 
+{	
 	for (var r = 0; r < nrSimsRows; r++)
 	{
 		for (var c = 0; c < nrSimsCols; c++)
@@ -258,9 +263,10 @@ function handleContextMenu2(evt) {
 	evt.preventDefault();
 
 	var clickedCA = extractIdxFromId(evt.target.id);
+	var ruleAsDataURL = EvoCell.saveRuleToDataURL(caSims[clickedCA].ruleData);
 
-	document.getElementById('downloadRuleFile').href = EvoCell.saveRuleToDataURL(caSims[clickedCA]);
-	EvoCell.saveRule(caSims[clickedCA]);
+	document.getElementById('downloadRuleFile').href = ruleAsDataURL;
+	window.location = ruleAsDataURL;
 }
 
 function handleCanvasClick2(evt) {
