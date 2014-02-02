@@ -581,6 +581,8 @@ function evalTargetRegexpr(r, evoCellData, vals)
 			sum += vals[i];
 		}
 		var zS = Math.floor(sum/vals.length);
+		if (zS >= evoCellData.nrStates)
+			zS = evoCellData.nrStates - 1;
 		return zS;
 	}
 	return evalRegexpr(r, evoCellData);
