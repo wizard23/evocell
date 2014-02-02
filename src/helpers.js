@@ -144,7 +144,7 @@ function getArrayBufferFromURL(url, cb) {
 function getFromURL(url, responseType, cb) {
 	var r = new XMLHttpRequest();
 	r.open("GET", url, true);  
-	// "blob" or "arraybuffer"
+	// "arraybuffer", "blob", "document", "json", and "text".
 	r.responseType = responseType;
 	r.onload = function() {   // XHR2
 		if (cb) cb(r.response); // XHR2

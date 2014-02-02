@@ -196,6 +196,37 @@ EvoCell.CASimulation.prototype.step = function(steps)
 	}
 }
 
+EvoCell.CASimulation.prototype.executeCustomShader = function(progCA, callback) 
+{
+	var gl = this.gl;
+		
+	gl.viewport(0,0, this.width, this.height);	
+	this.gl.useProgram(progCA);
+
+	if (this.frameFlip > 0)
+	{
+		gl.uniform1i(gl.getUniformLocation(progCA, "texFrame"), 0);
+		gl.activeTexture(gl.TEXTURE0);    
+		gl.bindTexture(gl.TEXTURE_2D, this.texture1);
+		
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb2);
+	}
+	else
+	{
+		gl.uniform1i(gl.getUniformLocation(progCA, "texFrame"), 0);
+		gl.activeTexture(gl.TEXTURE0);    
+		gl.bindTexture(gl.TEXTURE_2D, this.texture2);
+	
+		gl.bindFramebuffer(gl.FRAMEBUFFER, this.fb1);
+	}
+
+	callback(gl, progCA);
+ 
+	gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+	
+	this.frameFlip = -this.frameFlip;
+}
+
 
 
 //////////////////////////////////////////////////////////

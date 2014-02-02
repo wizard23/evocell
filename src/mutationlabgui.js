@@ -8,6 +8,7 @@ var timer, time;
 var width, height, colWidth, rowHeight;
 var ctlXRes, ctlYRes, ctlRandomDensity, ctlNrSims, ctlFramerate;
 var evoCellData;
+var drawRectShaderText;
 
 var useOneCanvas = false;
 
@@ -51,6 +52,12 @@ function setup()
 	
 	
 	
+	getFromURL("src/shaders/drawRect.shader", "text",
+		function (shaderText)
+		{
+			drawRectShaderText = shaderText;
+		}
+	);
 	
 	//caCanvas.setSize(width, height);
 	
@@ -152,8 +159,19 @@ function handleReset(cleanStart)
 				
 
 				var caCanvasX = new EvoCell.CACanvas(canvasX);
-				//if (i != 0)
-					caCanvasX.setupPaletteShader(getShaderFromElement(caCanvasX.gl, "shader-fs-palette"));
+
+				var gl = caCanvasX.gl;
+				var progDrawRect = gl.createProgram();
+				gl.attachShader(progDrawRect, getShaderFromElement(gl, "shader-vs-passthrough" ));
+				gl.attachShader(progDrawRect, getShader(gl, gl.FRAGMENT_SHADER, drawRectShaderText));
+				gl.linkProgram(progDrawRect);
+
+				caCanvasX.drawRectshader = progDrawRect;
+
+				//caCanvasX.setupPaletteShader(getShader(caCanvasX.gl, caCanvasX.gl.FRAGMENT_SHADER, paletteShaderText));
+				
+				//if (i != 0)				
+				caCanvasX.setupPaletteShader(getShaderFromElement(caCanvasX.gl, "shader-fs-palette"));
 				//else				
 				//	caCanvasX.setupPaletteShader(getShaderFromElement(caCanvasX.gl, "shader-fs-paletteAndScale"));
 
@@ -274,12 +292,33 @@ function handleContextMenu2(evt) {
 
 function handleCanvasClick2(evt) {
 	var clickedCA = extractIdxFromId(evt.target.id);
+	var sim = caSims[clickedCA];
 	var coords = evt.target.relMouseCoords(evt);
 	
 	var x = coords.x;
 	var y = coords.y;
 
-	DoTheMutation(clickedCA);
+
+	if (false)
+	{
+		var w = 0.02
+		var x1 = x / sim.width - w;
+		var x2 = x1 + 2*w;
+		var y1 = y / sim.width - w;
+		var y2 = y1 + 2*w;
+	 	
+		sim.executeCustomShader(sim.caCanvas.drawRectshader, 
+			function(gl, shader) 
+			{ 
+				gl.uniform4f(gl.getUniformLocation(shader, "rectParam"), x1, 1-y2, x2, 1-y1);
+			}
+		);
+	}
+	else
+	{
+		DoTheMutation(clickedCA);
+	}
+
 	evt.preventDefault();
 	evt.stopPropagation();
 }  
