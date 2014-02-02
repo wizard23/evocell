@@ -109,8 +109,6 @@
 	</div>
 
 
-	<canvas id="c" width="10" height="10" style="border:1px solid gray;" ></canvas>
-
 	<form name="controls" action="">
 	<input type="button" id="cmdRunPause" value="run/pause" onclick="pausePlease = !pausePlease; if (!pausePlease) anim();">
 	<input type="button" id="cmdSingleStep" value="one step" onclick="oneStep(); updateFrame();">
@@ -128,5 +126,6 @@
 	</form>
 
 	<div id="canvasContainer" style="border:1px solid green; position:absolute;"></div>
+	<canvas id="c" width="10" height="10" style="border:1px solid gray;" ></canvas>
 </body>
 </html>
