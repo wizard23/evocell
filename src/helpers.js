@@ -213,3 +213,37 @@ function arrayBufferToBase64(arrayBuffer) {
   return base64
 }
 
+// http://stackoverflow.com/questions/15293694/blob-constructor-browser-compatibility
+var arrayBufferToBlob = function(data, datatype)
+{
+    var out;
+
+    try {
+        out = new Blob([data], {type: datatype});
+        console.debug("case 1");
+    }
+    catch (e) {
+        window.BlobBuilder = window.BlobBuilder ||
+                window.WebKitBlobBuilder ||
+                window.MozBlobBuilder ||
+                window.MSBlobBuilder;
+
+        if (e.name == 'TypeError' && window.BlobBuilder) {
+            var bb = new BlobBuilder();
+            bb.append(data);
+            out = bb.getBlob(datatype);
+            console.debug("case 2");
+        }
+        else if (e.name == "InvalidStateError") {
+            // InvalidStateError (tested on FF13 WinXP)
+            out = new Blob(data, {type: datatype});
+            console.debug("case 3");
+        }
+        else {
+            // We're screwed, blob constructor unsupported entirely   
+            console.debug("Errore");
+        }
+    }
+	return out;
+}
+

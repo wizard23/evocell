@@ -263,10 +263,13 @@ function handleContextMenu2(evt) {
 	evt.preventDefault();
 
 	var clickedCA = extractIdxFromId(evt.target.id);
-	var ruleAsDataURL = EvoCell.saveRuleToDataURL(caSims[clickedCA].ruleData);
 
+	var ruleAsBlob = EvoCell.saveRuleToBlob(caSims[clickedCA].ruleData);
+	saveAs(ruleAsBlob, "evocellrule");
+
+	var ruleAsDataURL = EvoCell.saveRuleToDataURL(caSims[clickedCA].ruleData);
 	document.getElementById('downloadRuleFile').href = ruleAsDataURL;
-	window.location = ruleAsDataURL;
+	//window.location = ruleAsDataURL;
 }
 
 function handleCanvasClick2(evt) {
@@ -282,9 +285,6 @@ function handleCanvasClick2(evt) {
 }  
 
 
-
-
-  
 function handleContextMenu(evt) {
 	evt.preventDefault();
 

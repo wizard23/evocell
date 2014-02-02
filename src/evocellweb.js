@@ -319,15 +319,21 @@ EvoCell.getFragmentShaderSourceFromEvoCellData = function (gl, evoCellData, xres
 	return getShader(gl, shaderType, shaderSource);
 }
 
-EvoCell.saveRuleToDataURL = function(sim) {
-	var rawData = EvoCell.writeEvoCellDataToArrayBuffer(sim.ruleData);
-	var base64Encoded = arrayBufferToBase64(rawData);
+EvoCell.saveRuleToBlob = function(evoCellData) {
+	var rawData = EvoCell.writeEvoCellDataToArrayBuffer(evoCellData);
+	//var blob = new Blob(rawData, {type: 'application/octet-stream'});
+	var blob = arrayBufferToBlob(rawData, 'application/octet-stream');
 	
-	return 'data:application/octet-stream;base64,' + base64Encoded;
+	//var blobBuilder = new BlobBuilder();
+	//blobBuilder.append(rawData);
+	//var blob = blobBuilder.getBlob('application/octet-stream');
+	return blob;
 };
 
-EvoCell.saveRule = function(sim) {
-	window.location = EvoCell.saveRuleToDataURL(sim);
+EvoCell.saveRuleToDataURL = function(evoCellData) {
+	var rawData = EvoCell.writeEvoCellDataToArrayBuffer(evoCellData);
+	var base64Encoded = arrayBufferToBase64(rawData);
+	return 'data:application/octet-stream;base64,' + base64Encoded;
 };
 
 EvoCell.writeEvoCellDataToArrayBuffer = function(evoCellData) {
