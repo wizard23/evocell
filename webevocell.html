@@ -101,11 +101,19 @@
 </head>
 <body onload="setup()">
 
-	<div id="floatingPalette" style="position:fixed; width:240px; height:150px; background-color:#fdd; cursor:move; z-index:100;">
+	<div id="floatingPalette" style="position:fixed; width:240px; height:180px; background-color:#fdd; cursor:move; z-index:100;">
 	<div id="floatingPaletteHeader"><input type='checkbox' id='paletteStealth' />hide palette</div>
 	<div id="floatingPaletteOptions" style="position:relative;"></div>
  	<div id="floatingPaletteNeighbours" style="position:relative;"></div>
-	
+
+	<div id="floatingPaletteDrawing" style="position:relative; top: 85px;">
+		<input id="drawState0" type="radio" name="drawState" onclick="checkDrawState(this.value)" value="0" />0
+		<input id="drawState1" type="radio" name="drawState" onclick="checkDrawState(this.value)" value="1" />1
+		<input id="drawState2" type="radio" name="drawState" onclick="checkDrawState(this.value)" value="2" />2
+		<input id="drawState3" type="radio" name="drawState" onclick="checkDrawState(this.value)" value="3" />3
+		<input id="drawState4" type="radio" name="drawState" onclick="checkDrawState(this.value)" value="4" />4
+		<input id="drawState5" type="radio" name="drawState" onclick="checkDrawState(this.value)" value="5" />5
+	</div>
 	</div>
 
 

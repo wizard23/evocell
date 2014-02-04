@@ -10,6 +10,13 @@ var ctlXRes, ctlYRes, ctlRandomDensity, ctlNrSims, ctlFramerate;
 var evoCellData;
 var drawRectShaderText;
 
+var MODE_MUTATE = "mutate";
+var MODE_DRAW = "draw";
+
+var clickmode = MODE_DRAW;
+
+var drawState = 3;
+
 var useOneCanvas = false;
 
 function setup()
@@ -20,6 +27,9 @@ function setup()
 	ctlRandomDensity = jQuery('#randomDensity')[0];
 	ctlFramerate = jQuery('#framerate')[0];
 
+
+	document.addEventListener('mousedown', handleDocumentMouseDown, false);
+	document.addEventListener('mouseup', handleDocumentMouseUp, false);
 	
 	document.getElementById('paletteStealth').addEventListener ("click", OnChangeCheckbox, false);
 
@@ -33,6 +43,12 @@ function setup()
 		caCanvas.setupPaletteShader(getShaderFromElement(caCanvas.gl, "shader-fs-palette"));
 	}
 	mutationWindow = new Draggable('floatingPalette');
+	document.getElementById('floatingPaletteNeighbours').addEventListener("click", function() { activateClickMode(MODE_MUTATE); }, false);
+	document.getElementById('floatingPaletteOptions').addEventListener("click", function() { activateClickMode(MODE_MUTATE); }, false);
+
+	document.getElementById('floatingPaletteDrawing').addEventListener("click", function() { activateClickMode(MODE_DRAW); }, false);
+
+	popupWindow = window.open('webevocell_toolbar.html','name','width=400,height=200');
 	
 	jQuery('#evocellFile').change(handleFileSelect);
 	clearInterval(timer);
@@ -156,6 +172,9 @@ function handleReset(cleanStart)
 				var canvasX = EnsureCanvas("genCanvas_" + i);
 				canvasX.addEventListener('contextmenu', handleContextMenu2, false);
 				canvasX.addEventListener('click', handleCanvasClick2, false);
+
+				canvasX.addEventListener('mousedown', handleCanvasMouseDown, false);
+				canvasX.addEventListener('mousemove', handleCanvasMouseMove, false);
 				
 
 				var caCanvasX = new EvoCell.CACanvas(canvasX);
@@ -290,7 +309,47 @@ function handleContextMenu2(evt) {
 	//window.location = ruleAsDataURL;
 }
 
-function handleCanvasClick2(evt) {
+
+
+function activateClickMode(newMode)
+{
+	clickmode = newMode;
+}
+
+function checkDrawState(newState)
+{
+	drawState = newState;
+	clickmode = MODE_DRAW;
+}
+
+
+
+var isMousePressed = false;
+
+function handleDocumentMouseDown(evt)
+{
+	isMousePressed = true;
+}
+
+function handleDocumentMouseUp(evt)
+{
+	isMousePressed = false;
+}
+
+
+function handleCanvasMouseDown(evt)
+{
+	drawAtEvtLocation(evt);
+}
+
+function handleCanvasMouseMove(evt)
+{
+	if (isMousePressed)
+		drawAtEvtLocation(evt);
+}
+
+function drawAtEvtLocation(evt)
+{
 	var clickedCA = extractIdxFromId(evt.target.id);
 	var sim = caSims[clickedCA];
 	var coords = evt.target.relMouseCoords(evt);
@@ -298,23 +357,37 @@ function handleCanvasClick2(evt) {
 	var x = coords.x;
 	var y = coords.y;
 
+	y = sim.height - y;
 
-	if (false)
+	if (clickmode == MODE_DRAW)
 	{
-		var w = 0.02
-		var x1 = x / sim.width - w;
-		var x2 = x1 + 2*w;
-		var y1 = y / sim.width - w;
-		var y2 = y1 + 2*w;
+		var w = 15
+		var x1 = x-Math.ceil(w/2.);
+		var x2 = x1 + w;
+		var y1 = y-Math.ceil(w/2.);
+		var y2 = y1 + w;
 	 	
 		sim.executeCustomShader(sim.caCanvas.drawRectshader, 
 			function(gl, shader) 
 			{ 
-				gl.uniform4f(gl.getUniformLocation(shader, "rectParam"), x1, 1-y2, x2, 1-y1);
+				gl.uniform4f(gl.getUniformLocation(shader, "rectParam"), x1, y1, x2, y2);
+				gl.uniform1f(gl.getUniformLocation(shader, "state"), drawState/255.);
 			}
 		);
+		updateFrame();
 	}
-	else
+}
+
+
+function handleCanvasClick2(evt) {
+	var clickedCA = extractIdxFromId(evt.target.id);
+	var sim = caSims[clickedCA];
+	var coords = evt.target.relMouseCoords(evt);
+	
+	var x = coords.x;
+	var y = coords.y;
+	
+	if (clickmode == MODE_MUTATE)
 	{
 		DoTheMutation(clickedCA);
 	}
@@ -442,7 +515,7 @@ function fillPalette(evoCellData)
 		
 }
 
-function  OnChangeCheckbox()
+function OnChangeCheckbox()
 {
 	if (document.getElementById('paletteStealth').checked)
 	{
