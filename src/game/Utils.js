@@ -54,9 +54,38 @@ define(function() {
 		r.send();            
 	}
 
+	requestAnimFrame = (function(){
+  return  window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    function(callback, element){ setTimeout(callback, 1000 / 60); }
+	})();
+
+	var AnimationLoop = function(callback) {
+		this.callback = callback;
+		this.pauseRequested = false;
+	};
+
+	AnimationLoop.prototype.start = function() {
+		var loopContext = this;
+		var myFn = function() {
+			if (!loopContext.pauseRequested) {
+				loopContext.callback();
+				requestAnimFrame(myFn);
+			}
+		}
+		this.pauseRequested = false;
+		myFn();
+	}
+
+	AnimationLoop.prototype.stop = function() {
+		this.pauseRequested = true;
+	}
+	
+
 	return {
 		getArrayBufferFromURL : getArrayBufferFromURL, 
-		ResLoader : ResLoader
+		ResLoader : ResLoader, 
+		AnimationLoop : AnimationLoop,
 	};
 
 
