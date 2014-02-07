@@ -37,8 +37,6 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 
 	Reactor.prototype.step = function(rule, dish) 
 	{
-		this.gl.viewport(0,0, 100, 100);
-
 		var callback = function(gl, progCA)
 		{
 			gl.uniform1i(gl.getUniformLocation(progCA, "texRule"), 1);
@@ -91,8 +89,10 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 
 	Reactor.prototype.applyShaderOnDish = function(shader, dish, bindCallbackUser)
 	{
-		var framebuffer = dish.getNextFramebuffer();
 
+		this.gl.viewport(0,0, dish.width, dish.height);
+
+		var framebuffer = dish.getNextFramebuffer();
 		var bindCallback = function(gl, progCA)
 		{
 			gl.uniform1i(gl.getUniformLocation(progCA, "texFrame"), 0);

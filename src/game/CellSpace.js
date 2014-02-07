@@ -17,7 +17,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 	function($, utils, resources, EC) {
 		var loader = new utils.ResLoader();
 
-		loader.load("enemy", "rules/moore4_wave");
+		loader.load("enemy", "rules/ship_ludwigBuildships");
 		loader.load("ship", "rules/moore4_wave");
 		loader.load("vsTestPalette", "src/game/shaders/primitivePalette.shader", "text");
 
@@ -36,10 +36,17 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			var paintShader = reactor.compileShader(data.vsTestPalette);
 			var enemyRule = reactor.compileRule(enemyFile, enemyDish);
 			
-			enemyDish.randomize(enemyRule.nrStates, 0.2);
+			enemyDish.randomize(enemyRule.nrStates, 0.002);
 
 			reactor.paintDish(paintShader, enemyDish);
 			alert("x");			
+			
+			reactor.step(enemyRule, enemyDish);
+			reactor.paintDish(paintShader, enemyDish);
+			alert("x");
+			reactor.step(enemyRule, enemyDish);
+			reactor.paintDish(paintShader, enemyDish);
+			alert("x");
 			
 			reactor.step(enemyRule, enemyDish);
 			reactor.paintDish(paintShader, enemyDish);
