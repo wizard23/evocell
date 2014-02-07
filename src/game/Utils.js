@@ -2,11 +2,13 @@ define(function() {
 
 	var ResLoader = function() {
 		this.queue = {};
+		this.types = {};
 		this.objs = {};
 	};
 
-	ResLoader.prototype.load = function(id, url) {
+	ResLoader.prototype.load = function(id, url, type) {
 		this.queue[id] = url;
+		this.types[id] = type;
 		var o = {};
 		this.objs[id] = o;
 		return o;
@@ -22,7 +24,8 @@ define(function() {
 		//alert(Object.keys(this.queue));
 
 		for (var key in this.queue) {
-			getArrayBufferFromURL(this.queue[key], function(key) {
+			var type = this.types[key] || "arraybuffer";
+			getFromURL(this.queue[key], type, function(key) {
 				return function(result) {
 					data[key] = result;
 					loadedCount++;

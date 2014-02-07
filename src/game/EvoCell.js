@@ -1,6 +1,5 @@
-define(function() {
+define(["gl/Reactor", "gl/Dish", "gl/Rule"], function(Reactor, Dish, Rule) {
 	var ECFile = function(arrayBuffer) {
-		this.test = 0;
 		if (arrayBuffer)		
 			this.loadFromArrayBuffer(arrayBuffer);
 	}
@@ -203,7 +202,6 @@ define(function() {
 		return symmetryPermutations;
 	}
 
-
 	function rot90(xy)
 	{
 		return [-xy[1], xy[0]];
@@ -211,6 +209,9 @@ define(function() {
 
 	
 	return {
-		ECFile : ECFile
+		ECFile : ECFile,
+		Reactor: Reactor,
+		Dish: Dish,
+		Rule: Rule
 	}
 });
