@@ -5,7 +5,7 @@
 uniform sampler2D texFrame;
 
 uniform vec2 rectPos;
-uniform vec2 rectSize
+uniform vec2 rectSize;
 uniform float state;
 
 varying vec2 vTexCoord;

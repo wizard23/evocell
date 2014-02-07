@@ -35,7 +35,7 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		this.applyShader(paintShader, null, bindCallback)
 	}
 
-	Reactor.prototype.mixDishes = function(mixShader, texNew, mixDish)
+	Reactor.prototype.mixDishes = function(mixShader, texNew, mixDish, callback)
 	{
 		var framebuffer = mixDish.getNextFramebuffer();
 
@@ -48,6 +48,9 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 			gl.uniform1i(gl.getUniformLocation(progCA, "texNew"), 1);
 			gl.activeTexture(gl.TEXTURE1);    
 			gl.bindTexture(gl.TEXTURE_2D, texNew.getCurrentTexture());	
+			if (callback) {
+				callback(gl, progCA)
+			}
 		}
 
 		this.applyShader(mixShader, framebuffer, bindCallback)

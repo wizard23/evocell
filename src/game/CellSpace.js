@@ -22,6 +22,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 		loader.load("clear", "src/game/shaders/clear.shader", "text");
 		loader.load("mixPalette", "src/game/shaders/mixPalette.shader", "text");
 		loader.load("mixPalette2", "src/game/shaders/mixPalette2.shader", "text");
+		loader.load("drawRect", "src/game/shaders/drawRect.shader", "text");
 		loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
 
 		loader.start(function (data) {
@@ -43,6 +44,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 		
 			var clearShader = reactor.compileShader(data.clear);
 			var paintShader = reactor.compileShader(data.painter);
+			var drawRectShader = reactor.compileShader(data.drawRect);
 			var mixShader = reactor.compileShader(data.mixPalette);
 			var mixShader2 = reactor.compileShader(data.mixPalette2);
 
@@ -52,10 +54,25 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			enemyDish.randomize(enemyRule.nrStates, 0.0005);
 			shipDish.randomize(shipRule.nrStates, 0.5);
 
+
+			var shipX, shipY;
+			var c = 0;
+
 			var gameLoop = new utils.AnimationLoop(function() {
 
 				reactor.step(enemyRule, enemyDish);
+				
 				reactor.step(shipRule, shipDish);
+				reactor.applyShaderOnDish(drawRectShader, shipDish, function(gl, shader) 
+				{ 
+					shipX = (Math.sin(c)+1)*30;	
+					shipY = (Math.sin(5*c+20)+1)*30;	
+					c+=0.01;		
+
+					gl.uniform2f(gl.getUniformLocation(shader, "rectPos"), shipX, shipY);
+					gl.uniform2f(gl.getUniformLocation(shader, "rectSize"), 5, 5);
+					gl.uniform1f(gl.getUniformLocation(shader, "state"), (shipRule.nrStates-1)/255.);
+				});
 
 				reactor.applyShaderOnDish(clearShader, renderDish);
 				reactor.mixDishes(mixShader, enemyDish, renderDish);
