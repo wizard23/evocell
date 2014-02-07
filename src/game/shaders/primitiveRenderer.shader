@@ -3,7 +3,7 @@
 #endif
 
 uniform sampler2D texFrame;
-const int scale = 4;
+const int scale = 2;
 const float damp = 0.7;
 
 varying vec2 vTexCoord;

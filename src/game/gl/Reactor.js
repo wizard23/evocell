@@ -1,5 +1,5 @@
 define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
-	var Reactor = function(canvas)
+	var Reactor = function(canvas, w, h)
 	{
 		var gl = getGL(canvas);
 
@@ -13,6 +13,13 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		gl.bufferSubData(gl.ARRAY_BUFFER, texCoordOffset, texCoords);
 
 		this.canvas = canvas;
+		if (w) {
+			this.setSize(w, h);
+		}
+		else {
+			this.width = canvas.width;
+			this.height = canvas.height;
+		}
 		this.gl = gl;
 
 		this.rules = {};
@@ -22,9 +29,18 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		this.posBuffer = posBuffer;
 		this.texCoordOffset = texCoordOffset;
 	}
+
+	Reactor.prototype.setSize = function(w, h)
+	{
+		this.canvas.width = w;
+		this.canvas.height = h;
+		this.width = w;
+		this.height = h;
+	} 
 	
 	Reactor.prototype.paintDish = function(paintShader, dish)
 	{
+		this.gl.viewport(0,0, this.width, this.height);
 		var bindCallback = function(gl, progCA)
 		{
 			gl.uniform1i(gl.getUniformLocation(progCA, "texFrame"), 0);

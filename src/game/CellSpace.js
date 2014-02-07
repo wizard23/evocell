@@ -26,7 +26,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 		loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
 
 		loader.start(function (data) {
-			var gameW = 290, gameH = 250;
+			var gameW = 800, gameH = 600;
+			var zoom = 1;
 
 			//alert(data.vsTestPalette);
 			//return;
@@ -36,11 +37,11 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			var shipFile = new EC.ECFile(data.ship);
 
 			var context = document.getElementById('c');
-			var reactor = new  EC.Reactor(context);
+			var reactor = new  EC.Reactor(context, gameW, gameH);
 
-			var enemyDish = reactor.compileDish(gameW, gameH);
-			var shipDish = reactor.compileDish(gameW, gameH);
-			var renderDish = reactor.compileDish(gameW, gameH);
+			var enemyDish = reactor.compileDish(gameW/zoom, gameH/zoom);
+			var shipDish = reactor.compileDish(gameW/zoom, gameH/zoom);
+			var renderDish = reactor.compileDish(gameW/zoom, gameH/zoom);
 		
 			var clearShader = reactor.compileShader(data.clear);
 			var paintShader = reactor.compileShader(data.painter);
@@ -52,7 +53,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			var shipRule = reactor.compileRule(shipFile, shipDish);
 			
 			enemyDish.randomize(enemyRule.nrStates, 0.0005);
-			shipDish.randomize(shipRule.nrStates, 0.5);
+			//shipDish.randomize(shipRule.nrStates, 0.5);
 
 
 			var shipX, shipY;
@@ -65,9 +66,9 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 				reactor.step(shipRule, shipDish);
 				reactor.applyShaderOnDish(drawRectShader, shipDish, function(gl, shader) 
 				{ 
-					shipX = (Math.sin(c)+1)*30;	
-					shipY = (Math.sin(5*c+20)+1)*30;	
-					c+=0.01;		
+					shipX = (Math.sin(c)+1.5)*100;	
+					shipY = (Math.cos(c)+1.5)*100;	
+					c+=0.02;		
 
 					gl.uniform2f(gl.getUniformLocation(shader, "rectPos"), shipX, shipY);
 					gl.uniform2f(gl.getUniformLocation(shader, "rectSize"), 5, 5);
