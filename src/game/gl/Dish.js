@@ -31,8 +31,11 @@ define(["gl/GLHelper"], function(glhelper) {
 			this.gl.deleteFramebuffer(this.fb2);
 		}
 
-		this.texture1 = createDishTexture(this.gl, this.width, this.height, 0);
-		this.texture2 = createDishTexture(this.gl, this.width, this.height, 0);
+		this.width = w;
+		this.height = h;
+
+		this.texture1 = createDishTexture(this.gl, w, h, 0);
+		this.texture2 = createDishTexture(this.gl, w, h, 0);
 
 		this.fb1 = this.gl.createFramebuffer();
 		this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.fb1);
@@ -84,20 +87,10 @@ define(["gl/GLHelper"], function(glhelper) {
 		{
 			for(var j = 0; j < width; j++) // x axis
 			{
-				if (Math.random() < density) 
-				{
-					pixels.push(0);
-					pixels.push(0);
-					pixels.push(0);
-					pixels.push(state);
-				}
-				else
-				{
-					pixels.push(0);
-					pixels.push(0);
-					pixels.push(0);
-					pixels.push(0);
-				}
+				pixels.push(0);
+				pixels.push(0);
+				pixels.push(0);
+				pixels.push(state);
 			}
 		}
 		// must be RGBA otherwise we cant use it as color attachment of the framebuffer 

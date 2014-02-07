@@ -25,7 +25,14 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 	
 	Reactor.prototype.paintDish = function(paintShader, dish)
 	{
-		this.applyShaderOnDish(paintShader, dish);
+		var bindCallback = function(gl, progCA)
+		{
+			gl.uniform1i(gl.getUniformLocation(progCA, "texFrame"), 0);
+			gl.activeTexture(gl.TEXTURE0);    
+			gl.bindTexture(gl.TEXTURE_2D, dish.getCurrentTexture());
+		}
+
+		this.applyShader(paintShader, null, bindCallback)
 	}
 
 	Reactor.prototype.step = function(rule, dish) 
@@ -107,9 +114,9 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		var gl = this.gl;
 		
 		// is it needed??
-		this.canvas.width = framebuffer.width;
-		this.canvas.height = framebuffer.height;
-		gl.viewport(0,0, framebuffer.width, framebuffer.height);
+		//this.canvas.width = framebuffer.width;
+		//this.canvas.height = framebuffer.height;
+		//gl.viewport(0,0, framebuffer.width, framebuffer.height);
 	
 		gl.useProgram(shader);
 

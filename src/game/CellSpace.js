@@ -19,9 +19,12 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 
 		loader.load("enemy", "rules/moore4_wave");
 		loader.load("ship", "rules/moore4_wave");
-		loader.load("vsTestPalette", "src/shaders/primitivePalette.shader", "text");
+		loader.load("vsTestPalette", "src/game/shaders/primitivePalette.shader", "text");
 
 		loader.start(function (data) {
+			//alert(data.vsTestPalette);
+			//return;
+
 			// Setup core and rules and texture
 			var enemyFile = new EC.ECFile(data.enemy);
 
@@ -30,9 +33,9 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 		
 			var paintShader = reactor.compileShader(data.vsTestPalette);
 			var enemyRule = reactor.compileRule(enemyFile);
-			var enemyDish = reactor.compileDish(100, 100);
-			//enemyDish.randomize(enemyRule.nrStates, 0.2);
-			reactor.step(enemyRule, enemyDish);
+			var enemyDish = reactor.compileDish(256, 256);
+			enemyDish.randomize(enemyRule.nrStates, 0.2);
+			//reactor.step(enemyRule, enemyDish);
 			reactor.paintDish(paintShader, enemyDish);
 		});
 	});
