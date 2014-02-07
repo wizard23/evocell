@@ -1,12 +1,14 @@
 define(["gl/GLHelper"], function(glhelper) {
 	// RulesTexture and Dishes brauchen gemeinsames Basisobjekt das eine Textur zurueckgibt, RuleTexture ist auch ein shader
 	// public interface
-	var Rule = function(reactor, ruleData)
+	var Rule = function(reactor, ruleData, dish)
 	{
 		this.reactor = reactor;
 		this.gl = reactor.gl;
-		if (ruleData)
-			this.setRule(ruleData);
+	
+		this.setRule(ruleData);
+		if (dish)
+			this.setCompileSize(dish.width, dish.height);
 	}
 
 	Rule.prototype.setRule = function(ruleData)
@@ -27,6 +29,14 @@ define(["gl/GLHelper"], function(glhelper) {
 		this.invalidateProgram();
 	}
 
+	Rule.prototype.setCompileSize = function(w, h)
+	{
+		this.compileWidth = w;
+		this.compileHeight = h;
+
+		this.invalidateProgram();
+	}
+
 	Rule.prototype.getTexture = function()
 	{
 		return this.ruleTexture;
@@ -36,12 +46,12 @@ define(["gl/GLHelper"], function(glhelper) {
 	{
 		if (this.program == null)
 		{
-			if (this.width == null || this.height == null || this.ruleData == null)
+			if (this.compileWidth == null || this.compileHeight == null || this.ruleData == null)
 			{
-				throw "You have to set the rule, and the size of the ca";
+				throw "You have to set the width and height and ruledata of the Rule object to compile a shader";
 			}
 		
-			this.program = this.reactor.compileShader(getFragmentShaderSourceFromEvoCellData(this.gl, this.ruleData, this.width, this.height));
+			this.program = this.reactor.compileShader(getFragmentShaderSourceFromEvoCellData(this.gl, this.ruleData, this.compileWidth, this.compileHeight));
 		}
 	
 		return this.program;

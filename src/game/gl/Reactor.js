@@ -77,9 +77,9 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		return dish;
 	}
 
-	Reactor.prototype.compileRule = function(ruleData)
+	Reactor.prototype.compileRule = function(ruleData, dish)
 	{
-		var rule = new Rule(this, ruleData);
+		var rule = new Rule(this, ruleData, dish);
 		return rule;
 	}
 

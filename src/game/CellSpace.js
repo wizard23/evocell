@@ -30,13 +30,23 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 
 			var context = document.getElementById('c');
 			var reactor = new  EC.Reactor(context);
+
+			var enemyDish = reactor.compileDish(256, 256);
 		
 			var paintShader = reactor.compileShader(data.vsTestPalette);
-			var enemyRule = reactor.compileRule(enemyFile);
-			var enemyDish = reactor.compileDish(256, 256);
+			var enemyRule = reactor.compileRule(enemyFile, enemyDish);
+			
 			enemyDish.randomize(enemyRule.nrStates, 0.2);
-			//reactor.step(enemyRule, enemyDish);
+
 			reactor.paintDish(paintShader, enemyDish);
+			alert("x");			
+			
+			reactor.step(enemyRule, enemyDish);
+			reactor.paintDish(paintShader, enemyDish);
+			alert("x");
+			reactor.step(enemyRule, enemyDish);
+			reactor.paintDish(paintShader, enemyDish);
+			alert("x");
 		});
 	});
 

@@ -8,7 +8,7 @@ define(["gl/GLHelper"], function(glhelper) {
 
 	Dish.prototype.flip = function()
 	{
-		this.pageFlip = -this.pageFlip;
+		this.frameFlip = -this.frameFlip;
 	}
 
 	Dish.prototype.setSize = function(w, h)
