@@ -25,8 +25,23 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 		loader.load("drawRect", "src/game/shaders/drawRect.shader", "text");
 		loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
 
+
+
+		
+		var frames = 0;
+		function fr(){
+			var ti = new Date().getTime();
+			var fps = Math.round(1000*frames/(ti - time));
+			document.getElementById('fps').value = fps;
+			frames = 0;  time = ti;
+		}
+		timer = setInterval(fr, 1000);
+		time = new Date().getTime();
+
+
+
 		loader.start(function (data) {
-			var gameW = 800, gameH = 600;
+			var gameW = 800, gameH = 550;
 			var zoom = 1;
 
 			//alert(data.vsTestPalette);
@@ -58,16 +73,23 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 
 			var shipX, shipY;
 			var c = 0;
+		
+	
+			var cnt = 0;
 
 			var gameLoop = new utils.AnimationLoop(function() {
+				if (cnt % 3 == 0)
+					reactor.step(enemyRule, enemyDish);
 
-				reactor.step(enemyRule, enemyDish);
-				
+				//reactor.step(enemyRule, enemyDish);
+				//reactor.step(enemyRule, enemyDish);
+				//reactor.step(enemyRule, enemyDish);
+
 				reactor.step(shipRule, shipDish);
 				reactor.applyShaderOnDish(drawRectShader, shipDish, function(gl, shader) 
 				{ 
-					shipX = (Math.sin(c)+1.5)*100;	
-					shipY = (Math.cos(c)+1.5)*100;	
+					shipX = (Math.sin(c)+1.1)*90;	
+					shipY = (Math.cos(c)+1.1)*65;	
 					c+=0.02;		
 
 					gl.uniform2f(gl.getUniformLocation(shader, "rectPos"), shipX, shipY);
@@ -80,6 +102,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 				reactor.mixDishes(mixShader2, shipDish, renderDish);
 				reactor.paintDish(paintShader, renderDish);
 
+				cnt++;
+				frames++;
 			});
 
 			gameLoop.start();
