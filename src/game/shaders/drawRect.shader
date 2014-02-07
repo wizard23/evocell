@@ -3,15 +3,17 @@
 #endif
 
 uniform sampler2D texFrame;
-uniform vec4 rectParam;
+
+uniform vec2 rectPos;
+uniform vec2 rectSize
 uniform float state;
 
 varying vec2 vTexCoord;
 void main(void) {
 	vec4 color = texture2D(texFrame, vTexCoord);
 	
-	if (gl_FragCoord.x >= rectParam.x && gl_FragCoord.x <= rectParam.z &&
-		 gl_FragCoord.y >= rectParam.y && gl_FragCoord.y <= rectParam.w)
+	if (gl_FragCoord.x >= rectPos.x && gl_FragCoord.x <= rectPos.x + rectSize.y &&
+		 gl_FragCoord.y >= rectPos.y && gl_FragCoord.y <= rectPos.y + rectSize.y)
 	{
 		gl_FragColor = vec4(0., 0., 0., state);
 	}

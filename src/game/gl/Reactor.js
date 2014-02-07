@@ -35,6 +35,25 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		this.applyShader(paintShader, null, bindCallback)
 	}
 
+	Reactor.prototype.mixDishes = function(mixShader, texNew, mixDish)
+	{
+		var framebuffer = mixDish.getNextFramebuffer();
+
+		var bindCallback = function(gl, progCA)
+		{
+			gl.uniform1i(gl.getUniformLocation(progCA, "texOld"), 0);
+			gl.activeTexture(gl.TEXTURE0);    
+			gl.bindTexture(gl.TEXTURE_2D, mixDish.getCurrentTexture());
+
+			gl.uniform1i(gl.getUniformLocation(progCA, "texNew"), 1);
+			gl.activeTexture(gl.TEXTURE1);    
+			gl.bindTexture(gl.TEXTURE_2D, texNew.getCurrentTexture());	
+		}
+
+		this.applyShader(mixShader, framebuffer, bindCallback)
+		mixDish.flip();
+	}
+
 	Reactor.prototype.step = function(rule, dish) 
 	{
 		var callback = function(gl, progCA)
@@ -44,6 +63,27 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 			gl.bindTexture(gl.TEXTURE_2D, rule.getTexture());	
 		}
 		this.applyShaderOnDish(rule.getProgram(), dish, callback);
+	}
+
+	Reactor.prototype.applyShaderOnDish = function(shader, dish, bindCallbackUser)
+	{
+
+		this.gl.viewport(0,0, dish.width, dish.height);
+
+		var framebuffer = dish.getNextFramebuffer();
+		var bindCallback = function(gl, progCA)
+		{
+			gl.uniform1i(gl.getUniformLocation(progCA, "texFrame"), 0);
+			gl.activeTexture(gl.TEXTURE0);    
+			gl.bindTexture(gl.TEXTURE_2D, dish.getCurrentTexture());
+
+			if (bindCallbackUser)
+				bindCallbackUser(gl, shader);
+		}
+
+		this.applyShader(shader, framebuffer, bindCallback)
+
+		dish.flip();
 	}
 
 	Reactor.prototype.compileShader = function(vertexSrc, fragSrc)
@@ -86,27 +126,6 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 	}
 
 	// GL level
-
-	Reactor.prototype.applyShaderOnDish = function(shader, dish, bindCallbackUser)
-	{
-
-		this.gl.viewport(0,0, dish.width, dish.height);
-
-		var framebuffer = dish.getNextFramebuffer();
-		var bindCallback = function(gl, progCA)
-		{
-			gl.uniform1i(gl.getUniformLocation(progCA, "texFrame"), 0);
-			gl.activeTexture(gl.TEXTURE0);    
-			gl.bindTexture(gl.TEXTURE_2D, dish.getCurrentTexture());
-
-			if (bindCallbackUser)
-				bindCallbackUser(gl, shader);
-		}
-
-		this.applyShader(shader, framebuffer, bindCallback)
-
-		dish.flip();
-	}
 
 
 	Reactor.prototype.applyShader = function(shader, framebuffer, bindCallback)
