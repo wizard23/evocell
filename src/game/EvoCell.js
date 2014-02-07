@@ -1,0 +1,216 @@
+define(function() {
+	var ECFile = function(arrayBuffer) {
+		this.test = 0;
+		if (arrayBuffer)		
+			this.loadFromArrayBuffer(arrayBuffer);
+	}
+
+	ECFile.prototype.saveToBlob = function() {
+		var evoCellData = this;
+		var rawData = evoCellData.saveToArrayBuffer();
+		var blob = new Blob([rawData], {type: 'application/octet-stream'});
+		return blob;
+	};
+
+	ECFile.prototype.saveToDataURL = function() {
+		var evoCellData = this;
+		var rawData = evoCellData.saveToArrayBuffer();
+		var base64Encoded = arrayBufferToBase64(rawData);
+		return 'data:application/octet-stream;base64,' + base64Encoded;
+	};
+
+	ECFile.prototype.saveToArrayBuffer = function() {
+		var evoCellData = this;
+		//calculate target size
+		var bufferSize = 20; //magic + contains flags + reserved
+	
+		if (evoCellData.containsRule) {
+			bufferSize += 12; //magic + nrStates + nrNeighbours
+			bufferSize += evoCellData.ruleTableSize;
+		}
+
+		if (evoCellData.containsNeighbourhood) {
+			bufferSize += 12; //magic + nrNeighbours + nrDimensions
+			bufferSize += 8 * evoCellData.neighbourhood.length;
+		}
+
+		if (evoCellData.containsPattern) {
+			bufferSize += 16; //magic + nrDimensions + width + height
+			bufferSize += evoCellData.patternWidth * evoCellData.patternHeight;
+		}
+
+		var arrayBuffer = new ArrayBuffer(bufferSize);
+		var dv = new DataView(arrayBuffer);
+		var index = 0;
+
+		//general part
+		dv.setUint32(index, 0x0000002A); index += 4;
+		dv.setUint32(index, evoCellData.containsRule ? 1 : 0); index += 4;
+		dv.setUint32(index, evoCellData.containsNeighbourhood ? 1 : 0); index += 4;
+		dv.setUint32(index, evoCellData.containsPattern ? 1 : 0); index += 4;
+		dv.setUint32(index, 0); index += 4;
+
+		if (evoCellData.containsRule) {
+			dv.setUint32(index, 0x00000913); index += 4;
+			dv.setUint32(index, evoCellData.nrStates); index += 4;
+			dv.setUint32(index, evoCellData.nrNeighbours); index += 4;
+			var ruleTableBuffer = new Uint8Array(arrayBuffer, index, evoCellData.ruleTableSize);
+			ruleTableBuffer.set(evoCellData.ruleTable, 0);
+			index += Math.pow(evoCellData.nrStates, evoCellData.nrNeighbours);
+		}
+
+		if (evoCellData.containsNeighbourhood) {
+			dv.setUint32(index, 0x0000004E31); index += 4;
+			dv.setUint32(index, evoCellData.nrNeighbours); index += 4;
+			dv.setUint32(index, 2); index += 4;
+			for (var i = 0; i < evoCellData.nrNeighbours; i++) {
+				dv.setUint32(index, evoCellData.neighbourhood[i][0]); index += 4;
+				dv.setUint32(index, evoCellData.neighbourhood[i][1]); index += 4;
+			}
+		}
+
+		if (evoCellData.containsPattern) {
+			dv.setUint32(index, 0x00005ABF); index += 4;
+			dv.setUint32(index, 2); index += 4;
+			dv.setUint32(index, evoCellData.patternWidth); index += 4;
+			dv.setUint32(index, evoCellData.patternHeight); index += 4;
+			var patternDataAlias = new Uint8Array(arrayBuffer, index, evoCellData.patternWidth * evoCellData.patternHeight);
+			patterDataAlias.set(evoCellData.patternData, 0);
+		}
+
+		return arrayBuffer;
+	}
+
+	// returns an object with up to 3 fileds: neighbourhood, ruletable, pattern
+	// or null if a fileformat error is detected
+	ECFile.prototype.loadFromArrayBuffer = function(arrayBuffer) {
+		var evoCellData = this;
+		var nrNeighbours, nrStates, nrDimensions;
+		var magic, containsRules, containsNeighbourhood, containsPattern, neighbourCount;
+	
+		var dv = new DataView(arrayBuffer);
+		var index = 0;
+	
+		magic = dv.getUint32(index); index += 4;
+		// all evocellfiles must start with 0x002A
+		if (magic != 42) return null;
+	
+		containsRules = dv.getUint32(index); index += 4;
+		containsNeighbourhood = dv.getUint32(index); index += 4;
+		containsPattern = dv.getUint32(index); index += 4;
+		index += 4; // ignore reserved but unused value
+	
+		if (containsRules) {
+			var rulesMagic = dv.getUint32(index); index += 4;
+			// valid rules must have this magic value here
+			if (rulesMagic != 2323) return null;
+			nrStates =  dv.getUint32(index); index += 4;
+			nrNeighbours  = dv.getUint32(index); index += 4;
+	
+			var ruleTableSize = Math.pow(nrStates, nrNeighbours);
+			var ruleTable = new Uint8Array(arrayBuffer, index, ruleTableSize);
+			//var ruleTableView = new Uint8Array(ruleTableSize);
+			//var ruleTable = ruleTableView.buffer;
+			//alert(ruleTableView.subarray);
+			index += ruleTableSize;
+		
+			evoCellData.containsRule = true;
+			evoCellData.nrStates = nrStates;
+			evoCellData.nrNeighbours = nrNeighbours;
+			evoCellData.ruleTable = ruleTable;
+			evoCellData.ruleTableSize = ruleTableSize; // convinient to have but redundant
+		}
+		else
+			evoCellData.containsRule = false;
+	
+		if (containsNeighbourhood) {
+			var neighbourhoodMagic = dv.getUint32(index); index += 4;
+			// valid rules must have this magic value here
+			if (neighbourhoodMagic != 0x4E31) return null;
+			var nrNeighboursRedundant  = dv.getUint32(index); index += 4;
+			// nr of neighbours has to match
+			if (nrNeighbours != nrNeighboursRedundant) return null;
+			nrDimensions =  dv.getUint32(index); index += 4;
+			if (nrDimensions != 2) return null;
+	
+			var neighbourhood = [];
+			for (n = 0; n < nrNeighbours; n++)
+			{
+				var x = dv.getInt32(index); index += 4;
+				var y = dv.getInt32(index); index += 4;
+				neighbourhood.push([x, y]);
+			}
+		
+			evoCellData.containsNeighbourhood = true;
+			evoCellData.nrDimensions = nrDimensions;
+			evoCellData.neighbourhood = neighbourhood;
+			evoCellData.symmetries = calculateSymmetries(evoCellData);
+		}
+		else
+			evoCellData.containsNeighbourhood = false;
+	
+		if (containsPattern) {
+			var patternMagic = dv.getUint32(index); index += 4;
+			// valid rules must have this magic value here
+			if (patternMagic != 23231) return null;
+			var nrDimensions =  dv.getUint32(index); index += 4;
+			if (nrDimensions != 2) return null;
+	
+			var sizeX = dv.getInt32(index); index += 4;
+			var sizeY = dv.getInt32(index); index += 4;
+		
+			var pattern = new Uint8Array(arrayBuffer, index, sizeX*sizeY);
+
+			evoCellData.containsPattern = true;
+			evoCellData.patternWidth = sizeX;
+			evoCellData.patternHeight = sizeY;
+			evoCellData.patternData = pattern;
+		}
+		else
+			evoCellData.containsPattern = false;
+			    
+		return evoCellData;
+	}
+
+	function calculateSymmetries(evoCellData) 
+	{
+		symmetryPermutations = [];
+	
+		for (var rot = 0; rot < 4; rot++)
+		{
+			var rotVals = [];
+			for (var i = 0; i < evoCellData.nrNeighbours; i++) 
+			{
+				var roted = evoCellData.neighbourhood[i];
+				for (var r = 0; r < rot; r++)
+					roted = rot90(roted);
+			
+				for (var s = 0; s < evoCellData.nrNeighbours; s++) 
+				{
+					if (evoCellData.neighbourhood[s][0] == roted[0] && evoCellData.neighbourhood[s][1] == roted[1])
+					{
+						rotVals.push(s);
+						break;
+					}
+				}
+			}
+			// check if rotation was successful
+			if (rotVals.length == evoCellData.neighbourhood.length) 
+			{
+				symmetryPermutations.push(rotVals);
+			}
+		}
+		return symmetryPermutations;
+	}
+
+
+	function rot90(xy)
+	{
+		return [-xy[1], xy[0]];
+	}
+
+	
+	return {
+		ECFile : ECFile
+	}
+});

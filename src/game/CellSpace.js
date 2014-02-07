@@ -1,5 +1,5 @@
 require.config({
-    baseUrl: 'js/lib',
+   // baseUrl: 'js/lib',
     paths: {
         // the left side is the module ID,
         // the right side is the path to
@@ -9,22 +9,33 @@ require.config({
         // is using jQuery 1.9.0 located at
         // js/lib/jquery-1.9.0.js, relative to
         // the HTML page.
-        jquery: 'jquery-1.9.0'
+        jquery: 'libs/jquery	'
     }
 });
 
-require(["jquery", "EvoCell", "CellSpaceResources"], 
-	function($, EvoCell, resources) {
-		// Setup core and rules and texture
-		var context = document.getElementById('c');
-		var reactor = new  EvoCell.Reactor(context)
-	}
-}
+require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], 
+	function($, utils, resources, EC) {
+		var loader = new utils.ResLoader();
+		loader.load("enemy", "rules/moore4_wave");
+		loader.load("ship", "rules/moore4_wave");
+		loader.start(function (data) {
+			// Setup core and rules and texture
+			var enemyData = new EC.ECFile(data.enemy);
+
+			var context = document.getElementById('c');
+			var reactor = new  EC.Reactor(context)
+			//alert(data.enemy);
+			//alert(data.ship);
+		});
+		
+		
+		//
+	});
 
 // RulesTexture and Dishes brauchen gemeinsames Basisobjekt das eine Textur zurueckgibt, RuleTexture ist auch ein shader
 
 // public interface
-
+/*
 EvoCell.CellSpace = function(document)
 {
 	var context = document.getElementById('c');
@@ -42,3 +53,4 @@ EvoCell.CellSpace.prototype.step = function()
 {
 	
 }
+*/

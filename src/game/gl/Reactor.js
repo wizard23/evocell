@@ -1,7 +1,6 @@
-var EvoCell;
-if (!EvoCell) {
-    EvoCell = {};
-}
+define(function() {
+	var EvoCell;
+	Evocell.
 
 // Rules and Dishes brauchen gemeinsames Basisobjekt das eine Textur zurueckgibt
 
