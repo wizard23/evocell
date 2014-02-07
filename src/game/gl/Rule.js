@@ -29,7 +29,7 @@ define(["gl/GLHelper"], function(glhelper) {
 
 	Rule.prototype.getTexture = function()
 	{
-		return ruleTexture;
+		return this.ruleTexture;
 	}
 
 	Rule.prototype.getProgram = function() 
@@ -129,7 +129,7 @@ define(["gl/GLHelper"], function(glhelper) {
 				multiplier += "states*";
 		}
 	
-		var shaderSource = EvoCell.EvoCellFragmentShaderTemplate;
+		var shaderSource = EvoCellFragmentShaderTemplate;
 		shaderSource = shaderSource.replace("%STATES%", evoCellData.nrStates);
 		shaderSource = shaderSource.replace("%XRES%", xres); // width of the state texture
 		shaderSource = shaderSource.replace("%YRES%", yres); // height of the state texture

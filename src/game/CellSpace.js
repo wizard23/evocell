@@ -16,9 +16,11 @@ require.config({
 require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], 
 	function($, utils, resources, EC) {
 		var loader = new utils.ResLoader();
+
 		loader.load("enemy", "rules/moore4_wave");
 		loader.load("ship", "rules/moore4_wave");
 		loader.load("vsTestPalette", "src/shaders/primitivePalette.shader", "text");
+
 		loader.start(function (data) {
 			// Setup core and rules and texture
 			var enemyFile = new EC.ECFile(data.enemy);
@@ -29,12 +31,10 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			var paintShader = reactor.compileShader(data.vsTestPalette);
 			var enemyRule = reactor.compileRule(enemyFile);
 			var enemyDish = reactor.compileDish(100, 100);
-			enemyDish.randomize(enemyRule.nrStates, 0.2);
-			reactor.paint(paintShader, dish);
+			//enemyDish.randomize(enemyRule.nrStates, 0.2);
+			reactor.step(enemyRule, enemyDish);
+			reactor.paintDish(paintShader, enemyDish);
 		});
-		
-		
-		//
 	});
 
 // RulesTexture and Dishes brauchen gemeinsames Basisobjekt das eine Textur zurueckgibt, RuleTexture ist auch ein shader

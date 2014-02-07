@@ -22,9 +22,16 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		this.posBuffer = posBuffer;
 		this.texCoordOffset = texCoordOffset;
 	}
+	
+	Reactor.prototype.paintDish = function(paintShader, dish)
+	{
+		this.applyShaderOnDish(paintShader, dish);
+	}
 
 	Reactor.prototype.step = function(rule, dish) 
 	{
+		this.gl.viewport(0,0, 100, 100);
+
 		var callback = function(gl, progCA)
 		{
 			gl.uniform1i(gl.getUniformLocation(progCA, "texRule"), 1);
@@ -100,7 +107,9 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		var gl = this.gl;
 		
 		// is it needed??
-		//gl.viewport(0,0, framebuffer.width, framebuffer.height);
+		this.canvas.width = framebuffer.width;
+		this.canvas.height = framebuffer.height;
+		gl.viewport(0,0, framebuffer.width, framebuffer.height);
 	
 		gl.useProgram(shader);
 
@@ -116,7 +125,7 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		var aTexLoc = gl.getAttribLocation(shader, "aTexCoord");
 		gl.enableVertexAttribArray( aTexLoc );
 		gl.vertexAttribPointer(aPosLoc, 3, gl.FLOAT, gl.FALSE, 0, 0);
-		gl.vertexAttribPointer(aTexLoc, 2, gl.FLOAT, gl.FALSE, 0, this.bufferAllTexCoordOffset);
+		gl.vertexAttribPointer(aTexLoc, 2, gl.FLOAT, gl.FALSE, 0, this.texCoordOffset);
 	
 		// other arguments
 		bindCallback(gl, shader);
