@@ -1,31 +1,28 @@
 require.config({
    // baseUrl: 'js/lib',
     paths: {
-        // the left side is the module ID,
-        // the right side is the path to
-        // the jQuery file, relative to baseUrl.
-        // Also, the path should NOT include
-        // the '.js' file extension. This example
-        // is using jQuery 1.9.0 located at
-        // js/lib/jquery-1.9.0.js, relative to
-        // the HTML page.
         jquery: 'libs/jquery	'
     }
 });
 
 require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils, resources, EC) {
 	var keyboard = utils.keyboard;
+	var gameW = 256, gameH = 256;
+	var zoom = 2;
+	
+	var fpsMonotor = new utils.FPSMonitor("fpsMonitor");
+	// Setup core 	
+	var context = document.getElementById('c');
+	var reactor = new  EC.Reactor(context, gameW, gameH);
+	reactor.setRenderSize(gameW*zoom, gameH*zoom);
 
 	var loader = new EC.ResLoader();
 
 	loader.load("enemyRule", "rules/enemy_ludwigBuildships", "ecfile");
-	//loader.load("enemy", "rules/enemy_city");
-	//loader.load("enemy", "rules/enemy_diaglines2");
 	loader.load("enemy2Rule", "rules/enemy_linebuilder", "ecfile");
 	loader.load("weaponRule", "rules/ship_avg4_schweif", "ecfile");
 	loader.load("weaponExplosionRule", "rules/ship_avg4_schweif", "ecfile");
 	loader.load("shipExplosionRule", "rules/ship_avg4_nice", "ecfile");
-	//loader.load("shipExplosion", "rules/ship_avg4_schweif");
 	loader.load("shipRule", "rules/ship_avg4_nice", "ecfile");
 
 	loader.load("clear", "src/game/shaders/clear.shader", "text");
@@ -33,19 +30,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 	loader.load("drawRect", "src/game/shaders/drawRect.shader", "text");
 	loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
 	loader.load("intersectSpawn", "src/game/shaders/intersectSpawn.shader", "text");
-	
-	var fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
 	loader.start(function (data) {
-		var gameW = 256, gameH = 256;
-		var zoom = 2;
-
-		// Setup core and rules and texture
-		var context = document.getElementById('c');
-		var reactor = new  EC.Reactor(context, gameW, gameH);
-
-		reactor.setRenderSize(gameW*zoom, gameH*zoom);
-
 		var enemyDish = reactor.compileDish();
 		var enemy2Dish = reactor.compileDish();
 		var shipDish = reactor.compileDish();
