@@ -12,14 +12,10 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		gl.bufferSubData(gl.ARRAY_BUFFER, 0, vertices);
 		gl.bufferSubData(gl.ARRAY_BUFFER, texCoordOffset, texCoords);
 
+		this.setDefaultDishSize(w, h);		
 		this.canvas = canvas;
-		if (w) {
-			this.setSize(w, h);
-		}
-		else {
-			this.width = canvas.width;
-			this.height = canvas.height;
-		}
+		this.renderWidth = canvas.width;
+		this.renderHeight = canvas.height;
 		this.gl = gl;
 
 		this.rules = {};
@@ -30,17 +26,21 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		this.texCoordOffset = texCoordOffset;
 	}
 
-	Reactor.prototype.setSize = function(w, h)
+	Reactor.prototype.setRenderSize = function(w, h)
 	{
 		this.canvas.width = w;
 		this.canvas.height = h;
-		this.width = w;
-		this.height = h;
+		this.renderWidth = w;
+		this.renderHeight = h;
+	} 
+	Reactor.prototype.setDefaultDishSize = function(w, h)
+	{
+		this.defaultDishSize = {width: w, height : h};
 	} 
 	
 	Reactor.prototype.paintDish = function(paintShader, dish, callback)
 	{
-		this.gl.viewport(0,0, this.width, this.height);
+		this.gl.viewport(0,0, this.renderWidth, this.renderHeight);
 		var bindCallback = function(gl, progCA)
 		{
 			gl.uniform1i(gl.getUniformLocation(progCA, "texFrame"), 0);
@@ -133,7 +133,7 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 
 	Reactor.prototype.compileDish = function(w, h)
 	{
-		var dish = new Dish(this, w, h);
+		var dish = new Dish(this, w || this.defaultDishSize.width, h || this.defaultDishSize.height);
 		return dish;
 	}
 

@@ -44,19 +44,21 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 */
 
 		loader.start(function (data) {
-			var gameW = 1024, gameH = 1024;
-			var zoom = 4;
+			var gameW = 256, gameH = 256;
+			var zoom = 2;
 
 			// Setup core and rules and texture
 			var context = document.getElementById('c');
 			var reactor = new  EC.Reactor(context, gameW, gameH);
 
-			var enemyDish = reactor.compileDish(gameW/zoom, gameH/zoom);
-			var enemy2Dish = reactor.compileDish(gameW/zoom, gameH/zoom);
-			var shipDish = reactor.compileDish(gameW/zoom, gameH/zoom);
-			var shipExplosionDish = reactor.compileDish(gameW/zoom, gameH/zoom);
-			var renderDish = reactor.compileDish(gameW/zoom, gameH/zoom);
-		
+			reactor.setRenderSize(gameW*zoom, gameH*zoom);
+
+			var enemyDish = reactor.compileDish();
+			var enemy2Dish = reactor.compileDish();
+			var shipDish = reactor.compileDish();
+			var shipExplosionDish = reactor.compileDish();
+			var renderDish = reactor.compileDish();
+
 			var clearShader = reactor.compileShader(data.clear);
 			var paintShader = reactor.compileShader(data.painter);
 			var drawRectShader = reactor.compileShader(data.drawRect);
