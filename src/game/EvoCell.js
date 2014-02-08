@@ -1,4 +1,50 @@
-define(["gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palette"], function(Reactor, Dish, Rule, Palette) {
+define(["Utils", "gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palette"], function(utils, Reactor, Dish, Rule, Palette) {
+
+	var ResLoader = function() {
+		this.queue = {};
+		this.types = {};
+		this.factories = {
+			"ecfile": function(arraybuffer) { return new ECFile(arraybuffer); },
+		};
+		this.objs = {};
+	};
+
+	ResLoader.prototype.load = function(id, url, type) {
+		this.queue[id] = url;
+		this.types[id] = type;
+		var o = {};
+		this.objs[id] = o;
+		return o;
+	}
+
+	ResLoader.prototype.start = function(cb) {
+		var item;
+		var data = {};
+		var loaderCtx = this;
+		var itemsToLoad = Object.keys(this.queue).length;
+		var loadedCount = 0;
+
+		for (var key in this.queue) {
+			var givenType = this.types[key];
+			var factory = loaderCtx.factories[givenType];
+			var type = factory ? "arraybuffer" : givenType || "arraybuffer";
+
+			utils.getFromURL(this.queue[key], type, function(givenType, key) {
+				return function(result) {
+					if (loaderCtx.factories[givenType])
+						result = loaderCtx.factories[givenType](result);
+					data[key] = result;
+					loadedCount++;
+					loaderCtx.objs[key].value = result;
+
+					if (loadedCount == itemsToLoad) {
+						cb(data);
+					}
+				}
+			}(givenType, key));
+		}
+	}
+		
 	var ECFile = function(arrayBuffer) {
 		if (arrayBuffer)		
 			this.loadFromArrayBuffer(arrayBuffer);
@@ -213,6 +259,7 @@ define(["gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palette"], function(Reactor, Dis
 		Reactor: Reactor,
 		Dish: Dish,
 		Rule: Rule,
-		Palette : Palette
+		Palette : Palette,
+		ResLoader: ResLoader
 	}
 });

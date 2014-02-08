@@ -17,9 +17,9 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 	function($, utils, resources, EC) {
 		var keyboard = utils.keyboard;
 
-		var loader = new utils.ResLoader();
+		var loader = new EC.ResLoader();
 
-		loader.load("enemy", "rules/enemy_ludwigBuildships");
+		loader.load("enemy", "rules/enemy_ludwigBuildships", "ecfile");
 		//loader.load("enemy", "rules/enemy_city");
 		//loader.load("enemy", "rules/enemy_diaglines2");
 		loader.load("enemy2", "rules/enemy_linebuilder");
@@ -49,7 +49,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			var zoom = 4;
 
 			// Setup core and rules and texture
-			var enemyFile = new EC.ECFile(data.enemy);
+			//var enemyFile = new EC.ECFile(data.enemy);
 			var enemy2File = new EC.ECFile(data.enemy2);
 			var shipFile = new EC.ECFile(data.ship);
 			var weaponFile = new EC.ECFile(data.weapon);
@@ -70,7 +70,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			var mixShader = reactor.compileShader(data.mixPalette);
 			var intersectSpawnShader = reactor.compileShader(data.intersectSpawn);
 
-			var enemyRule = reactor.compileRule(enemyFile, enemyDish);
+			var enemyRule = reactor.compileRule(data.enemy, enemyDish);
 			var enemy2Rule = reactor.compileRule(enemy2File, enemy2Dish);
 			var shipRule = reactor.compileRule(shipFile, shipDish);
 			var weaponRule = reactor.compileRule(weaponFile, enemyDish);
