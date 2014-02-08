@@ -19,19 +19,18 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 
 		var loader = new EC.ResLoader();
 
-		loader.load("enemy", "rules/enemy_ludwigBuildships", "ecfile");
+		loader.load("enemyRule", "rules/enemy_ludwigBuildships", "ecfile");
 		//loader.load("enemy", "rules/enemy_city");
 		//loader.load("enemy", "rules/enemy_diaglines2");
-		loader.load("enemy2", "rules/enemy_linebuilder");
-		loader.load("weapon", "rules/ship_avg4_schweif");
-		loader.load("weaponExplosion", "rules/ship_avg4_schweif");
-		loader.load("shipExplosion", "rules/ship_avg4_nice");
+		loader.load("enemy2Rule", "rules/enemy_linebuilder", "ecfile");
+		loader.load("weaponRule", "rules/ship_avg4_schweif", "ecfile");
+		loader.load("weaponExplosionRule", "rules/ship_avg4_schweif", "ecfile");
+		loader.load("shipExplosionRule", "rules/ship_avg4_nice", "ecfile");
 		//loader.load("shipExplosion", "rules/ship_avg4_schweif");
-		loader.load("ship", "rules/ship_avg4_nice");
+		loader.load("shipRule", "rules/ship_avg4_nice", "ecfile");
 
 		loader.load("clear", "src/game/shaders/clear.shader", "text");
 		loader.load("mixPalette", "src/game/shaders/mixPalette.shader", "text");
-		//loader.load("mixPalette2", "src/game/shaders/mixPalette2.shader", "text");
 		loader.load("drawRect", "src/game/shaders/drawRect.shader", "text");
 		loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
 		loader.load("intersectSpawn", "src/game/shaders/intersectSpawn.shader", "text");
@@ -49,12 +48,6 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			var zoom = 4;
 
 			// Setup core and rules and texture
-			//var enemyFile = new EC.ECFile(data.enemy);
-			var enemy2File = new EC.ECFile(data.enemy2);
-			var shipFile = new EC.ECFile(data.ship);
-			var weaponFile = new EC.ECFile(data.weapon);
-			var shipExplosionFile = new EC.ECFile(data.shipExplosion);
-
 			var context = document.getElementById('c');
 			var reactor = new  EC.Reactor(context, gameW, gameH);
 
@@ -70,11 +63,11 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			var mixShader = reactor.compileShader(data.mixPalette);
 			var intersectSpawnShader = reactor.compileShader(data.intersectSpawn);
 
-			var enemyRule = reactor.compileRule(data.enemy, enemyDish);
-			var enemy2Rule = reactor.compileRule(enemy2File, enemy2Dish);
-			var shipRule = reactor.compileRule(shipFile, shipDish);
-			var weaponRule = reactor.compileRule(weaponFile, enemyDish);
-			var shipExplosionRule = reactor.compileRule(shipExplosionFile, enemy2Dish);
+			var enemyRule = reactor.compileRule(data.enemyRule, enemyDish);
+			var enemy2Rule = reactor.compileRule(data.enemy2Rule, enemy2Dish);
+			var shipRule = reactor.compileRule(data.shipRule, shipDish);
+			var weaponRule = reactor.compileRule(data.weaponRule, enemyDish);
+			var shipExplosionRule = reactor.compileRule(data.shipExplosionRule, enemy2Dish);
 			
 			var enemyColors = new EC.Palette(reactor);
 			enemyColors.setColor(0, [0, 0, 0, 255]);
