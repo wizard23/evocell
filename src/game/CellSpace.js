@@ -79,7 +79,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		enemy2Dish.randomize(enemyRule.nrStates, 0.01);
 		shipExplosionDish.randomize(shipExplosionRule.nrStates, 0.01);
 
-		var shipX = gameW/zoom, shipY = gameH/zoom;
+		var shipX = gameW/2, shipY = gameH/2;
 		
 		var cnt = 0;
 		var gameLoop = new utils.AnimationLoop(function() {
@@ -119,7 +119,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			if (keyboard.isPressed(32)) {
 				enemyDish.randomize(enemyRule.nrStates, 0.0004);
 				enemy2Dish.randomize(enemyRule.nrStates, 0.01);
-				shipX = 0.5*gameW/zoom, shipY = 0.5*gameH/zoom;
+				shipX = gameW/2, shipY = gameH/2;
 			}
 
 
