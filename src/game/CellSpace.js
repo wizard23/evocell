@@ -20,11 +20,13 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 		var loader = new utils.ResLoader();
 
 		loader.load("enemy", "rules/enemy_ludwigBuildships");
-		//loader.load("enemy", "rules/enemy_linebuilder");
+		//loader.load("enemy", "rules/enemy_city");
+		//loader.load("enemy", "rules/enemy_diaglines2");
 		loader.load("enemy2", "rules/enemy_linebuilder");
 		loader.load("weapon", "rules/ship_avg4_schweif");
 		loader.load("weaponExplosion", "rules/ship_avg4_schweif");
 		loader.load("shipExplosion", "rules/ship_avg4_nice");
+		//loader.load("shipExplosion", "rules/ship_avg4_schweif");
 		loader.load("ship", "rules/ship_avg4_nice");
 
 		loader.load("clear", "src/game/shaders/clear.shader", "text");
@@ -121,7 +123,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 				var gl = reactor.gl;
 
 				// ENEMIES //////////////////////////////////////
-				if (cnt % 2 == 0)
+				if (cnt % 3 == 0)
 					reactor.step(enemyRule, enemyDish);
 				if (cnt % 6 == 0)
 					reactor.step(enemy2Rule, enemy2Dish);
