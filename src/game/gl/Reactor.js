@@ -38,7 +38,7 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		this.height = h;
 	} 
 	
-	Reactor.prototype.paintDish = function(paintShader, dish)
+	Reactor.prototype.paintDish = function(paintShader, dish, callback)
 	{
 		this.gl.viewport(0,0, this.width, this.height);
 		var bindCallback = function(gl, progCA)
@@ -46,6 +46,9 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 			gl.uniform1i(gl.getUniformLocation(progCA, "texFrame"), 0);
 			gl.activeTexture(gl.TEXTURE0);    
 			gl.bindTexture(gl.TEXTURE_2D, dish.getCurrentTexture());
+
+			if (callback)
+				callback(gl, progCA);
 		}
 
 		this.applyShader(paintShader, null, bindCallback)

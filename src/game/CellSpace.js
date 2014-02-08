@@ -41,11 +41,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 
 
 		loader.start(function (data) {
-			var gameW = 800, gameH = 550;
-			var zoom = 1;
-
-			//alert(data.vsTestPalette);
-			//return;
+			var gameW = 1200, gameH = 600;
+			var zoom = 4;
 
 			// Setup core and rules and texture
 			var enemyFile = new EC.ECFile(data.enemy);
@@ -67,29 +64,37 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			var enemyRule = reactor.compileRule(enemyFile, enemyDish);
 			var shipRule = reactor.compileRule(shipFile, shipDish);
 			
-			enemyDish.randomize(enemyRule.nrStates, 0.0005);
-			//shipDish.randomize(shipRule.nrStates, 0.5);
-
+			enemyDish.randomize(enemyRule.nrStates, 0.0002);
 
 			var shipX, shipY;
 			var c = 0;
-		
 	
 			var cnt = 0;
 
 			var gameLoop = new utils.AnimationLoop(function() {
+				var gl = reactor.gl;
+
 				if (cnt % 3 == 0)
 					reactor.step(enemyRule, enemyDish);
 
-				//reactor.step(enemyRule, enemyDish);
-				//reactor.step(enemyRule, enemyDish);
-				//reactor.step(enemyRule, enemyDish);
+				/*
+				reactor.step(enemyRule, enemyDish);
+				reactor.step(enemyRule, enemyDish);
+				reactor.step(enemyRule, enemyDish);
+				reactor.step(enemyRule, enemyDish);
+				reactor.step(enemyRule, enemyDish);
+				reactor.step(enemyRule, enemyDish);
+				reactor.step(enemyRule, enemyDish);
+				reactor.step(enemyRule, enemyDish);
+				reactor.step(enemyRule, enemyDish);
+				reactor.step(enemyRule, enemyDish);
+				*/
 
 				reactor.step(shipRule, shipDish);
 				reactor.applyShaderOnDish(drawRectShader, shipDish, function(gl, shader) 
 				{ 
-					shipX = (Math.sin(c)+1.1)*90;	
-					shipY = (Math.cos(c)+1.1)*65;	
+					shipX = (Math.sin(c)+1.1)*70;	
+					shipY = (Math.cos(c)+1.1)*45;	
 					c+=0.02;		
 
 					gl.uniform2f(gl.getUniformLocation(shader, "rectPos"), shipX, shipY);
@@ -100,7 +105,11 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 				reactor.applyShaderOnDish(clearShader, renderDish);
 				reactor.mixDishes(mixShader, enemyDish, renderDish);
 				reactor.mixDishes(mixShader2, shipDish, renderDish);
-				reactor.paintDish(paintShader, renderDish);
+				
+				
+				reactor.paintDish(paintShader, renderDish, function(gl, shader) {
+					gl.uniform1f(gl.getUniformLocation(shader, "scale"), zoom);
+				});
 
 				cnt++;
 				frames++;
