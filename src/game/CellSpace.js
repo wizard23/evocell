@@ -20,10 +20,11 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 		var loader = new utils.ResLoader();
 
 		loader.load("enemy", "rules/enemy_ludwigBuildships");
+		//loader.load("enemy", "rules/enemy_linebuilder");
 		loader.load("enemy2", "rules/enemy_linebuilder");
 		loader.load("weapon", "rules/ship_avg4_schweif");
 		loader.load("weaponExplosion", "rules/ship_avg4_schweif");
-		loader.load("shipExplosion", "rules/ship_avg4_schweif");
+		loader.load("shipExplosion", "rules/ship_avg4_nice");
 		loader.load("ship", "rules/ship_avg4_nice");
 
 		loader.load("clear", "src/game/shaders/clear.shader", "text");
@@ -42,6 +43,13 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 		}
 		timer = setInterval(fr, 1000);
 		time = new Date().getTime();
+
+
+/*
+		reactor.moveParticles(particlesMoveShader, particlesDish);
+		reactor.renderParticles(particlesRenderShader, particlesDish, state, size);
+*/
+		// reactor.collideParticles( // TODO: colission 
 
 		loader.start(function (data) {
 			var gameW = 1200, gameH = 580;
@@ -127,7 +135,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 				//shipX = (Math.sin(c)+1.1)*70;	
 				//shipY = (Math.cos(c)+1.1)*45;	
 				//	c+=0.02;		
-				var stepSize = 1;
+				var stepSize = 2;
 				if (keyboard.isPressed(keyboard.UP)) shipY += stepSize;
 				if (keyboard.isPressed(keyboard.DOWN)) shipY -= stepSize;
 				if (keyboard.isPressed(keyboard.LEFT)) shipX -= stepSize;
@@ -140,7 +148,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 				reactor.applyShaderOnDish(drawRectShader, shipDish, function(gl, shader) 
 				{ 
 					gl.uniform2f(gl.getUniformLocation(shader, "rectPos"), shipX, shipY);
-					gl.uniform2f(gl.getUniformLocation(shader, "rectSize"), 4, 4);
+					gl.uniform2f(gl.getUniformLocation(shader, "rectSize"), 6, 6);
 					gl.uniform1f(gl.getUniformLocation(shader, "state"), (shipRule.nrStates-1)/255.);
 				});
 				if (keyboard.isPressed(keyboard.UP)) reactor.applyShaderOnDish(drawRectShader, shipDish, function(gl, shader) 
@@ -187,7 +195,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 					gl.activeTexture(gl.TEXTURE2);    
 					gl.bindTexture(gl.TEXTURE_2D, enemyDish.getCurrentTexture());	
 
-					gl.uniform1f(gl.getUniformLocation(progCA, "state"), 0.);
+					gl.uniform1f(gl.getUniformLocation(progCA, "state"), 1./255.);
 				}
 				reactor.applyShader(intersectSpawnShader, framebuffer, bindCallback);
 				enemyDish.flip();				
@@ -207,7 +215,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 					gl.activeTexture(gl.TEXTURE2);    
 					gl.bindTexture(gl.TEXTURE_2D, shipDish.getCurrentTexture());	
 
-					gl.uniform1f(gl.getUniformLocation(progCA, "state"), 0.);
+					gl.uniform1f(gl.getUniformLocation(progCA, "state"), 3./255.);
 				}
 				reactor.applyShader(intersectSpawnShader, framebuffer, bindCallback);
 				shipDish.flip();			
