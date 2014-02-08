@@ -64,6 +64,13 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			var enemyRule = reactor.compileRule(enemyFile, enemyDish);
 			var shipRule = reactor.compileRule(shipFile, shipDish);
 			
+			var enemyColors = new EC.Palette(reactor);
+			enemyColors.setColor(0, [20, 20, 20, 255]);
+			enemyColors.setColor(1, [80, 20, 80, 255]);
+			enemyColors.setColor(2, [140, 20, 140, 255]);
+			enemyColors.setColor(3, [255, 20, 255, 255]);
+
+
 			enemyDish.randomize(enemyRule.nrStates, 0.0002);
 
 			var shipX, shipY;
@@ -103,7 +110,11 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 				});
 
 				reactor.applyShaderOnDish(clearShader, renderDish);
-				reactor.mixDishes(mixShader, enemyDish, renderDish);
+				reactor.mixDishes(mixShader, enemyDish, renderDish, function(gl, shader) {
+					gl.uniform1i(gl.getUniformLocation(shader, "palette"), 2);
+					gl.activeTexture(gl.TEXTURE2);    
+					gl.bindTexture(gl.TEXTURE_2D, enemyColors.getTexture());
+				});
 				reactor.mixDishes(mixShader2, shipDish, renderDish);
 				
 				

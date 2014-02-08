@@ -1,4 +1,4 @@
-define(["gl/Reactor", "gl/Dish", "gl/Rule"], function(Reactor, Dish, Rule) {
+define(["gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palette"], function(Reactor, Dish, Rule, Palette) {
 	var ECFile = function(arrayBuffer) {
 		if (arrayBuffer)		
 			this.loadFromArrayBuffer(arrayBuffer);
@@ -212,6 +212,7 @@ define(["gl/Reactor", "gl/Dish", "gl/Rule"], function(Reactor, Dish, Rule) {
 		ECFile : ECFile,
 		Reactor: Reactor,
 		Dish: Dish,
-		Rule: Rule
+		Rule: Rule,
+		Palette : Palette
 	}
 });
