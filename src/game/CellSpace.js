@@ -36,22 +36,13 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 		loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
 		loader.load("intersectSpawn", "src/game/shaders/intersectSpawn.shader", "text");
 		
-		var frames = 0;
-		function fr(){
-			var ti = new Date().getTime();
-			var fps = Math.round(1000*frames/(ti - time));
-			document.getElementById('fps').value = fps;
-			frames = 0;  time = ti;
-		}
-		timer = setInterval(fr, 1000);
-		time = new Date().getTime();
-
+		var fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
 /*
 		reactor.moveParticles(particlesMoveShader, particlesDish);
 		reactor.renderParticles(particlesRenderShader, particlesDish, state, size);
-*/
 		// reactor.collideParticles( // TODO: colission 
+*/
 
 		loader.start(function (data) {
 			var gameW = 1024, gameH = 1024;
@@ -261,7 +252,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 				});
 
 				cnt++;
-				frames++;
+				fpsMonotor.frameIncrease();
 			});
 
 			gameLoop.start();

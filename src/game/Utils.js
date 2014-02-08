@@ -55,9 +55,9 @@ define(["jquery"], function($) {
 	}
 
 	requestAnimFrame = (function(){
-  return  window.webkitRequestAnimationFrame ||
-    window.mozRequestAnimationFrame ||
-    function(callback, element){ setTimeout(callback, 1000 / 60); }
+		return  window.webkitRequestAnimationFrame ||
+		window.mozRequestAnimationFrame ||
+		function(callback, element){ setTimeout(callback, 1000 / 60); }
 	})();
 
 	var AnimationLoop = function(callback) {
@@ -79,6 +79,27 @@ define(["jquery"], function($) {
 
 	AnimationLoop.prototype.stop = function() {
 		this.pauseRequested = true;
+	}
+
+	var FPSMonitor = function(elementID) {
+		this.frames = 0;
+
+		var delayMs = 1000;
+		var time;
+		var monitorContext = this;
+
+		function fr(){
+			var ti = new Date().getTime();
+			var fps = Math.round(1000*monitorContext.frames/(ti - time));
+			document.getElementById(elementID).innerHTML = fps.toString();
+			monitorContext.frames = 0;  
+			time = ti;
+		}
+		var timer = setInterval(fr, delayMs);
+		time = new Date().getTime();
+	};
+	FPSMonitor.prototype.frameIncrease = function() {
+		this.frames++;
 	}
 
 	var Keyboard = {
@@ -113,9 +134,7 @@ define(["jquery"], function($) {
 		getArrayBufferFromURL : getArrayBufferFromURL, 
 		ResLoader : ResLoader, 
 		AnimationLoop : AnimationLoop,
+		FPSMonitor : FPSMonitor,
 		keyboard : Keyboard
 	};
-
-
-
 });
