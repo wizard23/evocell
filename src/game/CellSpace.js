@@ -15,6 +15,8 @@ require.config({
 
 require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], 
 	function($, utils, resources, EC) {
+		var keyboard = utils.keyboard;
+
 		var loader = new utils.ResLoader();
 
 		loader.load("enemy", "rules/enemy_ludwigBuildships");
@@ -103,6 +105,13 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 
 					gl.uniform2f(gl.getUniformLocation(shader, "rectPos"), shipX, shipY);
 					gl.uniform2f(gl.getUniformLocation(shader, "rectSize"), 5, 5);
+					gl.uniform1f(gl.getUniformLocation(shader, "state"), (shipRule.nrStates-1)/255.);
+				});
+
+				if (keyboard.isPressed(keyboard.UP)) reactor.applyShaderOnDish(drawRectShader, shipDish, function(gl, shader) 
+				{ 
+					gl.uniform2f(gl.getUniformLocation(shader, "rectPos"), 10, 10);
+					gl.uniform2f(gl.getUniformLocation(shader, "rectSize"), 25, 25);
 					gl.uniform1f(gl.getUniformLocation(shader, "state"), (shipRule.nrStates-1)/255.);
 				});
 
