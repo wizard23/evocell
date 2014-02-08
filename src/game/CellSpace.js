@@ -37,12 +37,6 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 		
 		var fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
-/*
-		reactor.moveParticles(particlesMoveShader, particlesDish);
-		reactor.renderParticles(particlesRenderShader, particlesDish, state, size);
-		// reactor.collideParticles( // TODO: colission 
-*/
-
 		loader.start(function (data) {
 			var gameW = 256, gameH = 256;
 			var zoom = 2;
@@ -100,11 +94,9 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			enemy2Dish.randomize(enemyRule.nrStates, 0.01);
 			shipExplosionDish.randomize(shipExplosionRule.nrStates, 0.01);
 
-			var shipX = 0.5*gameW/zoom, shipY = 0.5*gameH/zoom;
-			var c = 0;
-	
+			var shipX = gameW/zoom, shipY = gameH/zoom;
+			
 			var cnt = 0;
-
 			var gameLoop = new utils.AnimationLoop(function() {
 				var gl = reactor.gl;
 
@@ -115,19 +107,14 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 					reactor.step(enemy2Rule, enemy2Dish);
 
 
-				// SHIP ///////////////////////////////////////////
-				//shipX = (Math.sin(c)+1.1)*70;	
-				//shipY = (Math.cos(c)+1.1)*45;	
-				//	c+=0.02;		
+				// SHIP ///////////////////////////////////////////	
 				var stepSize = 2;
 				if (keyboard.isPressed(keyboard.UP)) shipY += stepSize;
 				if (keyboard.isPressed(keyboard.DOWN)) shipY -= stepSize;
 				if (keyboard.isPressed(keyboard.LEFT)) shipX -= stepSize;
 				if (keyboard.isPressed(keyboard.RIGHT)) shipX += stepSize
 
-
 				reactor.step(shipExplosionRule, shipExplosionDish);
-				
 				reactor.step(shipRule, shipDish);
 				reactor.applyShaderOnDish(drawRectShader, shipDish, function(gl, shader) 
 				{ 
@@ -149,6 +136,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 					enemy2Dish.randomize(enemyRule.nrStates, 0.01);
 					shipX = 0.5*gameW/zoom, shipY = 0.5*gameH/zoom;
 				}
+
 
 				// Dishinteraction INTERACTION /////////////////////////////////////////////
 				var framebuffer = shipExplosionDish.getNextFramebuffer();

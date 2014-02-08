@@ -1,3 +1,22 @@
+NEW:
+====
+
+/*
+		reactor.moveParticles(particlesMoveShader, particlesDish);
+		reactor.renderParticles(particlesRenderShader, particlesDish, state, size);
+		// reactor.collideParticles( // TODO: colission 
+*/
+
+
+
+
+
+
+
+
+
+OLD:
+====
 gl context wie geht man damit um?
 Klasen identifizieren
 
