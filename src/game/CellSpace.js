@@ -52,7 +52,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 		// reactor.collideParticles( // TODO: colission 
 
 		loader.start(function (data) {
-			var gameW = 1200, gameH = 580;
+			var gameW = 1024, gameH = 1024;
 			var zoom = 4;
 
 			// Setup core and rules and texture
@@ -85,15 +85,16 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			
 			var enemyColors = new EC.Palette(reactor);
 			enemyColors.setColor(0, [0, 0, 0, 255]);
-			enemyColors.setColor(1, [80, 10, 80, 255]);
+			enemyColors.setColor(1, [120, 10, 120, 255]);
 			enemyColors.setColor(2, [170, 20, 170, 255]);
 			enemyColors.setColor(3, [255, 30, 255, 255]);
 
 			var enemy2Colors = new EC.Palette(reactor);
+			var bs = 0.1;
 			enemy2Colors.setColor(0, [0, 0, 0, 255]);
-			enemy2Colors.setColor(1, [10, 80, 80, 255]);
-			enemy2Colors.setColor(2, [20, 170, 170, 255]);
-			enemy2Colors.setColor(3, [30, 255, 255, 255]);
+			enemy2Colors.setColor(1, [bs*10, bs*80, bs*80, 255]);
+			enemy2Colors.setColor(2, [bs*20, bs*170, bs*170, 255]);
+			enemy2Colors.setColor(3, [bs*30, bs*255, bs*255, 255]);
 
 			var shipColors = new EC.Palette(reactor);
 			shipColors.setColor(0, [0, 0, 0, 255]);
@@ -108,10 +109,10 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			shipExplosionColors.setColor(3, [255, 255, 0, 255]);
 
 			enemyDish.randomize(enemyRule.nrStates, 0.0005);
-			enemy2Dish.randomize(enemyRule.nrStates, 0.001);
+			enemy2Dish.randomize(enemyRule.nrStates, 0.01);
 			shipExplosionDish.randomize(shipExplosionRule.nrStates, 0.01);
 
-			var shipX = 0.5*gameW/zoom, shipY = 20;
+			var shipX = 0.5*gameW/zoom, shipY = 0.5*gameH/zoom;
 			var c = 0;
 	
 			var cnt = 0;
@@ -120,16 +121,11 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 				var gl = reactor.gl;
 
 				// ENEMIES //////////////////////////////////////
-				if (cnt % 3 == 0)
+				if (cnt % 2 == 0)
 					reactor.step(enemyRule, enemyDish);
-				if (cnt % 3 == 0)
+				if (cnt % 6 == 0)
 					reactor.step(enemy2Rule, enemy2Dish);
 
-				reactor.step(enemy2Rule, enemy2Dish);
-				reactor.step(enemy2Rule, enemy2Dish);
-				reactor.step(enemy2Rule, enemy2Dish);
-				reactor.step(enemy2Rule, enemy2Dish);
-				reactor.step(enemy2Rule, enemy2Dish);
 
 				// SHIP ///////////////////////////////////////////
 				//shipX = (Math.sin(c)+1.1)*70;	
@@ -148,15 +144,23 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 				reactor.applyShaderOnDish(drawRectShader, shipDish, function(gl, shader) 
 				{ 
 					gl.uniform2f(gl.getUniformLocation(shader, "rectPos"), shipX, shipY);
-					gl.uniform2f(gl.getUniformLocation(shader, "rectSize"), 6, 6);
+					gl.uniform2f(gl.getUniformLocation(shader, "rectSize"), 5, 5);
 					gl.uniform1f(gl.getUniformLocation(shader, "state"), (shipRule.nrStates-1)/255.);
 				});
-				if (keyboard.isPressed(keyboard.UP)) reactor.applyShaderOnDish(drawRectShader, shipDish, function(gl, shader) 
+
+				reactor.applyShaderOnDish(drawRectShader, enemyDish, function(gl, shader) 
 				{ 
-					gl.uniform2f(gl.getUniformLocation(shader, "rectPos"), 10, 10);
+					gl.uniform2f(gl.getUniformLocation(shader, "rectPos"), shipX+1, shipY+1);
 					gl.uniform2f(gl.getUniformLocation(shader, "rectSize"), 3, 3);
-					gl.uniform1f(gl.getUniformLocation(shader, "state"), (shipRule.nrStates-1)/255.);
+					gl.uniform1f(gl.getUniformLocation(shader, "state"), 0.);
 				});
+
+				// space
+				if (keyboard.isPressed(32)) {
+					enemyDish.randomize(enemyRule.nrStates, 0.0004);
+					enemy2Dish.randomize(enemyRule.nrStates, 0.01);
+					shipX = 0.5*gameW/zoom, shipY = 0.5*gameH/zoom;
+				}
 
 				// Dishinteraction INTERACTION /////////////////////////////////////////////
 				var framebuffer = shipExplosionDish.getNextFramebuffer();
@@ -226,18 +230,18 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 				// COMPOSE ////////////////////////////////////////////
 				reactor.applyShaderOnDish(clearShader, renderDish);
 
-				reactor.mixDishes(mixShader, enemyDish, renderDish, function(gl, shader) {
-					gl.uniform1i(gl.getUniformLocation(shader, "palette"), 2);
-					gl.activeTexture(gl.TEXTURE2);    
-					gl.bindTexture(gl.TEXTURE_2D, enemyColors.getTexture());
-				});
-				/*
 				reactor.mixDishes(mixShader, enemy2Dish, renderDish, function(gl, shader) {
 					gl.uniform1i(gl.getUniformLocation(shader, "palette"), 2);
 					gl.activeTexture(gl.TEXTURE2);    
 					gl.bindTexture(gl.TEXTURE_2D, enemy2Colors.getTexture());
 				});
-				*/
+
+				reactor.mixDishes(mixShader, enemyDish, renderDish, function(gl, shader) {
+					gl.uniform1i(gl.getUniformLocation(shader, "palette"), 2);
+					gl.activeTexture(gl.TEXTURE2);    
+					gl.bindTexture(gl.TEXTURE_2D, enemyColors.getTexture());
+				});
+				
 				reactor.mixDishes(mixShader, shipDish, renderDish, function(gl, shader) {
 					gl.uniform1i(gl.getUniformLocation(shader, "palette"), 2);
 					gl.activeTexture(gl.TEXTURE2);    
