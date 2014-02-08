@@ -85,12 +85,12 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			
 			var enemyColors = new EC.Palette(reactor);
 			enemyColors.setColor(0, [0, 0, 0, 255]);
-			enemyColors.setColor(1, [120, 10, 120, 255]);
-			enemyColors.setColor(2, [170, 20, 170, 255]);
+			enemyColors.setColor(1, [140, 10, 140, 255]);
+			enemyColors.setColor(2, [255, 255, 255, 255]);
 			enemyColors.setColor(3, [255, 30, 255, 255]);
 
 			var enemy2Colors = new EC.Palette(reactor);
-			var bs = 0.1;
+			var bs = 0.12;
 			enemy2Colors.setColor(0, [0, 0, 0, 255]);
 			enemy2Colors.setColor(1, [bs*10, bs*80, bs*80, 255]);
 			enemy2Colors.setColor(2, [bs*20, bs*170, bs*170, 255]);
