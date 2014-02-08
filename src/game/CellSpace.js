@@ -81,7 +81,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 			enemyDish.randomize(enemyRule.nrStates, 0.0005);
 			enemy2Dish.randomize(enemyRule.nrStates, 0.001);
 
-			var shipX, shipY;
+			var shipX = 20, shipY = 20;
 			var c = 0;
 	
 			var cnt = 0;
@@ -96,24 +96,30 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"],
 					reactor.step(enemy2Rule, enemy2Dish);
 
 				// SHIP
+				//shipX = (Math.sin(c)+1.1)*70;	
+				//shipY = (Math.cos(c)+1.1)*45;	
+				//	c+=0.02;		
+				var stepSize = 1;
+				if (keyboard.isPressed(keyboard.UP)) shipY += stepSize;
+				if (keyboard.isPressed(keyboard.DOWN)) shipY -= stepSize;
+				if (keyboard.isPressed(keyboard.LEFT)) shipX -= stepSize;
+				if (keyboard.isPressed(keyboard.RIGHT)) shipX += stepSize
+
+				
 				reactor.step(shipRule, shipDish);
 				reactor.applyShaderOnDish(drawRectShader, shipDish, function(gl, shader) 
 				{ 
-					shipX = (Math.sin(c)+1.1)*70;	
-					shipY = (Math.cos(c)+1.1)*45;	
-					c+=0.02;		
-
 					gl.uniform2f(gl.getUniformLocation(shader, "rectPos"), shipX, shipY);
 					gl.uniform2f(gl.getUniformLocation(shader, "rectSize"), 5, 5);
 					gl.uniform1f(gl.getUniformLocation(shader, "state"), (shipRule.nrStates-1)/255.);
 				});
-
 				if (keyboard.isPressed(keyboard.UP)) reactor.applyShaderOnDish(drawRectShader, shipDish, function(gl, shader) 
 				{ 
 					gl.uniform2f(gl.getUniformLocation(shader, "rectPos"), 10, 10);
-					gl.uniform2f(gl.getUniformLocation(shader, "rectSize"), 25, 25);
+					gl.uniform2f(gl.getUniformLocation(shader, "rectSize"), 55, 55);
 					gl.uniform1f(gl.getUniformLocation(shader, "state"), (shipRule.nrStates-1)/255.);
 				});
+
 
 				// COMPOSE
 				reactor.applyShaderOnDish(clearShader, renderDish);
