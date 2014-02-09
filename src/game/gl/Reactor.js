@@ -56,6 +56,7 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 
 	Reactor.prototype.mixDish = function(mixShader, mainDish, parameters, callback)
 	{
+		this.gl.viewport(0,0, mainDish.width, mainDish.height);
 		var framebuffer = mainDish.getNextFramebuffer();
 		var bindCallback = function(gl, progCA)
 		{
@@ -114,7 +115,6 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 
 	Reactor.prototype.applyShaderOnDish = function(shader, dish, bindCallbackUser)
 	{
-
 		this.gl.viewport(0,0, dish.width, dish.height);
 
 		var framebuffer = dish.getNextFramebuffer();
