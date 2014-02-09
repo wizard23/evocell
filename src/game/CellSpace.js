@@ -84,40 +84,13 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		
 		var cnt = 0;
 		var gameLoop = new utils.AnimationLoop(function() {
-			var gl = reactor.gl;
-
-			// ENEMIES //////////////////////////////////////
-			if (cnt % 3 == 0)
-				reactor.step(enemyRule, enemyDish);
-			if (cnt % 6 == 0)
-				reactor.step(enemy2Rule, enemy2Dish);
-
-
-			// SHIP ///////////////////////////////////////////	
+			
+			// USER INPUT Poll Keyboard //////////////////////////////////////////////////
 			var stepSize = 2;
 			if (keyboard.isPressed(keyboard.UP)) shipY += stepSize;
 			if (keyboard.isPressed(keyboard.DOWN)) shipY -= stepSize;
 			if (keyboard.isPressed(keyboard.LEFT)) shipX -= stepSize;
 			if (keyboard.isPressed(keyboard.RIGHT)) shipX += stepSize
-
-			reactor.step(shipExplosionRule, shipExplosionDish);
-			reactor.step(shipRule, shipDish);
-			reactor.applyShaderOnDish(drawRectShader, shipDish, function(gl, shader) 
-			{ 
-				gl.uniform2f(gl.getUniformLocation(shader, "rectPos"), shipX, shipY);
-				gl.uniform2f(gl.getUniformLocation(shader, "rectSize"), 5, 5);
-				gl.uniform1f(gl.getUniformLocation(shader, "state"), (shipRule.nrStates-1)/255.);
-			});
-
-			reactor.applyShaderOnDish(drawRectShader, enemyDish, function(gl, shader) 
-			{ 
-				gl.uniform2f(gl.getUniformLocation(shader, "rectPos"), shipX+1, shipY+1);
-				gl.uniform2f(gl.getUniformLocation(shader, "rectSize"), 3, 3);
-				gl.uniform1f(gl.getUniformLocation(shader, "state"), 0.);
-			});
-
-			//reactor.mixDish(drawRectShader, enemyDish, 
-
 			// space
 			if (keyboard.isPressed(32)) {
 				enemyDish.randomize(enemyRule.nrStates, 0.0004);
@@ -127,11 +100,25 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			}
 
 
+			var gl = reactor.gl;
+			// ENEMIES //////////////////////////////////////
+			if (cnt % 3 == 0)
+				reactor.step(enemyRule, enemyDish);
+			if (cnt % 6 == 0)
+				reactor.step(enemy2Rule, enemy2Dish);
+
+			// SHIP ///////////////////////////////////////////
+			reactor.step(shipExplosionRule, shipExplosionDish);
+			reactor.step(shipRule, shipDish);
+
+			// "DRAW" SHIP
+			reactor.mixDish(drawRectShader, shipDish, {rectPos: [shipX+1, shipY+1], rectSize: [8, 8], state: (shipRule.nrStates-1)/255});
+			reactor.mixDish(drawRectShader, enemyDish, {rectPos: [shipX+1, shipY+1], rectSize: [3, 3], state: 0});
+
 			// Dish INTERACTION ///////////////////////////////////
 			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: shipDish, tex2: enemyDish, state: (shipExplosionRule.nrStates-1)/255.});
 			reactor.mixDish(intersectSpawnShader, enemyDish, {tex1: enemyDish, tex2: shipExplosionDish, state: 1./255.});
 			reactor.mixDish(intersectSpawnShader, shipDish, {tex1: shipDish, tex2: shipExplosionDish, state: 3./255.});	
-
 
 			// COMPOSE ////////////////////////////////////////////
 			reactor.applyShaderOnDish(clearShader, renderDish);
@@ -139,8 +126,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			reactor.mixDish(mixShader, renderDish, {texNew: enemyDish, texPalette: enemyColors.getTexture()});
 			reactor.mixDish(mixShader, renderDish, {texNew: shipDish, texPalette: shipColors.getTexture()});
 			reactor.mixDish(mixShader, renderDish, {texNew: shipExplosionDish, texPalette: shipExplosionColors.getTexture()});
-
-			
+		
 			//RENDER
 			reactor.paintDish(paintShader, renderDish, function(gl, shader) {
 				gl.uniform1f(gl.getUniformLocation(shader, "scale"), zoom);
