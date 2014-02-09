@@ -8,7 +8,8 @@ require.config({
 require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils, resources, EC) {
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
-	var zoom = 2;
+	gameW = 512, gameH = 512;
+	var zoom = 1;
 	
 	var fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
@@ -118,9 +119,16 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 					texSource: enemy2Dish, sourcePos: [5, 10], sourceRes: [gameW, gameH], 	
 					}); 
 
+				var pixelValues = new Uint8Array(10*10*4);
+				var gl = reactor.gl;
+
+				gl.bindFramebuffer(gl.FRAMEBUFFER, bufferDish.getCurrentFramebuffer());
+				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, bufferDish.getCurrentTexture(), 0);
+				var xyz = gl.readPixels(0, 0, 10, 10, gl.RGBA, gl.UNSIGNED_BYTE, pixelValues);
+
 				//var pattern = bufferDish.saveAsECFile();
 				var ruleAsBlob = data.enemyRule.saveToBlob();
-				utils.saveAs(ruleAsBlob, "ecPattern");
+				//utils.saveAs(ruleAsBlob, "ecPattern");
 
 				reactor.mixDish(copyShader, copyDish, {
 					destinationPos: [120, 100], destinationSize: [bufferDish.width, bufferDish.height],

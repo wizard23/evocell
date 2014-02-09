@@ -79,6 +79,11 @@ define(["gl/GLHelper"], function(glhelper) {
 		return (this.frameFlip > 0) ? this.texture1 : this.texture2;
 	}
 
+	Dish.prototype.getCurrentFramebuffer = function()
+	{
+		return (this.frameFlip > 0) ? this.fb1 : this.fb2;
+	}
+
 	Dish.prototype.getNextFramebuffer = function() 
 	{
 		return (this.frameFlip > 0) ? this.fb2 : this.fb1;
