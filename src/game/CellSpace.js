@@ -119,77 +119,16 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			if (keyboard.isPressed(32)) {
 				enemyDish.randomize(enemyRule.nrStates, 0.0004);
 				enemy2Dish.randomize(enemyRule.nrStates, 0.01);
-				shipX = gameW/2, shipY = gameH/2;
+				if (shipX < 0 || shipX > gameW || shipY < 0 || shipY > gameH)
+					shipX = gameW/2, shipY = gameH/2;
 			}
 
 
-			// Dishinteraction INTERACTION /////////////////////////////////////////////
-/*
-			var framebuffer = shipExplosionDish.getNextFramebuffer();
-			var bindCallback = function(gl, progCA)
-			{
-				gl.uniform1i(gl.getUniformLocation(progCA, "intersect1"), 0);
-				gl.activeTexture(gl.TEXTURE0);    
-				gl.bindTexture(gl.TEXTURE_2D, enemyDish.getCurrentTexture());
-
-				gl.uniform1i(gl.getUniformLocation(progCA, "intersect2"), 1);
-				gl.activeTexture(gl.TEXTURE1);    
-				gl.bindTexture(gl.TEXTURE_2D, shipDish.getCurrentTexture());	
-
-				gl.uniform1i(gl.getUniformLocation(progCA, "background"), 2);
-				gl.activeTexture(gl.TEXTURE2);    
-				gl.bindTexture(gl.TEXTURE_2D, shipExplosionDish.getCurrentTexture());	
-
-				gl.uniform1f(gl.getUniformLocation(progCA, "state"), (shipExplosionRule.nrStates-1)/255.);
-			}
-			reactor.applyShader(intersectSpawnShader, framebuffer, bindCallback);
-			shipExplosionDish.flip();
-
-
-			framebuffer = enemyDish.getNextFramebuffer();
-			bindCallback = function(gl, progCA)
-			{
-				gl.uniform1i(gl.getUniformLocation(progCA, "intersect1"), 0);
-				gl.activeTexture(gl.TEXTURE0);    
-				gl.bindTexture(gl.TEXTURE_2D, enemyDish.getCurrentTexture());
-
-				gl.uniform1i(gl.getUniformLocation(progCA, "intersect2"), 1);
-				gl.activeTexture(gl.TEXTURE1);    
-				gl.bindTexture(gl.TEXTURE_2D, shipExplosionDish.getCurrentTexture());	
-
-				gl.uniform1i(gl.getUniformLocation(progCA, "background"), 2);
-				gl.activeTexture(gl.TEXTURE2);    
-				gl.bindTexture(gl.TEXTURE_2D, enemyDish.getCurrentTexture());	
-
-				gl.uniform1f(gl.getUniformLocation(progCA, "state"), 1./255.);
-			}
-			reactor.applyShader(intersectSpawnShader, framebuffer, bindCallback);
-			enemyDish.flip();				
-
-			framebuffer = shipDish.getNextFramebuffer();
-			bindCallback = function(gl, progCA)
-			{
-				gl.uniform1i(gl.getUniformLocation(progCA, "intersect1"), 0);
-				gl.activeTexture(gl.TEXTURE0);    
-				gl.bindTexture(gl.TEXTURE_2D, shipDish.getCurrentTexture());
-
-				gl.uniform1i(gl.getUniformLocation(progCA, "intersect2"), 1);
-				gl.activeTexture(gl.TEXTURE1);    
-				gl.bindTexture(gl.TEXTURE_2D, shipExplosionDish.getCurrentTexture());	
-
-				gl.uniform1i(gl.getUniformLocation(progCA, "background"), 2);
-				gl.activeTexture(gl.TEXTURE2);    
-				gl.bindTexture(gl.TEXTURE_2D, shipDish.getCurrentTexture());	
-
-				gl.uniform1f(gl.getUniformLocation(progCA, "state"), 3./255.);
-			}
-			reactor.applyShader(intersectSpawnShader, framebuffer, bindCallback);
-			shipDish.flip();		
-	*/
-	
+			// Dish INTERACTION ///////////////////////////////////
 			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: shipDish, tex2: enemyDish}, {state: (shipExplosionRule.nrStates-1)/255.});
 			reactor.mixDish(intersectSpawnShader, enemyDish, {tex1: enemyDish, tex2: shipExplosionDish}, {state: 1./255.});
 			reactor.mixDish(intersectSpawnShader, shipDish, {tex1: shipDish, tex2: shipExplosionDish}, {state: 3./255.});	
+
 
 			// COMPOSE ////////////////////////////////////////////
 			reactor.applyShaderOnDish(clearShader, renderDish);
