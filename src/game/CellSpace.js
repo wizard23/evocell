@@ -118,6 +118,10 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 					texSource: enemy2Dish, sourcePos: [5, 10], sourceRes: [gameW, gameH], 	
 					}); 
 
+				//var pattern = bufferDish.saveAsECFile();
+				var ruleAsBlob = data.enemyRule.saveToBlob();
+				utils.saveAs(ruleAsBlob, "ecPattern");
+
 				reactor.mixDish(copyShader, copyDish, {
 					destinationPos: [120, 100], destinationSize: [bufferDish.width, bufferDish.height],
 					texSource: bufferDish, sourcePos: [0, 0], sourceRes: [bufferDish.width, bufferDish.height], 	

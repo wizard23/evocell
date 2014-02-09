@@ -1,4 +1,4 @@
-define(["jquery"], function($) {
+define(["jquery", "libs/FileSaver"], function($, saveAs) {
 	function getFromURL(url, responseType, cb) {
 		var r = new XMLHttpRequest();
 		r.open("GET", url, true);  
@@ -91,6 +91,7 @@ define(["jquery"], function($) {
 		FPSMonitor : FPSMonitor,
 
 		getFromURL: getFromURL,
+		saveAs: saveAs,
 
 		keyboard : Keyboard		
 	};

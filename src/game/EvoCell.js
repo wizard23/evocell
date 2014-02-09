@@ -52,14 +52,14 @@ define(["Utils", "gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palette"], function(uti
 
 	ECFile.prototype.saveToBlob = function() {
 		var evoCellData = this;
-		var rawData = evoCellData.saveToArrayBuffer();
+		var rawData = this.saveToArrayBuffer();
 		var blob = new Blob([rawData], {type: 'application/octet-stream'});
 		return blob;
 	};
 
 	ECFile.prototype.saveToDataURL = function() {
 		var evoCellData = this;
-		var rawData = evoCellData.saveToArrayBuffer();
+		var rawData = this.saveToArrayBuffer();
 		var base64Encoded = arrayBufferToBase64(rawData);
 		return 'data:application/octet-stream;base64,' + base64Encoded;
 	};
