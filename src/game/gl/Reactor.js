@@ -54,7 +54,7 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		this.applyShader(paintShader, null, bindCallback)
 	}
 
-	Reactor.prototype.mixDish = function(mixShader, mainDish, paramDishes, parameters, callback)
+	Reactor.prototype.mixDish = function(mixShader, mainDish, parameters, callback)
 	{
 		var framebuffer = mainDish.getNextFramebuffer();
 		var bindCallback = function(gl, progCA)
@@ -65,16 +65,14 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 			gl.activeTexture(gl.TEXTURE0);    
 			gl.bindTexture(gl.TEXTURE_2D, mainDish.getCurrentTexture());
 
-		// TODO: if arrays (not dictionaries) then name texture1, texture2, texture3, ...
+		// TODO: if arrays (not dictionaries) then name tex1, tex2, tex3, ...
 			var textureCount = 1;
-			for (var paramName in paramDishes) {
-				gl.uniform1i(gl.getUniformLocation(progCA, paramName), textureCount);
-				gl.activeTexture(gl.TEXTURE0 + textureCount);    
-				gl.bindTexture(gl.TEXTURE_2D, paramDishes[paramName].getCurrentTexture());	
-				textureCount++;
-			}
 			for (var paramName in parameters) {
 				var param = parameters[paramName];
+				if (param instanceof Dish) {
+					param = param.getCurrentTexture();
+				}
+				// distinguish types				
 				if (param instanceof WebGLTexture) {
 					gl.uniform1i(gl.getUniformLocation(progCA, paramName), textureCount);
 					gl.activeTexture(gl.TEXTURE0 + textureCount);    
@@ -82,7 +80,7 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 					textureCount++;
 				}
 				else {
-					//if (param is int) 
+					//if (param is int) // TODO: int 
 					if (typeof param === "number") {
 						gl.uniform1f(gl.getUniformLocation(progCA, paramName), param);
 					}

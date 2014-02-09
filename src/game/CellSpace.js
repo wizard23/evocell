@@ -11,6 +11,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 	var zoom = 2;
 	
 	var fpsMonotor = new utils.FPSMonitor("fpsMonitor");
+
 	// Setup core 	
 	var context = document.getElementById('c');
 	var reactor = new  EC.Reactor(context, gameW, gameH);
@@ -115,6 +116,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 				gl.uniform1f(gl.getUniformLocation(shader, "state"), 0.);
 			});
 
+			//reactor.mixDish(drawRectShader, enemyDish, 
+
 			// space
 			if (keyboard.isPressed(32)) {
 				enemyDish.randomize(enemyRule.nrStates, 0.0004);
@@ -125,17 +128,17 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 
 
 			// Dish INTERACTION ///////////////////////////////////
-			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: shipDish, tex2: enemyDish}, {state: (shipExplosionRule.nrStates-1)/255.});
-			reactor.mixDish(intersectSpawnShader, enemyDish, {tex1: enemyDish, tex2: shipExplosionDish}, {state: 1./255.});
-			reactor.mixDish(intersectSpawnShader, shipDish, {tex1: shipDish, tex2: shipExplosionDish}, {state: 3./255.});	
+			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: shipDish, tex2: enemyDish, state: (shipExplosionRule.nrStates-1)/255.});
+			reactor.mixDish(intersectSpawnShader, enemyDish, {tex1: enemyDish, tex2: shipExplosionDish, state: 1./255.});
+			reactor.mixDish(intersectSpawnShader, shipDish, {tex1: shipDish, tex2: shipExplosionDish, state: 3./255.});	
 
 
 			// COMPOSE ////////////////////////////////////////////
 			reactor.applyShaderOnDish(clearShader, renderDish);
-			reactor.mixDish(mixShader, renderDish, {texNew: enemy2Dish}, {texPalette: enemy2Colors.getTexture()});
-			reactor.mixDish(mixShader, renderDish, {texNew: enemyDish}, {texPalette: enemyColors.getTexture()});
-			reactor.mixDish(mixShader, renderDish, {texNew: shipDish}, {texPalette: shipColors.getTexture()});
-			reactor.mixDish(mixShader, renderDish, {texNew: shipExplosionDish}, {texPalette: shipExplosionColors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {texNew: enemy2Dish, texPalette: enemy2Colors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {texNew: enemyDish, texPalette: enemyColors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {texNew: shipDish, texPalette: shipColors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {texNew: shipExplosionDish, texPalette: shipExplosionColors.getTexture()});
 
 			
 			//RENDER
