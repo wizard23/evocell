@@ -32,11 +32,14 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 	loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
 	loader.load("intersectSpawn", "src/game/shaders/intersectSpawn.shader", "text");
 
+	loader.load("copyPaste", "src/game/shaders/copyPasteRect.shader", "text");
+
 	loader.start(function (data) {
 		var enemyDish = reactor.compileDish();
 		var enemy2Dish = reactor.compileDish();
 		var shipDish = reactor.compileDish();
 		var shipExplosionDish = reactor.compileDish();
+		var copyDish = reactor.compileDish();
 		var renderDish = reactor.compileDish();
 
 		var clearShader = reactor.compileShader(data.clear);
@@ -44,6 +47,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		var drawRectShader = reactor.compileShader(data.drawRect);
 		var mixShader = reactor.compileShader(data.mixPalette);
 		var intersectSpawnShader = reactor.compileShader(data.intersectSpawn);
+		var copyShader = reactor.compileShader(data.copyPaste);
 
 		var enemyRule = reactor.compileRule(data.enemyRule, enemyDish);
 		var enemy2Rule = reactor.compileRule(data.enemy2Rule, enemy2Dish);
@@ -76,6 +80,12 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		shipExplosionColors.setColor(2, [255, 160, 0, 255]);
 		shipExplosionColors.setColor(3, [255, 255, 0, 255]);
 
+		var copyColors = new EC.Palette(reactor);
+		copyColors.setColor(0, [0, 0, 0, 255]);
+		copyColors.setColor(1, [0, 130, 0, 255]);
+		copyColors.setColor(2, [0, 190, 0, 255]);
+		copyColors.setColor(3, [0, 255, 0, 255]);
+
 		enemyDish.randomize(enemyRule.nrStates, 0.0005);
 		enemy2Dish.randomize(enemyRule.nrStates, 0.01);
 		shipExplosionDish.randomize(shipExplosionRule.nrStates, 0.01);
@@ -98,7 +108,16 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 				if (shipX < 0 || shipX > gameW || shipY < 0 || shipY > gameH)
 					shipX = gameW/2, shipY = gameH/2;
 			}
-
+			// ist das hier Ist auch rekursiv
+			reactor.mixDish(drawRectShader, shipDish, {rectPos: [shipX+1, shipY+1], rectSize: [8, 8], state: (shipRule.nrStates-1)/255});
+			
+			// das IST REKURSIV
+			/*
+			reactor.mixDish(copyShader, copyDish, {
+					texSource: enemy2Dish, sourcePos: [0, 0], sourceRes: [gameW, gameH], 
+					destinationPos: [20, 20], destinationSize: [80, 40], destinationRes: [gameW, gameH]
+					}); 
+			//*/
 
 			var gl = reactor.gl;
 			// ENEMIES //////////////////////////////////////
@@ -115,6 +134,42 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			reactor.mixDish(drawRectShader, shipDish, {rectPos: [shipX+1, shipY+1], rectSize: [8, 8], state: (shipRule.nrStates-1)/255});
 			reactor.mixDish(drawRectShader, enemyDish, {rectPos: [shipX+1, shipY+1], rectSize: [3, 3], state: 0});
 
+
+			if (keyboard.isPressed(65+2))
+			{
+				/*
+				uniform sampler2D texFrame;
+				uniform vec2 destinationPos;
+				uniform vec2 destinationSize;
+				uniform vec2 destinationRes;
+
+				uniform sampler2D texSource;
+				uniform vec2 sourcePos;
+				uniform vec2 sourceRes; 
+				*/
+
+				reactor.mixDish(copyShader, copyDish, {
+					texSource: enemy2Dish, sourcePos: [0, 0], sourceRes: [gameW, gameH], 
+					destinationPos: [20, 20], destinationSize: [80, 40], destinationRes: [gameW, gameH]
+					}); 
+				
+
+				//reactor.mixDish(drawRectShader, copyDish, {rectPos: [10, 10], rectSize: [5, 10], state: 3/255.});
+		/*
+				reactor.mixDish(copyShader, copyDish, {
+					texSource: shipDish, sourcePos: [0, 0], sourceRes: [gameW, gameH], 
+					destinationPos: [0, 0], destinationSize: [20, 20], destinationRes: [gameW, gameH],
+					}); 
+		*/
+			}
+			if (keyboard.isPressed(27))
+			{
+				copyDish.setAll(0);
+				copyDish.randomize(4, 0.1);
+			}
+
+			//reactor.mixDish(drawRectShader, shipDish, {rectPos: [10, 10], rectSize: [5, 10], state: 3/255.});
+
 			// Dish INTERACTION ///////////////////////////////////
 			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: shipDish, tex2: enemyDish, state: (shipExplosionRule.nrStates-1)/255.});
 			reactor.mixDish(intersectSpawnShader, enemyDish, {tex1: enemyDish, tex2: shipExplosionDish, state: 1./255.});
@@ -126,7 +181,9 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			reactor.mixDish(mixShader, renderDish, {texNew: enemyDish, texPalette: enemyColors.getTexture()});
 			reactor.mixDish(mixShader, renderDish, {texNew: shipDish, texPalette: shipColors.getTexture()});
 			reactor.mixDish(mixShader, renderDish, {texNew: shipExplosionDish, texPalette: shipExplosionColors.getTexture()});
-		
+			
+			reactor.mixDish(mixShader, renderDish, {texNew: copyDish, texPalette: copyColors.getTexture()});		
+
 			//RENDER
 			reactor.paintDish(paintShader, renderDish, function(gl, shader) {
 				gl.uniform1f(gl.getUniformLocation(shader, "scale"), zoom);

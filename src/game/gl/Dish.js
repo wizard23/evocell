@@ -48,6 +48,10 @@ define(["gl/GLHelper"], function(glhelper) {
 		this.frameFlip = 1;
 	}
 
+	Dish.prototype.setAll = function(state) {
+		this.randomize(1, 0); // HACK!!!! TODO: fix clearshader!
+	}
+
 	Dish.prototype.randomize = function(nrStates, density) 
 	{
 		var texture = createDishTextureRandom(this.gl, this.width, this.height, nrStates, density);
