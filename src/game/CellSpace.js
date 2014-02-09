@@ -8,8 +8,8 @@ require.config({
 require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils, resources, EC) {
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
-	gameW = 512, gameH = 512;
-	var zoom = 1;
+	gameW = 430, gameH = 230;
+	var zoom = 3;
 	
 	var fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
@@ -147,7 +147,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			}
 
 			// ENEMIES //////////////////////////////////////
-			if (cnt % 3 == 0)
+			if (cnt % 2 == 0)
 				reactor.step(enemyRule, enemyDish);
 			if (cnt % 6 == 0)
 				reactor.step(enemy2Rule, enemy2Dish);
@@ -157,12 +157,12 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			reactor.step(shipRule, shipDish);
 
 			// "DRAW" SHIP
-			reactor.mixDish(drawRectShader, shipDish, {rectPos: [shipX+1, shipY+1], rectSize: [8, 8], state: (shipRule.nrStates-1)/255});
-			reactor.mixDish(drawRectShader, enemyDish, {rectPos: [shipX+1, shipY+1], rectSize: [3, 3], state: 0});
+			reactor.mixDish(drawRectShader, shipDish, {rectPos: [shipX+1, shipY+1], rectSize: [6, 6], state: (shipRule.nrStates-1)/255});
+			//reactor.mixDish(drawRectShader, enemyDish, {rectPos: [shipX+1, shipY+1], rectSize: [3, 3], state: 0});
 
 			// Dish INTERACTION ///////////////////////////////////
 			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: shipDish, tex2: enemyDish, state: (shipExplosionRule.nrStates-1)/255.});
-			reactor.mixDish(intersectSpawnShader, enemyDish, {tex1: enemyDish, tex2: shipExplosionDish, state: 1./255.});
+			reactor.mixDish(intersectSpawnShader, enemyDish, {tex1: enemyDish, tex2: shipExplosionDish, state: 0./255.});
 			reactor.mixDish(intersectSpawnShader, shipDish, {tex1: shipDish, tex2: shipExplosionDish, state: 3./255.});	
 
 			// COMPOSE ////////////////////////////////////////////
