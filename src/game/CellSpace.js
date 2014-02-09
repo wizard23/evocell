@@ -188,29 +188,11 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 
 			// COMPOSE ////////////////////////////////////////////
 			reactor.applyShaderOnDish(clearShader, renderDish);
+			reactor.mixDish(mixShader, renderDish, {newTexture: enemy2Dish}, {palette: enemy2Colors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {newTexture: enemyDish}, {palette: enemyColors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {newTexture: shipDish}, {palette: shipColors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {newTexture: shipExplosionDish}, {palette: shipExplosionColors.getTexture()});
 
-			reactor.mixDishes(mixShader, enemy2Dish, renderDish, function(gl, shader) {
-				gl.uniform1i(gl.getUniformLocation(shader, "palette"), 2);
-				gl.activeTexture(gl.TEXTURE2);    
-				gl.bindTexture(gl.TEXTURE_2D, enemy2Colors.getTexture());
-			});
-
-			reactor.mixDishes(mixShader, enemyDish, renderDish, function(gl, shader) {
-				gl.uniform1i(gl.getUniformLocation(shader, "palette"), 2);
-				gl.activeTexture(gl.TEXTURE2);    
-				gl.bindTexture(gl.TEXTURE_2D, enemyColors.getTexture());
-			});
-			
-			reactor.mixDishes(mixShader, shipDish, renderDish, function(gl, shader) {
-				gl.uniform1i(gl.getUniformLocation(shader, "palette"), 2);
-				gl.activeTexture(gl.TEXTURE2);    
-				gl.bindTexture(gl.TEXTURE_2D, shipColors.getTexture());
-			});
-			reactor.mixDishes(mixShader, shipExplosionDish, renderDish, function(gl, shader) {
-				gl.uniform1i(gl.getUniformLocation(shader, "palette"), 2);
-				gl.activeTexture(gl.TEXTURE2);    
-				gl.bindTexture(gl.TEXTURE_2D, shipExplosionColors.getTexture());
-			});
 			
 			//RENDER
 			reactor.paintDish(paintShader, renderDish, function(gl, shader) {

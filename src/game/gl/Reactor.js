@@ -54,26 +54,38 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		this.applyShader(paintShader, null, bindCallback)
 	}
 
-	Reactor.prototype.mixDishes = function(mixShader, texNew, mixDish, callback)
+	Reactor.prototype.mixDish = function(mixShader, mainDish, paramDishes, textures, callback)
 	{
-		var framebuffer = mixDish.getNextFramebuffer();
-
+		var framebuffer = mainDish.getNextFramebuffer();
 		var bindCallback = function(gl, progCA)
 		{
-			gl.uniform1i(gl.getUniformLocation(progCA, "texOld"), 0);
+			// set param for shader to TEXTURE0
+			gl.uniform1i(gl.getUniformLocation(progCA, "mainTexture"), 0);
+			// set glcontext TEXTURE0 to current frame of mainDish
 			gl.activeTexture(gl.TEXTURE0);    
-			gl.bindTexture(gl.TEXTURE_2D, mixDish.getCurrentTexture());
+			gl.bindTexture(gl.TEXTURE_2D, mainDish.getCurrentTexture());
 
-			gl.uniform1i(gl.getUniformLocation(progCA, "texNew"), 1);
-			gl.activeTexture(gl.TEXTURE1);    
-			gl.bindTexture(gl.TEXTURE_2D, texNew.getCurrentTexture());	
+		// TODO: if arrays (not dictionaries) then name texture1, texture2, texture3, ...
+			var textureCount = 1;
+			for (var paramName in paramDishes) {
+				gl.uniform1i(gl.getUniformLocation(progCA, paramName), textureCount);
+				gl.activeTexture(gl.TEXTURE0 + textureCount);    
+				gl.bindTexture(gl.TEXTURE_2D, paramDishes[paramName].getCurrentTexture());	
+				textureCount++;
+			}
+			for (var paramName in textures) {
+				gl.uniform1i(gl.getUniformLocation(progCA, paramName), textureCount);
+				gl.activeTexture(gl.TEXTURE0 + textureCount);    
+				gl.bindTexture(gl.TEXTURE_2D, textures[paramName]);	
+				textureCount++;
+			}
+			
 			if (callback) {
 				callback(gl, progCA)
 			}
 		}
-
-		this.applyShader(mixShader, framebuffer, bindCallback)
-		mixDish.flip();
+		this.applyShader(mixShader, framebuffer, bindCallback);
+		mainDish.flip();
 	}
 
 	Reactor.prototype.step = function(rule, dish) 
@@ -143,8 +155,9 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		return rule;
 	}
 
-	Reactor.prototype.loadPalette = function(paletteId, colors)
+	Reactor.prototype.compilePalette = function(paletteId, colors)
 	{
+		// does this solve palette troules
 	}
 
 	// GL level
