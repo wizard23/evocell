@@ -5,7 +5,6 @@
 uniform sampler2D texFrame;
 uniform vec2 destinationPos;
 uniform vec2 destinationSize;
-uniform vec2 destinationRes;
 
 uniform sampler2D texSource;
 uniform vec2 sourcePos;

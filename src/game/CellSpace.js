@@ -40,6 +40,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		var shipDish = reactor.compileDish();
 		var shipExplosionDish = reactor.compileDish();
 		var copyDish = reactor.compileDish();
+		var bufferDish = reactor.compileDish(64, 64);
 		var renderDish = reactor.compileDish();
 
 		var clearShader = reactor.compileShader(data.clear);
@@ -112,9 +113,20 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			// copy paste stuff
 			if (keyboard.isPressed(65+2))
 			{
+				reactor.mixDish(copyShader, bufferDish, {
+					destinationPos: [0, 0], destinationSize: [bufferDish.width, bufferDish.height],
+					texSource: enemy2Dish, sourcePos: [5, 10], sourceRes: [gameW, gameH], 	
+					}); 
+
 				reactor.mixDish(copyShader, copyDish, {
+					destinationPos: [120, 100], destinationSize: [bufferDish.width, bufferDish.height],
+					texSource: bufferDish, sourcePos: [0, 0], sourceRes: [bufferDish.width, bufferDish.height], 	
+					}); 
+
+
+				reactor.mixDish(copyShader, copyDish, {
+					destinationPos: [20, 20], destinationSize: [80, 40],
 					texSource: enemy2Dish, sourcePos: [0, 0], sourceRes: [gameW, gameH], 
-					destinationPos: [20, 20], destinationSize: [80, 40], destinationRes: [gameW, gameH]
 					}); 
 			}
 			if (keyboard.isPressed(27))
