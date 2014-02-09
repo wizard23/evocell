@@ -124,6 +124,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 
 
 			// Dishinteraction INTERACTION /////////////////////////////////////////////
+/*
 			var framebuffer = shipExplosionDish.getNextFramebuffer();
 			var bindCallback = function(gl, progCA)
 			{
@@ -183,15 +184,19 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 				gl.uniform1f(gl.getUniformLocation(progCA, "state"), 3./255.);
 			}
 			reactor.applyShader(intersectSpawnShader, framebuffer, bindCallback);
-			shipDish.flip();			
-
+			shipDish.flip();		
+	*/
+	
+			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: shipDish, tex2: enemyDish}, {state: (shipExplosionRule.nrStates-1)/255.});
+			reactor.mixDish(intersectSpawnShader, enemyDish, {tex1: enemyDish, tex2: shipExplosionDish}, {state: 1./255.});
+			reactor.mixDish(intersectSpawnShader, shipDish, {tex1: shipDish, tex2: shipExplosionDish}, {state: 3./255.});	
 
 			// COMPOSE ////////////////////////////////////////////
 			reactor.applyShaderOnDish(clearShader, renderDish);
-			reactor.mixDish(mixShader, renderDish, {newTexture: enemy2Dish}, {palette: enemy2Colors.getTexture()});
-			reactor.mixDish(mixShader, renderDish, {newTexture: enemyDish}, {palette: enemyColors.getTexture()});
-			reactor.mixDish(mixShader, renderDish, {newTexture: shipDish}, {palette: shipColors.getTexture()});
-			reactor.mixDish(mixShader, renderDish, {newTexture: shipExplosionDish}, {palette: shipExplosionColors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {texNew: enemy2Dish}, {texPalette: enemy2Colors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {texNew: enemyDish}, {texPalette: enemyColors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {texNew: shipDish}, {texPalette: shipColors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {texNew: shipExplosionDish}, {texPalette: shipExplosionColors.getTexture()});
 
 			
 			//RENDER

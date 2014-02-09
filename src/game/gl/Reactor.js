@@ -54,13 +54,13 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		this.applyShader(paintShader, null, bindCallback)
 	}
 
-	Reactor.prototype.mixDish = function(mixShader, mainDish, paramDishes, textures, callback)
+	Reactor.prototype.mixDish = function(mixShader, mainDish, paramDishes, parameters, callback)
 	{
 		var framebuffer = mainDish.getNextFramebuffer();
 		var bindCallback = function(gl, progCA)
 		{
 			// set param for shader to TEXTURE0
-			gl.uniform1i(gl.getUniformLocation(progCA, "mainTexture"), 0);
+			gl.uniform1i(gl.getUniformLocation(progCA, "texFrame"), 0);
 			// set glcontext TEXTURE0 to current frame of mainDish
 			gl.activeTexture(gl.TEXTURE0);    
 			gl.bindTexture(gl.TEXTURE_2D, mainDish.getCurrentTexture());
@@ -73,11 +73,26 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 				gl.bindTexture(gl.TEXTURE_2D, paramDishes[paramName].getCurrentTexture());	
 				textureCount++;
 			}
-			for (var paramName in textures) {
-				gl.uniform1i(gl.getUniformLocation(progCA, paramName), textureCount);
-				gl.activeTexture(gl.TEXTURE0 + textureCount);    
-				gl.bindTexture(gl.TEXTURE_2D, textures[paramName]);	
-				textureCount++;
+			for (var paramName in parameters) {
+				var param = parameters[paramName];
+				if (param instanceof WebGLTexture) {
+					gl.uniform1i(gl.getUniformLocation(progCA, paramName), textureCount);
+					gl.activeTexture(gl.TEXTURE0 + textureCount);    
+					gl.bindTexture(gl.TEXTURE_2D, param);	
+					textureCount++;
+				}
+				else {
+					//if (param is int) 
+					if (typeof param === "number") {
+						gl.uniform1f(gl.getUniformLocation(progCA, paramName), param);
+					}
+					else {
+						var l = param.length;
+						if (l == 2) {
+							gl.uniform2f(gl.getUniformLocation(progCA, paramName), param[0], param[1]);
+						}
+					}
+				}
 			}
 			
 			if (callback) {
