@@ -29,7 +29,10 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 
 	loader.load("clear", "src/game/shaders/clear.shader", "text");
 	loader.load("mixPalette", "src/game/shaders/mixPalette.shader", "text");
+
 	loader.load("drawRect", "src/game/shaders/drawRect.shader", "text");
+	loader.load("drawCircle", "src/game/shaders/drawCircle.shader", "text");
+
 	loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
 	loader.load("intersectSpawn", "src/game/shaders/intersectSpawn.shader", "text");
 
@@ -46,7 +49,10 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 
 		var clearShader = reactor.compileShader(data.clear);
 		var paintShader = reactor.compileShader(data.painter);
+
 		var drawRectShader = reactor.compileShader(data.drawRect);
+		var drawCircleShader = reactor.compileShader(data.drawCircle);
+
 		var mixShader = reactor.compileShader(data.mixPalette);
 		var intersectSpawnShader = reactor.compileShader(data.intersectSpawn);
 		var copyShader = reactor.compileShader(data.copyPaste);
@@ -98,7 +104,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		var gameLoop = new utils.AnimationLoop(function() {
 			
 			// USER INPUT Poll Keyboard //////////////////////////////////////////////////
-			var stepSize = 2;
+			var stepSize = 1.5;
 			if (keyboard.isPressed(keyboard.UP)) shipY += stepSize;
 			if (keyboard.isPressed(keyboard.DOWN)) shipY -= stepSize;
 			if (keyboard.isPressed(keyboard.LEFT)) shipX -= stepSize;
@@ -157,7 +163,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			reactor.step(shipRule, shipDish);
 
 			// "DRAW" SHIP
-			reactor.mixDish(drawRectShader, shipDish, {rectPos: [shipX+1, shipY+1], rectSize: [6, 6], state: (shipRule.nrStates-1)/255});
+			//reactor.mixDish(drawRectShader, shipDish, {rectPos: [shipX, shipY], rectSize: [6, 6], state: (shipRule.nrStates-1)/255});
+			reactor.mixDish(drawCircleShader, shipDish, {center: [shipX, shipY], radius: 3.5, state: (shipRule.nrStates-1)/255});
 			//reactor.mixDish(drawRectShader, enemyDish, {rectPos: [shipX+1, shipY+1], rectSize: [3, 3], state: 0});
 
 			// Dish INTERACTION ///////////////////////////////////
