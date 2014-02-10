@@ -10,7 +10,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 	var gameW = 256, gameH = 256;
 	gameW = 430, gameH = 230;
 	var zoom = 3;
-	
+	var mouseMode = "shoot";	
+
 	var fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
 	// Setup core 	
@@ -167,12 +168,18 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			var sX = s/gameW * dX/dL;
 			var sY = s/gameH * dY/dL;
 
-			allocateParticle(2*shipX/gameW-1, 2*shipY/gameH-1, sX, sY);
-	
-			// paste disabled for now
-			if (false) {
+			if (mouseMode == "shoot") {
+				allocateParticle(2*shipX/gameW-1, 2*shipY/gameH-1, sX, sY);
+			}	
+			else if (mouseMode == "copy") {
+				reactor.mixDish(copyShader, bufferDish, {
+					destinationPos: [0, 0], destinationSize: [bufferDish.width, bufferDish.height],
+					texSource: enemyDish, sourcePos: [x-bufferDish.width/2, y-bufferDish.height/2], sourceRes: [gameW, gameH], 	
+					}); 
+			}		
+			else if (mouseMode == "paste") {
 				reactor.mixDish(copyShader, enemyDish, {
-						destinationPos: [x, y], destinationSize: [bufferDish.width, bufferDish.height],
+						destinationPos: [x-bufferDish.width/2, y-bufferDish.height/2], destinationSize: [bufferDish.width, bufferDish.height],
 						texSource: bufferDish, sourcePos: [0, 0], sourceRes: [bufferDish.width, bufferDish.height], 	
 						}); 
 			}		
@@ -199,7 +206,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 					shipX = gameW/2, shipY = gameH/2;
 			}
 
-			if (keyboard.isPressed(65+2))
+			if (keyboard.isPressed(27))
 			{
 				enemyDish.setAll(0);
 			}
@@ -234,9 +241,18 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 					texSource: enemy2Dish, sourcePos: [0, 0], sourceRes: [gameW, gameH], 
 					}); 
 			}
-			if (keyboard.isPressed(27))
+
+			if (keyboard.isPressed("1".charCodeAt()))
 			{
-				copyDish.setAll(0);
+				mouseMode = "shoot";
+			}
+			if (keyboard.isPressed("P".charCodeAt()))
+			{
+				mouseMode = "paste";
+			}
+			if (keyboard.isPressed("C".charCodeAt()))
+			{
+				mouseMode = "copy";
 			}
 
 			// ENEMIES //////////////////////////////////////
