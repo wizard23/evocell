@@ -66,17 +66,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			pointCoordinates[2*i] = -10;
 			pointCoordinates[2*i+1] = -10;
 		}
-
-		pointCoordinates[0] = 0;
-		pointCoordinates[1] = 0;
-		pointSpeeds[0] = 0.001;
-		pointSpeeds[1] = 0.002;
-
-		pointCoordinates[2+0] = 0;
-		pointCoordinates[2+1] = 0;
-		pointSpeeds[2+0] = 0.005;
-		pointSpeeds[2+1] = -0.005;
 	
+		var shotDelay = 0;
 		var pixelValues = new Uint8Array(1*1*4);
 
 		var pointsBuffer = gl.createBuffer();
@@ -156,7 +147,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 				if (shipX < 0 || shipX > gameW || shipY < 0 || shipY > gameH)
 					shipX = gameW/2, shipY = gameH/2;
 			}
-	
+
+			
 			// copy paste stuff
 			if (keyboard.isPressed(65+2))
 			{
@@ -192,7 +184,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			}
 
 			// ENEMIES //////////////////////////////////////
-			if (cnt % 2 == 0)
+			if (cnt % 3 == 0)
 				reactor.step(enemyRule, enemyDish);
 			if (cnt % 6 == 0)
 				reactor.step(enemy2Rule, enemy2Dish);
@@ -207,8 +199,72 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			//reactor.mixDish(drawRectShader, enemyDish, {rectPos: [shipX+1, shipY+1], rectSize: [3, 3], state: 0});
 			
 
+			function allocateParticle(x, y, xs, ys) {
+				for (var i = 0; i < SHOTS; i++)
+					{
+						var xx = pointCoordinates[2*i];
+						var yy = pointCoordinates[2*i+1];
+						if (xx < -1 || xx >1 || yy < -1 || yy > 1)
+						{
+							pointCoordinates[2*i] = x;
+							pointCoordinates[2*i + 1] =y;
+						
+							pointSpeeds[2*i] = xs;
+							pointSpeeds[2*i + 1] = ys;
+							break;
+						}  
+					}		
+			}
+
+			var shotSpeed = 2.2;
+
+			var px = (shipX/gameW)*2. - 1.;
+			var py = (shipY/gameH)*2. - 1.
+
+			var sX = 2*shotSpeed/gameW;
+			var sY = 2*shotSpeed/gameH; 
+
+			var sDX = 0, sDY = 0;			
+			if (keyboard.isPressed("D".charCodeAt()))
+			{
+				sDX = 1;
+			}
+			if (keyboard.isPressed("A".charCodeAt()))
+			{
+				sDX = -1;
+			}	
+			if (keyboard.isPressed("W".charCodeAt()))
+			{
+				sDY = 1;
+			}	
+			if (keyboard.isPressed("S".charCodeAt()))
+			{
+				sDY = -1;
+			}
+			
+
+			if (sDX || sDY) {
+				if (!shotDelay)
+				{
+					shotDelay = 10;
+					allocateParticle(px, py, sDX*sX, sDY*sY);
+				}
+				else 
+					shotDelay--;
+			}
+			else
+				shotDelay = 0;
+
+
+			
 			//if (keyboard.isPressed(65+1))
 			{
+				for (var i = 0; i < SHOTS; i++)
+				{
+					pointCoordinates[2*i] += pointSpeeds[2*i];
+					pointCoordinates[2*i+1] += pointSpeeds[2*i+1];
+				}
+
 				gl.bindBuffer(gl.ARRAY_BUFFER, pointsBuffer);
 				gl.bufferData(gl.ARRAY_BUFFER, pointCoordinates.byteLength, gl.STATIC_DRAW);
 				gl.bufferSubData(gl.ARRAY_BUFFER, 0, pointCoordinates);
@@ -224,12 +280,6 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 
 					gl.drawArrays(gl.POINTS,0, pointCoordinates.length/2);
 				});
-			
-				for (var i = 0; i < SHOTS; i++)
-				{
-					pointCoordinates[2*i] += pointSpeeds[2*i];
-					pointCoordinates[2*i+1] += pointSpeeds[2*i+1];
-				}
 
 				var pixelValues = new Uint8Array(1*1*4);
 				for (var i = 0; i < SHOTS; i++)
@@ -239,8 +289,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 					gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, enemyDish.getCurrentTexture(), 0);
 					gl.readPixels(gameW*0.5*(pointCoordinates[2*i]+1), gameH*0.5*(pointCoordinates[2*i+1]+1), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixelValues);
 					if (pixelValues[3] != 0) {
-						pointCoordinates[2*i] = 0.;
-						pointCoordinates[2*i+1] = 0.;
+						pointCoordinates[2*i] = 10.;
+						pointCoordinates[2*i+1] = 10.;
 					}
 				}
 			}
