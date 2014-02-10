@@ -144,6 +144,7 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 							"void main(void) {" +
 							"	gl_Position = vec4(aPos, 1.);" +
 							"	vTexCoord = aTexCoord;" +
+							"  gl_PointSize = 2.0;" +
 							"}";
 		}
 
@@ -176,14 +177,9 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 	// GL level
 
 
-	Reactor.prototype.applyShader = function(shader, framebuffer, bindCallback)
+	Reactor.prototype.applyShader = function(shader, framebuffer, bindCallback, renderCallbac)
 	{
 		var gl = this.gl;
-		
-		// is it needed??
-		//this.canvas.width = framebuffer.width;
-		//this.canvas.height = framebuffer.height;
-		//gl.viewport(0,0, framebuffer.width, framebuffer.height);
 	
 		gl.useProgram(shader);
 
@@ -192,19 +188,23 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		else
 			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
-		// default arguments for all 3D shader (convention)
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.posBuffer);
-		var aPosLoc = gl.getAttribLocation(shader, "aPos");
-		gl.enableVertexAttribArray( aPosLoc );
-		var aTexLoc = gl.getAttribLocation(shader, "aTexCoord");
-		gl.enableVertexAttribArray( aTexLoc );
-		gl.vertexAttribPointer(aPosLoc, 3, gl.FLOAT, gl.FALSE, 0, 0);
-		gl.vertexAttribPointer(aTexLoc, 2, gl.FLOAT, gl.FALSE, 0, this.texCoordOffset);
-	
 		// other arguments
-		bindCallback(gl, shader);
+		
+		if (bindCallback) bindCallback(gl, shader);
 
-		gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+		if (!renderCallbac) {
+			// default arguments for all 3D shader (convention)
+			gl.bindBuffer(gl.ARRAY_BUFFER, this.posBuffer);
+			var aPosLoc = gl.getAttribLocation(shader, "aPos");
+			gl.enableVertexAttribArray( aPosLoc );
+			var aTexLoc = gl.getAttribLocation(shader, "aTexCoord");
+			gl.enableVertexAttribArray( aTexLoc );
+			gl.vertexAttribPointer(aPosLoc, 3, gl.FLOAT, gl.FALSE, 0, 0);
+			gl.vertexAttribPointer(aTexLoc, 2, gl.FLOAT, gl.FALSE, 0, this.texCoordOffset);
+			gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+		}
+		else 
+			renderCallbac(gl, shader);
 	}
 
 	// helpers

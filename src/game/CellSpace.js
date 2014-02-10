@@ -17,6 +17,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 	var context = document.getElementById('c');
 	var reactor = new  EC.Reactor(context, gameW, gameH);
 	reactor.setRenderSize(gameW*zoom, gameH*zoom);
+	var gl = reactor.gl;		
+
 
 	var loader = new EC.ResLoader();
 
@@ -27,8 +29,11 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 	loader.load("shipExplosionRule", "rules/ship_avg4_nice", "ecfile");
 	loader.load("shipRule", "rules/ship_avg4_nice", "ecfile");
 
+	loader.load("vertexPoints", "src/game/shaders/vertexPoints.vshader", "text");
+	loader.load("drawAll", "src/game/shaders/drawAll.shader", "text");
+
 	loader.load("clear", "src/game/shaders/clear.shader", "text");
-	loader.load("mixPalette", "src/game/shaders/mixPalette.shader", "text");
+	loader.load("mixPalette", "src/game/shaders/mixPalette.shader", "text");	
 
 	loader.load("drawRect", "src/game/shaders/drawRect.shader", "text");
 	loader.load("drawCircle", "src/game/shaders/drawCircle.shader", "text");
@@ -46,6 +51,19 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		var copyDish = reactor.compileDish();
 		var bufferDish = reactor.compileDish(64, 64);
 		var renderDish = reactor.compileDish();
+
+
+
+			
+		var pointCoordinates = new Float32Array([-0.5,-0.5,  0.5,0.4]);
+		var pointsBuffer = gl.createBuffer();
+		gl.bindBuffer(gl.ARRAY_BUFFER, pointsBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, pointCoordinates.byteLength, gl.STATIC_DRAW);
+		gl.bufferSubData(gl.ARRAY_BUFFER, 0, pointCoordinates);
+
+		var drawPointsShader = reactor.compileShader(data.vertexPoints, data.drawAll);
+
+
 
 		var clearShader = reactor.compileShader(data.clear);
 		var paintShader = reactor.compileShader(data.painter);
@@ -102,7 +120,6 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		
 		var cnt = 0;
 		var gameLoop = new utils.AnimationLoop(function() {
-			
 			// USER INPUT Poll Keyboard //////////////////////////////////////////////////
 			var stepSize = 1.5;
 			if (keyboard.isPressed(keyboard.UP)) shipY += stepSize;
@@ -126,7 +143,6 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 					}); 
 
 				var pixelValues = new Uint8Array(10*10*4);
-				var gl = reactor.gl;
 
 				gl.bindFramebuffer(gl.FRAMEBUFFER, bufferDish.getCurrentFramebuffer());
 				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, bufferDish.getCurrentTexture(), 0);
@@ -166,6 +182,25 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			//reactor.mixDish(drawRectShader, shipDish, {rectPos: [shipX, shipY], rectSize: [6, 6], state: (shipRule.nrStates-1)/255});
 			reactor.mixDish(drawCircleShader, shipDish, {center: [shipX, shipY], radius: 3.5, state: (shipRule.nrStates-1)/255});
 			//reactor.mixDish(drawRectShader, enemyDish, {rectPos: [shipX+1, shipY+1], rectSize: [3, 3], state: 0});
+			
+
+			if (keyboard.isPressed(65+	1))
+			{
+				reactor.applyShader(drawPointsShader, shipDish.getCurrentFramebuffer(), false, function(gl, shader) {
+
+					gl.bindBuffer(gl.ARRAY_BUFFER, pointsBuffer);
+					var pointPosLoc = gl.getAttribLocation(shader, "pointPos");
+					gl.enableVertexAttribArray(pointPosLoc);
+					gl.vertexAttribPointer(pointPosLoc, 2, gl.FLOAT, gl.FALSE, 0, 0);
+
+					gl.uniform1f(gl.getUniformLocation(shader, "state"), 3./255.);
+
+					gl.drawArrays(gl.POINTS,0, pointCoordinates.length/2);
+				});
+				//shipDish.flip();
+			}
+			
+
 
 			// Dish INTERACTION ///////////////////////////////////
 			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: shipDish, tex2: enemyDish, state: (shipExplosionRule.nrStates-1)/255.});
