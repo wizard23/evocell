@@ -14,8 +14,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 	var fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
 	// Setup core 	
-	var context = document.getElementById('c');
-	var reactor = new  EC.Reactor(context, gameW, gameH);
+	var canvas = document.getElementById('c');
+	var reactor = new  EC.Reactor(canvas, gameW, gameH);
 	reactor.setRenderSize(gameW*zoom, gameH*zoom);
 	var gl = reactor.gl;		
 
@@ -131,7 +131,28 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		shipExplosionDish.randomize(shipExplosionRule.nrStates, 0.01);
 
 		var shipX = gameW/2, shipY = gameH/2;
+
+		function handleCanvasMouseDown(evt) {
+			var coords = canvas.relMouseCoords(evt);
+			var x = coords.x;
+			var y = coords.y;
+
+			x /= zoom;
+			y /= zoom;
+			y = gameH-y;
+	
 		
+			reactor.mixDish(copyShader, enemyDish, {
+						destinationPos: [x, y], destinationSize: [bufferDish.width, bufferDish.height],
+						texSource: bufferDish, sourcePos: [0, 0], sourceRes: [bufferDish.width, bufferDish.height], 	
+						}); 		
+			
+
+			evt.preventDefault();
+			evt.stopPropagation();
+		}
+		canvas.addEventListener('mousedown', handleCanvasMouseDown, false);
+
 		var cnt = 0;
 		var gameLoop = new utils.AnimationLoop(function() {
 			// USER INPUT Poll Keyboard //////////////////////////////////////////////////
@@ -148,9 +169,14 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 					shipX = gameW/2, shipY = gameH/2;
 			}
 
+			if (keyboard.isPressed(65+2))
+			{
+				enemyDish.setAll(0);
+			}
+
 			
 			// copy paste stuff
-			if (keyboard.isPressed(65+2))
+			if (keyboard.isPressed(65+7))
 			{
 				reactor.mixDish(copyShader, bufferDish, {
 					destinationPos: [0, 0], destinationSize: [bufferDish.width, bufferDish.height],
