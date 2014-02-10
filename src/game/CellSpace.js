@@ -132,6 +132,24 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 
 		var shipX = gameW/2, shipY = gameH/2;
 
+		function allocateParticle(x, y, xs, ys) {
+				for (var i = 0; i < SHOTS; i++)
+					{
+						var xx = pointCoordinates[2*i];
+						var yy = pointCoordinates[2*i+1];
+						if (xx < -1 || xx >1 || yy < -1 || yy > 1)
+						{
+							pointCoordinates[2*i] = x;
+							pointCoordinates[2*i + 1] =y;
+						
+							pointSpeeds[2*i] = xs;
+							pointSpeeds[2*i + 1] = ys;
+							break;
+						}  
+					}		
+			}
+
+		var shotSpeed = 3.2;
 		function handleCanvasMouseDown(evt) {
 			var coords = canvas.relMouseCoords(evt);
 			var x = coords.x;
@@ -140,12 +158,24 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			x /= zoom;
 			y /= zoom;
 			y = gameH-y;
+
+			// spawn shot
+			var dX = x-shipX;
+			var dY = y-shipY;
+			var dL = Math.sqrt(dX*dX+dY*dY);
+			var s = shotSpeed*2;
+			var sX = s/gameW * dX/dL;
+			var sY = s/gameH * dY/dL;
+
+			allocateParticle(2*shipX/gameW-1, 2*shipY/gameH-1, sX, sY);
 	
-		
-			reactor.mixDish(copyShader, enemyDish, {
+			// paste disabled for now
+			if (false) {
+				reactor.mixDish(copyShader, enemyDish, {
 						destinationPos: [x, y], destinationSize: [bufferDish.width, bufferDish.height],
 						texSource: bufferDish, sourcePos: [0, 0], sourceRes: [bufferDish.width, bufferDish.height], 	
-						}); 		
+						}); 
+			}		
 			
 
 			evt.preventDefault();
@@ -210,7 +240,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			}
 
 			// ENEMIES //////////////////////////////////////
-			if (cnt % 3 == 0)
+			if (cnt % 2 == 0)
 				reactor.step(enemyRule, enemyDish);
 			if (cnt % 6 == 0)
 				reactor.step(enemy2Rule, enemy2Dish);
@@ -223,26 +253,6 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			//reactor.mixDish(drawRectShader, shipDish, {rectPos: [shipX, shipY], rectSize: [6, 6], state: (shipRule.nrStates-1)/255});
 			reactor.mixDish(drawCircleShader, shipDish, {center: [shipX, shipY], radius: 3.5, state: (shipRule.nrStates-1)/255});
 			//reactor.mixDish(drawRectShader, enemyDish, {rectPos: [shipX+1, shipY+1], rectSize: [3, 3], state: 0});
-			
-
-			function allocateParticle(x, y, xs, ys) {
-				for (var i = 0; i < SHOTS; i++)
-					{
-						var xx = pointCoordinates[2*i];
-						var yy = pointCoordinates[2*i+1];
-						if (xx < -1 || xx >1 || yy < -1 || yy > 1)
-						{
-							pointCoordinates[2*i] = x;
-							pointCoordinates[2*i + 1] =y;
-						
-							pointSpeeds[2*i] = xs;
-							pointSpeeds[2*i + 1] = ys;
-							break;
-						}  
-					}		
-			}
-
-			var shotSpeed = 2.2;
 
 			var px = (shipX/gameW)*2. - 1.;
 			var py = (shipY/gameH)*2. - 1.
