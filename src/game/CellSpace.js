@@ -149,7 +149,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 					}		
 			}
 
-		var shotSpeed = 3.2;
+		var shotSpeed = 2.9;
 		function handleCanvasMouseDown(evt) {
 			var coords = canvas.relMouseCoords(evt);
 			var x = coords.x;
@@ -193,7 +193,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			if (keyboard.isPressed(keyboard.RIGHT)) shipX += stepSize
 			// space
 			if (keyboard.isPressed(32)) {
-				enemyDish.randomize(enemyRule.nrStates, 0.0004);
+				enemyDish.randomize(enemyRule.nrStates, 0.0001);
 				enemy2Dish.randomize(enemyRule.nrStates, 0.01);
 				if (shipX < 0 || shipX > gameW || shipY < 0 || shipY > gameH)
 					shipX = gameW/2, shipY = gameH/2;
