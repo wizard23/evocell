@@ -189,7 +189,6 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 			gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 
 		// other arguments
-		
 		if (bindCallback) bindCallback(gl, shader);
 
 		if (!renderCallbac) {
