@@ -54,23 +54,25 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		var renderDish = reactor.compileDish();
 
 
-		var SHOTS = 10;
+		var SHOTS = 50;
 		var nextPointNr = 0;
 		var pointCoordinates = new Float32Array(2*SHOTS);
 		var pointSpeeds = new Float32Array(2*SHOTS);
 		var pointAlive = new Array(SHOTS);;
+
+		var s = 0.01;
+		var r = 0.01;
 		for (var i = 0; i < SHOTS; i++)
 		{
-			pointAlive[i] = 0;
-			pointSpeeds[2*i] = 0;
-			pointSpeeds[2*i+1] = 0;
-			pointCoordinates[2*i] = -10;
-			pointCoordinates[2*i+1] = -10;
+			pointAlive[i] = 1;
+			pointSpeeds[2*i] = s * Math.cos(3.1415*2*i/SHOTS);
+			pointSpeeds[2*i+1] = s * Math.sin(3.1415*2*i/SHOTS);
+			pointCoordinates[2*i] = r * Math.cos(3.1415*2*i/SHOTS);
+			pointCoordinates[2*i+1] = r * Math.sin(3.1415*2*i/SHOTS);
 		}
 	
+		var pixelValues = new Uint8Array(gameW*gameH*4); // for colission deection
 		var shotDelay = 0;
-		var pixelValues = new Uint8Array(1*1*4);
-
 		var pointsBuffer = gl.createBuffer();
 		gl.bindBuffer(gl.ARRAY_BUFFER, pointsBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, pointCoordinates.byteLength, gl.STATIC_DRAW);
@@ -200,7 +202,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			if (keyboard.isPressed(keyboard.RIGHT)) shipX += stepSize
 			// space
 			if (keyboard.isPressed(32)) {
-				enemyDish.randomize(enemyRule.nrStates, 0.0001);
+				enemyDish.randomize(enemyRule.nrStates, 0.0002);
 				enemy2Dish.randomize(enemyRule.nrStates, 0.01);
 				if (shipX < 0 || shipX > gameW || shipY < 0 || shipY > gameH)
 					shipX = gameW/2, shipY = gameH/2;
@@ -211,20 +213,35 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 				enemyDish.setAll(0);
 			}
 
+			if (keyboard.isPressed(65+1)) {
+				var s = 0.02;
+				var r = 0.01;
+				for (var i = 0; i < SHOTS; i++)
+				{
+					pointAlive[i] = 1;
+					pointSpeeds[2*i] = s * Math.cos(3.1415*2*i/SHOTS);
+					pointSpeeds[2*i+1] = s * Math.sin(3.1415*2*i/SHOTS);
+					pointCoordinates[2*i] = 2*shipX/gameW - 1;
+					pointCoordinates[2*i+1] = 2*shipY/gameH - 1;
+				}
+			}
+
 			
 			// copy paste stuff
 			if (keyboard.isPressed(65+7))
 			{
+
 				reactor.mixDish(copyShader, bufferDish, {
 					destinationPos: [0, 0], destinationSize: [bufferDish.width, bufferDish.height],
 					texSource: enemy2Dish, sourcePos: [5, 10], sourceRes: [gameW, gameH], 	
 					}); 
 
-				var pixelValues = new Uint8Array(10*10*4);
+
+				var pixelValues2 = new Uint8Array(10*10*4);
 
 				gl.bindFramebuffer(gl.FRAMEBUFFER, bufferDish.getCurrentFramebuffer());
 				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, bufferDish.getCurrentTexture(), 0);
-				var xyz = gl.readPixels(0, 0, 10, 10, gl.RGBA, gl.UNSIGNED_BYTE, pixelValues);
+				var xyz = gl.readPixels(0, 0, 10, 10, gl.RGBA, gl.UNSIGNED_BYTE, pixelValues2);
 
 				//var pattern = bufferDish.saveAsECFile();
 				var ruleAsBlob = data.enemyRule.saveToBlob();
@@ -308,9 +325,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 				shotDelay = 0;
 
 
-			
-			//if (keyboard.isPressed(65+1))
-			{
+		
 				for (var i = 0; i < SHOTS; i++)
 				{
 					pointCoordinates[2*i] += pointSpeeds[2*i];
@@ -322,7 +337,6 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 				gl.bufferSubData(gl.ARRAY_BUFFER, 0, pointCoordinates);
 
 				reactor.applyShader(drawPointsShader, shipDish.getCurrentFramebuffer(), false, function(gl, shader) {
-
 					gl.bindBuffer(gl.ARRAY_BUFFER, pointsBuffer);
 					var pointPosLoc = gl.getAttribLocation(shader, "pointPos");
 					gl.enableVertexAttribArray(pointPosLoc);
@@ -333,19 +347,21 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 					gl.drawArrays(gl.POINTS,0, pointCoordinates.length/2);
 				});
 
-				var pixelValues = new Uint8Array(1*1*4);
+				gl.bindFramebuffer(gl.FRAMEBUFFER, enemyDish.getCurrentFramebuffer());
+				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, enemyDish.getCurrentTexture(), 0);
+				gl.readPixels(0, 0, gameW, gameH, gl.RGBA, gl.UNSIGNED_BYTE, pixelValues);
+
 				for (var i = 0; i < SHOTS; i++)
 				{
-					// no need to bindFramebuffer it's stil here
-					gl.bindFramebuffer(gl.FRAMEBUFFER, enemyDish.getCurrentFramebuffer());
-					gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, enemyDish.getCurrentTexture(), 0);
-					gl.readPixels(gameW*0.5*(pointCoordinates[2*i]+1), gameH*0.5*(pointCoordinates[2*i+1]+1), 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixelValues);
-					if (pixelValues[3] != 0) {
+					var pX = Math.round(gameW*0.5*(pointCoordinates[2*i]+1));
+					var pY = Math.round(gameH*0.5*(pointCoordinates[2*i+1]+1));
+
+					if (pixelValues[(pX+pY*gameW)*4 + 3] != 0) {
 						pointCoordinates[2*i] = 10.;
 						pointCoordinates[2*i+1] = 10.;
 					}
 				}
-			}
+			
 			
 
 
