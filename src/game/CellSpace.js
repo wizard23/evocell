@@ -248,7 +248,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 				if (!game.bombFired) {
 					//game.bombFired = 1;
 					shots.allocateSphere(10, shipX, shipY, shotSpeed, bAngle);
-					bAngle += game.bAD || /*-0.76599; */ 0.44301;
+					bAngle += game.bAD || Math.E/Math.PI; ///*-0.76599; */ 0.44301;
 				}
 			}
 			else {
@@ -272,7 +272,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			}
 
 			if (keyboard.isPressed("T".charCodeAt()) || keyboard.isPressed("R".charCodeAt())) {
-				document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD + " " + ((2*Math.PI)/game.bAD);
+				document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD + " " + ((2*Math.PI)/game.bAD) + ":" + Math.E/Math.PI;
 			}
 			
 			// copy paste stuff
