@@ -12,6 +12,10 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 	var shotSpeed = 2.9;
 	var zoom = 3;
 	var mouseMode = "shoot";	
+	// TODO what laws govern bangle and resulting bombingfield density. define density of bomb array
+	var bAngle = 0.44301; // experimentally found out to cover sphere most randomally (look at bomb swarms as bAngle changes, the cover density is how many different its you get on the circle before you get ...)
+
+	var game = {};
 
 	var fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
@@ -56,7 +60,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 
 
 		
-		var shots = new EC.ParticleSystem(reactor, 500, gameW, gameH);
+		var shots = new EC.ParticleSystem(reactor, 2000, gameW, gameH);
 /*
 				// TODO: generate particle system
 		var SHOTS = 50;
@@ -218,7 +222,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			if (keyboard.isPressed(keyboard.RIGHT)) shipX += stepSize
 			// space
 			if (keyboard.isPressed(32)) {
-				enemyDish.randomize(enemyRule.nrStates, 0.0002);
+				enemyDish.randomize(enemyRule.nrStates, 0.0008);
 				enemy2Dish.randomize(enemyRule.nrStates, 0.01);
 				if (shipX < 0 || shipX > gameW || shipY < 0 || shipY > gameH)
 					shipX = gameW/2, shipY = gameH/2;
@@ -241,9 +245,35 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 					pointCoordinates[2*i+1] = 2*shipY/gameH - 1;
 				}
 				*/
-				shots.allocateSphere(10, shipX, shipY, shotSpeed);
+				if (!game.bombFired) {
+					//game.bombFired = 1;
+					shots.allocateSphere(10, shipX, shipY, shotSpeed, bAngle);
+					bAngle += game.bAD || /*-0.76599; */ 0.44301;
+				}
+			}
+			else {
+				game.bombFired = 0;
 			}
 
+			if (keyboard.isPressed("T".charCodeAt())) {
+				if (game.bAD) 
+					game.bAD += 0.001;
+				else
+					game.bAD = 0.00001;
+				document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD;
+			}
+
+			if (keyboard.isPressed("R".charCodeAt())) {
+				if (game.bAD) 
+					game.bAD -= 0.001;
+				else
+					game.bAD = 0.00001;
+				document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD;
+			}
+
+			if (keyboard.isPressed("T".charCodeAt()) || keyboard.isPressed("R".charCodeAt())) {
+				document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD + " " + ((2*Math.PI)/game.bAD);
+			}
 			
 			// copy paste stuff
 			if (keyboard.isPressed(65+7))

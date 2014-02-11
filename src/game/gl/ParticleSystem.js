@@ -69,12 +69,13 @@ define([], function() {
 		for (var i = 0; i < this.n; i++)
 		{
 			var pX = Math.round(this.width*0.5*(this.pointCoordinates[2*i]+1));
-			var pY = Math.round(this.width*0.5*(this.pointCoordinates[2*i+1]+1));
+			var pY = Math.round(this.height*0.5*(this.pointCoordinates[2*i+1]+1));
 
 			if (this.pixelValues[(pX+pY*this.width)*4 + 3] != 0) {
 				this.pointCoordinates[2*i] = 10.; // out of range
 				this.pointCoordinates[2*i+1] = 10.;
 			}
+
 
 		}
 	} 
@@ -104,11 +105,11 @@ define([], function() {
 		}		
 	}
 
-	ParticleSystem.prototype.allocateSphere = function(n, x, y, s) {
+	ParticleSystem.prototype.allocateSphere = function(n, x, y, s, angle) {
 		this.allocateParticles(n, function(i, n) {
 			return [x, y, 
-				s * Math.cos(Math.PI*2*i/n), 
-				s * Math.sin(Math.PI*2/i/n)
+				s * Math.cos(angle+Math.PI*2*i/n), 
+				s * Math.sin(angle+Math.PI*2*i/n)
 			];
 		});
 	}
