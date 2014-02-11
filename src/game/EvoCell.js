@@ -1,4 +1,4 @@
-define(["Utils", "gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palette"], function(utils, Reactor, Dish, Rule, Palette) {
+define(["Utils", "gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palette", "gl/ParticleSystem"], function(utils, Reactor, Dish, Rule, Palette, ParticleSystem) {
 
 	var ResLoader = function() {
 		this.queue = {};
@@ -260,6 +260,7 @@ define(["Utils", "gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palette"], function(uti
 		Dish: Dish,
 		Rule: Rule,
 		Palette : Palette,
+		ParticleSystem: ParticleSystem,
 		ResLoader: ResLoader
 	}
 });

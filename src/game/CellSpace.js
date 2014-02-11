@@ -9,6 +9,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
 	gameW = 430, gameH = 230;
+	var shotSpeed = 2.9;
 	var zoom = 3;
 	var mouseMode = "shoot";	
 
@@ -54,6 +55,10 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		var renderDish = reactor.compileDish();
 
 
+		
+		var shots = new EC.ParticleSystem(reactor, 500, gameW, gameH);
+/*
+				// TODO: generate particle system
 		var SHOTS = 50;
 		var nextPointNr = 0;
 		var pointCoordinates = new Float32Array(2*SHOTS);
@@ -77,11 +82,10 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		gl.bindBuffer(gl.ARRAY_BUFFER, pointsBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, pointCoordinates.byteLength, gl.STATIC_DRAW);
 		gl.bufferSubData(gl.ARRAY_BUFFER, 0, pointCoordinates);
-
+///////// end todo
+*/
 		var drawPointsShader = reactor.compileShader(data.vertexPoints, data.drawAll);
-
-
-
+		
 		var clearShader = reactor.compileShader(data.clear);
 		var paintShader = reactor.compileShader(data.painter);
 
@@ -135,6 +139,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 
 		var shipX = gameW/2, shipY = gameH/2;
 
+/*
+// TODO: particle
 		function allocateParticle(x, y, xs, ys) {
 				for (var i = 0; i < SHOTS; i++)
 					{
@@ -151,8 +157,9 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 						}  
 					}		
 			}
+			var shotSpeed = 2.9;
+*/
 
-		var shotSpeed = 2.9;
 		function handleCanvasMouseDown(evt) {
 			var coords = canvas.relMouseCoords(evt);
 			var x = coords.x;
@@ -162,16 +169,25 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			y /= zoom;
 			y = gameH-y;
 
-			// spawn shot
+/*
 			var dX = x-shipX;
 			var dY = y-shipY;
 			var dL = Math.sqrt(dX*dX+dY*dY);
 			var s = shotSpeed*2;
 			var sX = s/gameW * dX/dL;
 			var sY = s/gameH * dY/dL;
+*/
 
 			if (mouseMode == "shoot") {
-				allocateParticle(2*shipX/gameW-1, 2*shipY/gameH-1, sX, sY);
+				// spawn shot
+				var dX = x-shipX;
+				var dY = y-shipY;
+				var dL = Math.sqrt(dX*dX+dY*dY);
+				var sX = shotSpeed * dX/dL;
+				var sY = shotSpeed * dY/dL;
+				// todo: particles:   shots.allocateParticle(shipX, shipY, sX, sY);
+				//allocateParticle(2*shipX/gameW-1, 2*shipY/gameH-1, sX, sY);
+				shots.allocateParticle(shipX, shipY, sX, sY);
 			}	
 			else if (mouseMode == "copy") {
 				reactor.mixDish(copyShader, bufferDish, {
@@ -214,7 +230,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			}
 
 			if (keyboard.isPressed(65+1)) {
-				var s = 0.02;
+				/*var s = 0.02;
 				var r = 0.01;
 				for (var i = 0; i < SHOTS; i++)
 				{
@@ -224,6 +240,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 					pointCoordinates[2*i] = 2*shipX/gameW - 1;
 					pointCoordinates[2*i+1] = 2*shipY/gameH - 1;
 				}
+				*/
+				shots.allocateSphere(10, shipX, shipY, shotSpeed);
 			}
 
 			
@@ -325,6 +343,10 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 				shotDelay = 0;
 
 
+			shots.step();
+			shots.collide(enemyDish);
+			shots.draw(drawPointsShader, shipDish);
+/*
 		
 				for (var i = 0; i < SHOTS; i++)
 				{
@@ -362,7 +384,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 					}
 				}
 			
-			
+	*/		
 
 
 			// Dish INTERACTION ///////////////////////////////////
