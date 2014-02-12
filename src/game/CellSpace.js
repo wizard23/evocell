@@ -59,35 +59,9 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		var renderDish = reactor.compileDish();
 
 
-		
 		var shots = new EC.ParticleSystem(reactor, 2000, gameW, gameH);
-/*
-				// TODO: generate particle system
-		var SHOTS = 50;
-		var nextPointNr = 0;
-		var pointCoordinates = new Float32Array(2*SHOTS);
-		var pointSpeeds = new Float32Array(2*SHOTS);
-		var pointAlive = new Array(SHOTS);;
 
-		var s = 0.01;
-		var r = 0.01;
-		for (var i = 0; i < SHOTS; i++)
-		{
-			pointAlive[i] = 1;
-			pointSpeeds[2*i] = s * Math.cos(3.1415*2*i/SHOTS);
-			pointSpeeds[2*i+1] = s * Math.sin(3.1415*2*i/SHOTS);
-			pointCoordinates[2*i] = r * Math.cos(3.1415*2*i/SHOTS);
-			pointCoordinates[2*i+1] = r * Math.sin(3.1415*2*i/SHOTS);
-		}
-	
-		var pixelValues = new Uint8Array(gameW*gameH*4); // for colission deection
-		var shotDelay = 0;
-		var pointsBuffer = gl.createBuffer();
-		gl.bindBuffer(gl.ARRAY_BUFFER, pointsBuffer);
-		gl.bufferData(gl.ARRAY_BUFFER, pointCoordinates.byteLength, gl.STATIC_DRAW);
-		gl.bufferSubData(gl.ARRAY_BUFFER, 0, pointCoordinates);
-///////// end todo
-*/
+
 		var drawPointsShader = reactor.compileShader(data.vertexPoints, data.drawAll);
 		
 		var clearShader = reactor.compileShader(data.clear);
@@ -106,6 +80,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		var weaponRule = reactor.compileRule(data.weaponRule, enemyDish);
 		var shipExplosionRule = reactor.compileRule(data.shipExplosionRule, enemy2Dish);
 		
+
 		var enemyColors = new EC.Palette(reactor);
 		enemyColors.setColor(0, [0, 0, 0, 255]);
 		enemyColors.setColor(1, [140, 10, 140, 255]);
@@ -143,27 +118,6 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 
 		var shipX = gameW/2, shipY = gameH/2;
 
-/*
-// TODO: particle
-		function allocateParticle(x, y, xs, ys) {
-				for (var i = 0; i < SHOTS; i++)
-					{
-						var xx = pointCoordinates[2*i];
-						var yy = pointCoordinates[2*i+1];
-						if (xx < -1 || xx >1 || yy < -1 || yy > 1)
-						{
-							pointCoordinates[2*i] = x;
-							pointCoordinates[2*i + 1] =y;
-						
-							pointSpeeds[2*i] = xs;
-							pointSpeeds[2*i + 1] = ys;
-							break;
-						}  
-					}		
-			}
-			var shotSpeed = 2.9;
-*/
-
 		function handleCanvasMouseDown(evt) {
 			var coords = canvas.relMouseCoords(evt);
 			var x = coords.x;
@@ -173,15 +127,6 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			y /= zoom;
 			y = gameH-y;
 
-/*
-			var dX = x-shipX;
-			var dY = y-shipY;
-			var dL = Math.sqrt(dX*dX+dY*dY);
-			var s = shotSpeed*2;
-			var sX = s/gameW * dX/dL;
-			var sY = s/gameH * dY/dL;
-*/
-
 			if (mouseMode == "shoot") {
 				// spawn shot
 				var dX = x-shipX;
@@ -189,8 +134,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 				var dL = Math.sqrt(dX*dX+dY*dY);
 				var sX = shotSpeed * dX/dL;
 				var sY = shotSpeed * dY/dL;
-				// todo: particles:   shots.allocateParticle(shipX, shipY, sX, sY);
-				//allocateParticle(2*shipX/gameW-1, 2*shipY/gameH-1, sX, sY);
+
 				shots.allocateParticle(shipX, shipY, sX, sY);
 			}	
 			else if (mouseMode == "copy") {
@@ -206,7 +150,6 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 						}); 
 			}		
 			
-
 			evt.preventDefault();
 			evt.stopPropagation();
 		}
@@ -234,17 +177,6 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			}
 
 			if (keyboard.isPressed(65+1)) {
-				/*var s = 0.02;
-				var r = 0.01;
-				for (var i = 0; i < SHOTS; i++)
-				{
-					pointAlive[i] = 1;
-					pointSpeeds[2*i] = s * Math.cos(3.1415*2*i/SHOTS);
-					pointSpeeds[2*i+1] = s * Math.sin(3.1415*2*i/SHOTS);
-					pointCoordinates[2*i] = 2*shipX/gameW - 1;
-					pointCoordinates[2*i+1] = 2*shipY/gameH - 1;
-				}
-				*/
 				if (!game.bombFired) {
 					//game.bombFired = 1;
 					shots.allocateSphere(10, shipX, shipY, shotSpeed, bAngle);
@@ -292,7 +224,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 				var xyz = gl.readPixels(0, 0, 10, 10, gl.RGBA, gl.UNSIGNED_BYTE, pixelValues2);
 
 				//var pattern = bufferDish.saveAsECFile();
-				var ruleAsBlob = data.enemyRule.saveToBlob();
+				//var ruleAsBlob = data.enemyRule.saveToBlob();
 				//utils.saveAs(ruleAsBlob, "ecPattern");
 
 				reactor.mixDish(copyShader, copyDish, {
@@ -331,15 +263,8 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			reactor.step(shipRule, shipDish);
 
 			// "DRAW" SHIP
-			//reactor.mixDish(drawRectShader, shipDish, {rectPos: [shipX, shipY], rectSize: [6, 6], state: (shipRule.nrStates-1)/255});
 			reactor.mixDish(drawCircleShader, shipDish, {center: [shipX, shipY], radius: 3.5, state: (shipRule.nrStates-1)/255});
-			//reactor.mixDish(drawRectShader, enemyDish, {rectPos: [shipX+1, shipY+1], rectSize: [3, 3], state: 0});
 
-			var px = (shipX/gameW)*2. - 1.;
-			var py = (shipY/gameH)*2. - 1.
-
-			var sX = 2*shotSpeed/gameW;
-			var sY = 2*shotSpeed/gameH; 
 
 			var sDX = 0, sDY = 0;			
 			if (keyboard.isPressed("D".charCodeAt()))
@@ -358,12 +283,15 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			{
 				sDY = -1;
 			}
-			
-
 			if (sDX || sDY) {
 				if (!shotDelay)
 				{
 					shotDelay = 10;
+					var px = (shipX/gameW)*2. - 1.;
+					var py = (shipY/gameH)*2. - 1.
+					var sX = 2*shotSpeed/gameW;
+					var sY = 2*shotSpeed/gameH; 
+
 					allocateParticle(px, py, sDX*sX, sDY*sY);
 				}
 				else 
@@ -376,46 +304,6 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			shots.step();
 			shots.collide(enemyDish);
 			shots.draw(drawPointsShader, shipDish);
-/*
-		
-				for (var i = 0; i < SHOTS; i++)
-				{
-					pointCoordinates[2*i] += pointSpeeds[2*i];
-					pointCoordinates[2*i+1] += pointSpeeds[2*i+1];
-				}
-
-				gl.bindBuffer(gl.ARRAY_BUFFER, pointsBuffer);
-				gl.bufferData(gl.ARRAY_BUFFER, pointCoordinates.byteLength, gl.STATIC_DRAW);
-				gl.bufferSubData(gl.ARRAY_BUFFER, 0, pointCoordinates);
-
-				reactor.applyShader(drawPointsShader, shipDish.getCurrentFramebuffer(), false, function(gl, shader) {
-					gl.bindBuffer(gl.ARRAY_BUFFER, pointsBuffer);
-					var pointPosLoc = gl.getAttribLocation(shader, "pointPos");
-					gl.enableVertexAttribArray(pointPosLoc);
-					gl.vertexAttribPointer(pointPosLoc, 2, gl.FLOAT, gl.FALSE, 0, 0);
-
-					gl.uniform1f(gl.getUniformLocation(shader, "state"), 3./255.);
-
-					gl.drawArrays(gl.POINTS,0, pointCoordinates.length/2);
-				});
-
-				gl.bindFramebuffer(gl.FRAMEBUFFER, enemyDish.getCurrentFramebuffer());
-				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, enemyDish.getCurrentTexture(), 0);
-				gl.readPixels(0, 0, gameW, gameH, gl.RGBA, gl.UNSIGNED_BYTE, pixelValues);
-
-				for (var i = 0; i < SHOTS; i++)
-				{
-					var pX = Math.round(gameW*0.5*(pointCoordinates[2*i]+1));
-					var pY = Math.round(gameH*0.5*(pointCoordinates[2*i+1]+1));
-
-					if (pixelValues[(pX+pY*gameW)*4 + 3] != 0) {
-						pointCoordinates[2*i] = 10.;
-						pointCoordinates[2*i+1] = 10.;
-					}
-				}
-			
-	*/		
-
 
 			// Dish INTERACTION ///////////////////////////////////
 			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: shipDish, tex2: enemyDish, state: (shipExplosionRule.nrStates-1)/255.});
