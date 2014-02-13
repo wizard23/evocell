@@ -14,149 +14,60 @@ require.config({
 });
 
 require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell"], function($, utils, resources, EC) {
+
+	var canvas;
+	var reactor;
+	var gl;		
+
+	var enemyDish, enemy2Dish, shipDish, shipExplosionDish, copyDish, bufferDish, renderDish
+	var shots;
+	var drawPointsShader, clearShader, paintShader, drawRectShader, drawCircleShader, mixShader, intersectSpawnShader, copyShader;
+	var enemyRule, enemy2Rule, shipRule, weaponRule, shipExplosionRule;
+	var enemyColors, enemy2Colors, shipColors, shipExplosionColors, copyColors;
+
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
 	gameW = 430, gameH = 230;
+
+	var shipX, shipY;
 	var shotSpeed = 2.9;
 	var zoom = 3;
 	var maxParticles = 1000;
 	var mouseMode = "shoot";	
+	var cnt = 0; // used for executing enemyDish only every nth tep
 	// TODO what laws govern bangle and resulting bombingfield density. define density of bomb array
 	var bAngle = 0.44301; // experimentally found out to cover sphere most randomally (look at bomb swarms as bAngle changes, the cover density is how many different its you get on the circle before you get ...)
 
-
-
-	// guistate
+	var game = {};
+		// guistate
 	var selectedState = 3;
 	var selectedLayer = 0;
+	var fpsMonotor;
 
-	$( "#tools" ).accordion({
-      collapsible: true,
+
+	var setupGui = function() {
+		$( "#tools" ).accordion({
+		collapsible: true,
 		heightStyle: "content",
 		animate: false,
 		active: 1,
-    });
-	
-	$( "#tools" ).draggable();
-
-	$( "#selectableState" ).selectable().
-		on( "selectableselected", function( event, ui ) {
-			selectedState = parseInt(ui.selected.value);
-		});
-	$( "#selectableLayer" ).selectable().
-	    on( "selectableselected", function( event, ui ) {
-			selectedLayer = parseInt(ui.selected.value);
 		});
 
-	//$('#colorpicker1').farbtastic('#color1');
-	$( "#menu" ).menu();
-	
+		$( "#tools" ).draggable();
 
+		$( "#selectableState" ).selectable().
+			on( "selectableselected", function( event, ui ) {
+				selectedState = parseInt(ui.selected.value);
+			});
+		$( "#selectableLayer" ).selectable().
+			 on( "selectableselected", function( event, ui ) {
+				selectedLayer = parseInt(ui.selected.value);
+			});
 
-
-	var game = {};
-
-
-	var fpsMonotor = new utils.FPSMonitor("fpsMonitor");
-
-	// Setup core 	
-	var canvas = document.getElementById('c');
-	var reactor = new  EC.Reactor(canvas, gameW, gameH);
-	reactor.setRenderSize(gameW*zoom, gameH*zoom);
-	var gl = reactor.gl;		
-
-
-	var loader = new EC.ResLoader();
-
-	loader.load("enemyRule", "rules/enemy_ludwigBuildships", "ecfile");
-	loader.load("enemy2Rule", "rules/enemy_linebuilder", "ecfile");
-	loader.load("weaponRule", "rules/ship_avg4_schweif", "ecfile");
-	loader.load("weaponExplosionRule", "rules/ship_avg4_schweif", "ecfile");
-	loader.load("shipExplosionRule", "rules/ship_avg4_nice", "ecfile");
-	loader.load("shipRule", "rules/ship_avg4_nice", "ecfile");
-
-	loader.load("vertexPoints", "src/game/shaders/vertexPoints.vshader", "text");
-	loader.load("drawAll", "src/game/shaders/drawAll.shader", "text");
-
-	loader.load("clear", "src/game/shaders/clear.shader", "text");
-	loader.load("mixPalette", "src/game/shaders/mixPalette.shader", "text");	
-
-	loader.load("drawRect", "src/game/shaders/drawRect.shader", "text");
-	loader.load("drawCircle", "src/game/shaders/drawCircle.shader", "text");
-
-	loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
-	loader.load("intersectSpawn", "src/game/shaders/intersectSpawn.shader", "text");
-
-	loader.load("copyPaste", "src/game/shaders/copyPasteRect.shader", "text");
-
-	loader.start(function (data) {
-		var enemyDish = reactor.compileDish();
-		var enemy2Dish = reactor.compileDish();
-		var shipDish = reactor.compileDish();
-		var shipExplosionDish = reactor.compileDish();
-		var copyDish = reactor.compileDish();
-		var bufferDish = reactor.compileDish(64, 64);
-		var renderDish = reactor.compileDish();
-
-
-		var shots = new EC.ParticleSystem(reactor, maxParticles, gameW, gameH);
-
-
-		var drawPointsShader = reactor.compileShader(data.vertexPoints, data.drawAll);
+		//$('#colorpicker1').farbtastic('#color1');
+		$( "#menu" ).menu();
 		
-		var clearShader = reactor.compileShader(data.clear);
-		var paintShader = reactor.compileShader(data.painter);
-
-		var drawRectShader = reactor.compileShader(data.drawRect);
-		var drawCircleShader = reactor.compileShader(data.drawCircle);
-
-		var mixShader = reactor.compileShader(data.mixPalette);
-		var intersectSpawnShader = reactor.compileShader(data.intersectSpawn);
-		var copyShader = reactor.compileShader(data.copyPaste);
-
-		var enemyRule = reactor.compileRule(data.enemyRule, enemyDish);
-		var enemy2Rule = reactor.compileRule(data.enemy2Rule, enemy2Dish);
-		var shipRule = reactor.compileRule(data.shipRule, shipDish);
-		var weaponRule = reactor.compileRule(data.weaponRule, enemyDish);
-		var shipExplosionRule = reactor.compileRule(data.shipExplosionRule, enemy2Dish);
-		
-
-		var enemyColors = new EC.Palette(reactor);
-		enemyColors.setColor(0, [0, 0, 0, 255]);
-		enemyColors.setColor(1, [140, 10, 140, 255]);
-		enemyColors.setColor(2, [255, 255, 255, 255]);
-		enemyColors.setColor(3, [255, 30, 255, 255]);
-
-		var enemy2Colors = new EC.Palette(reactor);
-		var bs = 0.12;
-		enemy2Colors.setColor(0, [0, 0, 0, 255]);
-		enemy2Colors.setColor(1, [bs*10, bs*80, bs*80, 255]);
-		enemy2Colors.setColor(2, [bs*20, bs*170, bs*170, 255]);
-		enemy2Colors.setColor(3, [bs*30, bs*255, bs*255, 255]);
-
-		var shipColors = new EC.Palette(reactor);
-		shipColors.setColor(0, [0, 0, 0, 255]);
-		shipColors.setColor(1, [0, 0, 255, 255]);
-		shipColors.setColor(2, [0, 80, 255, 255]);
-		shipColors.setColor(3, [0, 190, 255, 255]);
-
-		var shipExplosionColors = new EC.Palette(reactor);
-		shipExplosionColors.setColor(0, [0, 0, 0, 255]);
-		shipExplosionColors.setColor(1, [255, 0, 0, 255]);
-		shipExplosionColors.setColor(2, [255, 160, 0, 255]);
-		shipExplosionColors.setColor(3, [255, 255, 0, 255]);
-
-		var copyColors = new EC.Palette(reactor);
-		copyColors.setColor(0, [0, 0, 0, 255]);
-		copyColors.setColor(1, [0, 130, 0, 255]);
-		copyColors.setColor(2, [0, 190, 0, 255]);
-		copyColors.setColor(3, [0, 255, 0, 255]);
-
-		enemyDish.randomize(enemyRule.nrStates, 0.0005);
-		enemy2Dish.randomize(enemyRule.nrStates, 0.01);
-		shipExplosionDish.randomize(shipExplosionRule.nrStates, 0.01);
-
-		var shipX = gameW/2, shipY = gameH/2;
+		fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
 		function handleCanvasMouseDown(evt) {
 			var coords = canvas.relMouseCoords(evt);
@@ -210,10 +121,151 @@ require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell"], function($, uti
 			evt.stopPropagation();
 		}
 		canvas.addEventListener('mousedown', handleCanvasMouseDown, false);
+	}
 
-		var cnt = 0;
-		var gameLoop = new utils.AnimationLoop(function() {
-			// USER INPUT Poll Keyboard //////////////////////////////////////////////////
+	var loadResources = function(callback) {
+		var loader = new EC.ResLoader();
+		loader.load("enemyRule", "rules/enemy_ludwigBuildships", "ecfile");
+		loader.load("enemy2Rule", "rules/enemy_linebuilder", "ecfile");
+		loader.load("weaponRule", "rules/ship_avg4_schweif", "ecfile");
+		loader.load("weaponExplosionRule", "rules/ship_avg4_schweif", "ecfile");
+		loader.load("shipExplosionRule", "rules/ship_avg4_nice", "ecfile");
+		loader.load("shipRule", "rules/ship_avg4_nice", "ecfile");
+
+		loader.load("vertexPoints", "src/game/shaders/vertexPoints.vshader", "text");
+		loader.load("drawAll", "src/game/shaders/drawAll.shader", "text");
+
+		loader.load("clear", "src/game/shaders/clear.shader", "text");
+		loader.load("mixPalette", "src/game/shaders/mixPalette.shader", "text");	
+
+		loader.load("drawRect", "src/game/shaders/drawRect.shader", "text");
+		loader.load("drawCircle", "src/game/shaders/drawCircle.shader", "text");
+
+		loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
+		loader.load("intersectSpawn", "src/game/shaders/intersectSpawn.shader", "text");
+
+		loader.load("copyPaste", "src/game/shaders/copyPasteRect.shader", "text");
+
+		loader.start(callback);
+	}
+
+
+		
+	var setupGame = function (data) { 
+		// Setup core 	
+		canvas = document.getElementById('c');
+		reactor = new  EC.Reactor(canvas, gameW, gameH);
+		reactor.setRenderSize(gameW*zoom, gameH*zoom);
+		gl = reactor.gl;		
+
+		enemyDish = reactor.compileDish();
+		enemy2Dish = reactor.compileDish();
+		shipDish = reactor.compileDish();
+		shipExplosionDish = reactor.compileDish();
+		copyDish = reactor.compileDish();
+		bufferDish = reactor.compileDish(64, 64);
+		renderDish = reactor.compileDish();
+
+		shots = new EC.ParticleSystem(reactor, maxParticles, gameW, gameH);
+
+		drawPointsShader = reactor.compileShader(data.vertexPoints, data.drawAll);
+		
+		clearShader = reactor.compileShader(data.clear);
+		paintShader = reactor.compileShader(data.painter);
+
+		drawRectShader = reactor.compileShader(data.drawRect);
+		drawCircleShader = reactor.compileShader(data.drawCircle);
+
+		mixShader = reactor.compileShader(data.mixPalette);
+		intersectSpawnShader = reactor.compileShader(data.intersectSpawn);
+		copyShader = reactor.compileShader(data.copyPaste);
+
+		enemyRule = reactor.compileRule(data.enemyRule, enemyDish);
+		enemy2Rule = reactor.compileRule(data.enemy2Rule, enemy2Dish);
+		shipRule = reactor.compileRule(data.shipRule, shipDish);
+		weaponRule = reactor.compileRule(data.weaponRule, enemyDish);
+		shipExplosionRule = reactor.compileRule(data.shipExplosionRule, enemy2Dish);
+		
+		enemyColors = new EC.Palette(reactor);
+		enemyColors.setColor(0, [0, 0, 0, 255]);
+		enemyColors.setColor(1, [140, 10, 140, 255]);
+		enemyColors.setColor(2, [255, 255, 255, 255]);
+		enemyColors.setColor(3, [255, 30, 255, 255]);
+
+		enemy2Colors = new EC.Palette(reactor);
+		var bs = 0.12;
+		enemy2Colors.setColor(0, [0, 0, 0, 255]);
+		enemy2Colors.setColor(1, [bs*10, bs*80, bs*80, 255]);
+		enemy2Colors.setColor(2, [bs*20, bs*170, bs*170, 255]);
+		enemy2Colors.setColor(3, [bs*30, bs*255, bs*255, 255]);
+
+		shipColors = new EC.Palette(reactor);
+		shipColors.setColor(0, [0, 0, 0, 255]);
+		shipColors.setColor(1, [0, 0, 255, 255]);
+		shipColors.setColor(2, [0, 80, 255, 255]);
+		shipColors.setColor(3, [0, 190, 255, 255]);
+
+		shipExplosionColors = new EC.Palette(reactor);
+		shipExplosionColors.setColor(0, [0, 0, 0, 255]);
+		shipExplosionColors.setColor(1, [255, 0, 0, 255]);
+		shipExplosionColors.setColor(2, [255, 160, 0, 255]);
+		shipExplosionColors.setColor(3, [255, 255, 0, 255]);
+
+		copyColors = new EC.Palette(reactor);
+		copyColors.setColor(0, [0, 0, 0, 255]);
+		copyColors.setColor(1, [0, 130, 0, 255]);
+		copyColors.setColor(2, [0, 190, 0, 255]);
+		copyColors.setColor(3, [0, 255, 0, 255]);
+
+		enemyDish.randomize(enemyRule.nrStates, 0.0005);
+		enemy2Dish.randomize(enemyRule.nrStates, 0.01);
+		shipExplosionDish.randomize(shipExplosionRule.nrStates, 0.01);
+		shipX = gameW/2, shipY = gameH/2;
+	}
+
+	var gameLoop = function() {
+			// ENEMIES //////////////////////////////////////
+			if (cnt % 2 == 0)
+				reactor.step(enemyRule, enemyDish);
+			if (cnt % 6 == 0)
+				reactor.step(enemy2Rule, enemy2Dish);
+
+			// SHIP ///////////////////////////////////////////
+			reactor.step(shipExplosionRule, shipExplosionDish);
+			reactor.step(shipRule, shipDish);
+
+			// "DRAW" SHIP
+			reactor.mixDish(drawCircleShader, shipDish, {center: [shipX, shipY], radius: 3.5, state: (shipRule.nrStates-1)/255});
+
+			shots.step();
+			shots.collide(enemyDish);
+			shots.draw(drawPointsShader, shipDish);
+
+			// Dish INTERACTION ///////////////////////////////////
+			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: shipDish, tex2: enemyDish, state: (shipExplosionRule.nrStates-1)/255.});
+			reactor.mixDish(intersectSpawnShader, enemyDish, {tex1: enemyDish, tex2: shipExplosionDish, state: 0./255.});
+			reactor.mixDish(intersectSpawnShader, shipDish, {tex1: shipDish, tex2: shipExplosionDish, state: 3./255.});	
+
+			// COMPOSE ////////////////////////////////////////////
+			reactor.applyShaderOnDish(clearShader, renderDish);
+			reactor.mixDish(mixShader, renderDish, {texNew: enemy2Dish, texPalette: enemy2Colors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {texNew: enemyDish, texPalette: enemyColors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {texNew: shipDish, texPalette: shipColors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {texNew: shipExplosionDish, texPalette: shipExplosionColors.getTexture()});
+			
+			reactor.mixDish(mixShader, renderDish, {texNew: copyDish, texPalette: copyColors.getTexture()});		
+
+			//RENDER			
+			reactor.paintDish(paintShader, renderDish, function(gl, shader) {
+				gl.uniform1f(gl.getUniformLocation(shader, "scale"), zoom);
+			});
+
+			cnt++;
+			fpsMonotor.frameIncrease();
+	};
+
+	var userInteraction = function() {
+	// USER INPUT Poll Keyboard //////////////////////////////////////////////////
 			var stepSize = 1.5;
 			if (keyboard.isPressed(keyboard.UP)) shipY += stepSize;
 			if (keyboard.isPressed(keyboard.DOWN)) shipY -= stepSize;
@@ -308,20 +360,6 @@ require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell"], function($, uti
 				mouseMode = "copy";
 			}
 
-			// ENEMIES //////////////////////////////////////
-			if (cnt % 2 == 0)
-				reactor.step(enemyRule, enemyDish);
-			if (cnt % 6 == 0)
-				reactor.step(enemy2Rule, enemy2Dish);
-
-			// SHIP ///////////////////////////////////////////
-			reactor.step(shipExplosionRule, shipExplosionDish);
-			reactor.step(shipRule, shipDish);
-
-			// "DRAW" SHIP
-			reactor.mixDish(drawCircleShader, shipDish, {center: [shipX, shipY], radius: 3.5, state: (shipRule.nrStates-1)/255});
-
-
 			var sDX = 0, sDY = 0;			
 			if (keyboard.isPressed("D".charCodeAt()))
 			{
@@ -355,35 +393,17 @@ require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell"], function($, uti
 			}
 			else
 				shotDelay = 0;
+		};
 
-
-			shots.step();
-			shots.collide(enemyDish);
-			shots.draw(drawPointsShader, shipDish);
-
-			// Dish INTERACTION ///////////////////////////////////
-			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: shipDish, tex2: enemyDish, state: (shipExplosionRule.nrStates-1)/255.});
-			reactor.mixDish(intersectSpawnShader, enemyDish, {tex1: enemyDish, tex2: shipExplosionDish, state: 0./255.});
-			reactor.mixDish(intersectSpawnShader, shipDish, {tex1: shipDish, tex2: shipExplosionDish, state: 3./255.});	
-
-			// COMPOSE ////////////////////////////////////////////
-			reactor.applyShaderOnDish(clearShader, renderDish);
-			reactor.mixDish(mixShader, renderDish, {texNew: enemy2Dish, texPalette: enemy2Colors.getTexture()});
-			reactor.mixDish(mixShader, renderDish, {texNew: enemyDish, texPalette: enemyColors.getTexture()});
-			reactor.mixDish(mixShader, renderDish, {texNew: shipDish, texPalette: shipColors.getTexture()});
-			reactor.mixDish(mixShader, renderDish, {texNew: shipExplosionDish, texPalette: shipExplosionColors.getTexture()});
-			
-			reactor.mixDish(mixShader, renderDish, {texNew: copyDish, texPalette: copyColors.getTexture()});		
-
-			//RENDER			
-			reactor.paintDish(paintShader, renderDish, function(gl, shader) {
-				gl.uniform1f(gl.getUniformLocation(shader, "scale"), zoom);
-			});
-
-			cnt++;
-			fpsMonotor.frameIncrease();
+	// game must be less than 20 LOC :
+	// MAIN GAME LOOP
+	loadResources(function (data) {
+		setupGame(data);
+		setupGui();
+		var renderLoop = new utils.AnimationLoop(function() {
+			userInteraction();
+			gameLoop();
 		});
-
-		gameLoop.start();		
+		renderLoop.start();
 	});
 });
