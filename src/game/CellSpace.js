@@ -1,11 +1,19 @@
 require.config({
    // baseUrl: 'js/lib',
     paths: {
-        jquery: 'libs/jquery	'
+		jquery: 'libs/jquery-1.10.2',
+		"jquery-ui": 'libs/jquery-ui-1.10.4.custom'		
+    },
+	shim: {
+        "jquery-ui": {
+            exports: "$",
+            deps: ['jquery', 'libs/farbtastic']
+        },
+		
     }
 });
 
-require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils, resources, EC) {
+require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell"], function($, utils, resources, EC) {
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
 	gameW = 430, gameH = 230;
@@ -16,7 +24,38 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 	// TODO what laws govern bangle and resulting bombingfield density. define density of bomb array
 	var bAngle = 0.44301; // experimentally found out to cover sphere most randomally (look at bomb swarms as bAngle changes, the cover density is how many different its you get on the circle before you get ...)
 
+
+
+	// guistate
+	var selectedState = 3;
+	var selectedLayer = 0;
+
+	$( "#tools" ).accordion({
+      collapsible: true,
+		heightStyle: "content",
+		animate: false,
+		active: 1,
+    });
+	
+	$( "#tools" ).draggable();
+
+	$( "#selectableState" ).selectable().
+		on( "selectableselected", function( event, ui ) {
+			selectedState = parseInt(ui.selected.value);
+		});
+	$( "#selectableLayer" ).selectable().
+	    on( "selectableselected", function( event, ui ) {
+			selectedLayer = parseInt(ui.selected.value);
+		});
+
+	//$('#colorpicker1').farbtastic('#color1');
+	$( "#menu" ).menu();
+	
+
+
+
 	var game = {};
+
 
 	var fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
@@ -128,7 +167,23 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 			y /= zoom;
 			y = gameH-y;
 
-			if (mouseMode == "shoot") {
+			var activeTool = $( "#tools" ).accordion( "option", "active" );
+
+			if (activeTool == 1) {
+				
+					var dish;
+					if (selectedLayer == 0) dish = enemyDish;
+					else if (selectedLayer == 1) dish = enemy2Dish;
+					else if (selectedLayer == 2) dish = shipDish;
+					else if (selectedLayer == 3) dish = shipExplosionDish;
+
+					var size = parseInt(document.getElementById("selectedState").value);
+
+					if (dish)
+						reactor.mixDish(drawCircleShader, dish, {center: [x, y], radius: size/2, state: selectedState/255});
+				
+			}
+			else if (mouseMode == "shoot") {
 				// spawn shot
 				var dX = x-shipX;
 				var dY = y-shipY;
