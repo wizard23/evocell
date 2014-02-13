@@ -11,6 +11,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 	gameW = 430, gameH = 230;
 	var shotSpeed = 2.9;
 	var zoom = 3;
+	var maxParticles = 1000;
 	var mouseMode = "shoot";	
 	// TODO what laws govern bangle and resulting bombingfield density. define density of bomb array
 	var bAngle = 0.44301; // experimentally found out to cover sphere most randomally (look at bomb swarms as bAngle changes, the cover density is how many different its you get on the circle before you get ...)
@@ -59,7 +60,7 @@ require(["jquery", "Utils", "CellSpaceResources", "EvoCell"], function($, utils,
 		var renderDish = reactor.compileDish();
 
 
-		var shots = new EC.ParticleSystem(reactor, 2000, gameW, gameH);
+		var shots = new EC.ParticleSystem(reactor, maxParticles, gameW, gameH);
 
 
 		var drawPointsShader = reactor.compileShader(data.vertexPoints, data.drawAll);
