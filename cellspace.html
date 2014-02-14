@@ -32,6 +32,12 @@
   <h3>Draw</h3>
   <div>
 
+<label><input type="radio" value="circle" data-bind="checked: selectedDrawShape" />Circle</label>
+<label><input type="radio" value="rectangle" data-bind="checked: selectedDrawShape" />Recangle</label>
+
+<td class="label">Multi-select drop-down list:</td>
+<select multiple="multiple" data-bind="options: availableLayers, selectedOptions: selectedLayers"></select>
+
 <ol id="selectableState">
   <li class="ui-state-default" value="0">0</li>
   <li class="ui-state-default" value="1">1</li>

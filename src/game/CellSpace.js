@@ -2,18 +2,22 @@ require.config({
    // baseUrl: 'js/lib',
     paths: {
 		jquery: 'libs/jquery-1.10.2',
-		"jquery-ui": 'libs/jquery-ui-1.10.4.custom'		
+		"jquery-ui": 'libs/jquery-ui-1.10.4.custom',
+		knockout: "libs/knockout-3.0.0",
     },
 	shim: {
         "jquery-ui": {
             exports: "$",
             deps: ['jquery', 'libs/farbtastic']
         },
+			"knockout": {
+            exports: "ko",
+        },
 		
     }
 });
 
-require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell"], function($, utils, resources, EC) {
+require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "knockout"], function($, utils, resources, EC, ko) {
 
 	var canvas;
 	var reactor;
@@ -40,12 +44,24 @@ require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell"], function($, uti
 
 	var game = {};
 		// guistate
+	var uiDrawShape = "rectangle";
 	var selectedState = 3;
 	var selectedLayer = 0;
 	var fpsMonotor;
 
 
+	var viewModel = {
+		drawSize: ko.observable(10),
+		drawSizeY: ko.observable(30),
+		selectedDrawShape : ko.observable("rectangle"),
+		availableLayers: ["enemy", "enemy2", "ship"],
+		selectedLayers : ko.observable("ship"),
+	};
+	ko.applyBindings(viewModel);
+
+
 	var setupGui = function() {
+
 		$( "#tools" ).accordion({
 		collapsible: true,
 		heightStyle: "content",
@@ -83,15 +99,19 @@ require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell"], function($, uti
 			if (activeTool == 1) {
 				
 					var dish;
-					if (selectedLayer == 0) dish = enemyDish;
-					else if (selectedLayer == 1) dish = enemy2Dish;
-					else if (selectedLayer == 2) dish = shipDish;
-					else if (selectedLayer == 3) dish = shipExplosionDish;
+					if (viewModel.selectedLayers().indexOf("enemy") >= 0) dish = enemyDish;
+					else if (viewModel.selectedLayers().indexOf("enemy2") >= 0) dish = enemy2Dish;
+					else if (viewModel.selectedLayers().indexOf("ship") >= 0) dish = shipDish;
+					else if (viewModel.selectedLayers().indexOf("shipExplosion") >= 0) dish = shipExplosionDish;
 
 					var size = parseInt(document.getElementById("selectedState").value);
 
-					if (dish)
-						reactor.mixDish(drawCircleShader, dish, {center: [x, y], radius: size/2, state: selectedState/255});
+					if (dish) {
+						if (viewModel.selectedDrawShape() == "circle")
+							reactor.mixDish(drawCircleShader, dish, {center: [x, y], radius: size/2, state: selectedState/255.});
+						else
+							reactor.mixDish(drawRectShader, dish, {rectPos: [x, y], rectSize: [viewModel.drawSize(), viewModel.drawSizeY()], state: selectedState/255.});
+					}
 				
 			}
 			else if (mouseMode == "shoot") {
@@ -126,6 +146,7 @@ require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell"], function($, uti
 	var loadResources = function(callback) {
 		var loader = new EC.ResLoader();
 		loader.load("enemyRule", "rules/enemy_ludwigBuildships", "ecfile");
+		loader.load("enemyRule", "rules/enemy_linebuilder", "ecfile");
 		loader.load("enemy2Rule", "rules/enemy_linebuilder", "ecfile");
 		loader.load("weaponRule", "rules/ship_avg4_schweif", "ecfile");
 		loader.load("weaponExplosionRule", "rules/ship_avg4_schweif", "ecfile");
@@ -243,6 +264,7 @@ require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell"], function($, uti
 
 			// Dish INTERACTION ///////////////////////////////////
 			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: shipDish, tex2: enemyDish, state: (shipExplosionRule.nrStates-1)/255.});
+			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: enemyDish, tex2: shipExplosionDish, state: 3./255.});
 			reactor.mixDish(intersectSpawnShader, enemyDish, {tex1: enemyDish, tex2: shipExplosionDish, state: 0./255.});
 			reactor.mixDish(intersectSpawnShader, shipDish, {tex1: shipDish, tex2: shipExplosionDish, state: 3./255.});	
 
@@ -271,9 +293,10 @@ require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell"], function($, uti
 			if (keyboard.isPressed(keyboard.DOWN)) shipY -= stepSize;
 			if (keyboard.isPressed(keyboard.LEFT)) shipX -= stepSize;
 			if (keyboard.isPressed(keyboard.RIGHT)) shipX += stepSize
+			
 			// space
 			if (keyboard.isPressed(32)) {
-				enemyDish.randomize(enemyRule.nrStates, 0.0008);
+				enemyDish.randomize(enemyRule.nrStates, 0.08);
 				enemy2Dish.randomize(enemyRule.nrStates, 0.01);
 				if (shipX < 0 || shipX > gameW || shipY < 0 || shipY > gameH)
 					shipX = gameW/2, shipY = gameH/2;
@@ -282,6 +305,7 @@ require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell"], function($, uti
 			if (keyboard.isPressed(27))
 			{
 				enemyDish.setAll(0);
+				alert(viewModel.selectedLayers() + " : " + viewModel.selectedDrawShape);
 			}
 
 			if (keyboard.isPressed(65+1)) {
