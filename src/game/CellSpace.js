@@ -146,7 +146,7 @@ require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "knockout"], fun
 	var loadResources = function(callback) {
 		var loader = new EC.ResLoader();
 		loader.load("enemyRule", "rules/enemy_ludwigBuildships", "ecfile");
-		loader.load("enemyRule", "rules/enemy_linebuilder", "ecfile");
+		//loader.load("enemyRule", "rules/enemy_linebuilder", "ecfile");
 		loader.load("enemy2Rule", "rules/enemy_linebuilder", "ecfile");
 		loader.load("weaponRule", "rules/ship_avg4_schweif", "ecfile");
 		loader.load("weaponExplosionRule", "rules/ship_avg4_schweif", "ecfile");
