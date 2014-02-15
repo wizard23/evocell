@@ -6,13 +6,31 @@
 	<script data-main="src/game/CellSpace" src="src/game/libs/require.js"></script>
 	<style>
 
+#toolsMenu { 
+	padding: 0px 5px 0px 5px;
+	border:2px solid #AAAAAA; position: fixed; top: 0px;right: 0px; z-index:2; color:#FFFFFF; width: 200px;background:rgba(255,255,255,0.2);
+}
+
+select {
+    font-size:9pt;
+    letter-spacing:0.07em;
+    color:#FFFFFF;
+    background:transparent;
+    border: solid 1px #808080;
+    padding:3px;
+    cursor:pointer;
+}
+select option:checked {
+}
+select option:nth-child(even) {  }
+
 	</style>
 </head>
 <body style="font-family:sans-serif;">
-	<div id="mainMenu" style="border:0px solid #222222; position: fixed; top: 0px;left: 0px; z-index:2; color:#DDDDDD; width: 300px; background:rgba(0,0,0,0.7);" >
+	<div id="mainMenu" style="border:0px solid #222222; position: fixed; top: 0px;left: 0px; z-index:2; color:#DDDDDD; width: 300px; background:rgba(0,0,0,0.4);" >
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start/Stop Step Load Save
 	</div>
-	<div id="tools" style="border:0px solid #222222; position: fixed; top: 0px;right: 0px; z-index:2; color:#DDDDDD; width: 300px; background:rgba(0,0,0,0.7);" >
+	<div id="toolsMenu" style="" >
   <h3>About</h3>
   <div>
     <p>CellSpace is a space shooter game built on cellular automata. Describe more...</p>
@@ -23,14 +41,14 @@
 <label><input type="radio" value="circle" data-bind="checked: selectedDrawShape" />Circle</label>
 <label><input type="radio" value="rectangle" data-bind="checked: selectedDrawShape" />Recangle</label><br/>
 
-<select multiple="multiple" data-bind="options: availableLayers, selectedOptions: selectedLayers"></select><br/>
-<input id="selectedState" type="number" min="1" max="1000"><br/>
-width: <input id="width" type="number" min="1" max="1000" ><br/>
-height: <input id="height" type="number" min="1" max="1000"><br/>
+<select multiple="multiple"  style="width: 100%" data-bind="options: availableLayers, selectedOptions: selectedLayers"></select><br/>
+<select multiple="multiple"  style="width: 100%" data-bind="options: availableStates, selectedOptions: selectedStates"></select><br/>
+width: <input id="width" type="number" min="1" max="1000" data-bind="value: drawSizeX, valueUpdate: 'keyup'"><br/>
+height: <input id="height" type="number" min="1" max="1000" data-bind="value: drawSizeY, valueUpdate: 'keyup'"><br/>
 <label><input type="checkbox" id="fixedRatio">fixedRatio</label><br/>
 
   </div>
-  <h3>Copy&paste</h3>
+  <h3>Mutate</h3>
   <div>
 	</div>
   <h3>Palette</h3>

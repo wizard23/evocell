@@ -69,10 +69,13 @@ require([
 
 
 	drawModel = new Backbone.Model({
-		drawSize: 50,
+		availableLayers: ["enemy", "enemy2", "ship", "shipExplosion"],
+		availableStates: [0, 1, 2, 3],
+
+		drawSizeX: 50,
 		drawSizeY: 30,
 		selectedDrawShape : "rectangle",
-		availableLayers: ["enemy", "enemy2", "ship"],
+		selectedStates : [3],
 		selectedLayers : ["ship"],
 	});
 
@@ -83,14 +86,12 @@ require([
 
 	var setupGui = function() {
 
-		$( "#tools" ).accordion({
+		$( "#toolsMenu" ).accordion({
 		collapsible: true,
 		heightStyle: "content",
 		animate: false,
 		active: 1,
-		});
-
-		$( "#tools" ).draggable();
+		}).draggable();
 
 		$( "#selectableState" ).selectable().
 			on( "selectableselected", function( event, ui ) {
@@ -115,23 +116,28 @@ require([
 			y /= zoom;
 			y = gameH-y;
 
-			var activeTool = $( "#tools" ).accordion( "option", "active" );
+			var activeTool = $( "#toolsMenu" ).accordion( "option", "active" );
 
 			if (activeTool == 1) {
 				
 					var dish;
-					if (drawModel.selectedLayers().indexOf("enemy") >= 0) dish = enemyDish;
-					else if (drawModel.selectedLayers().indexOf("enemy2") >= 0) dish = enemy2Dish;
-					else if (drawModel.selectedLayers().indexOf("ship") >= 0) dish = shipDish;
-					else if (drawModel.selectedLayers().indexOf("shipExplosion") >= 0) dish = shipExplosionDish;
+					if (drawModel.attributes.selectedLayers.indexOf("enemy") >= 0) dish = enemyDish;
+					else if (drawModel.attributes.selectedLayers.indexOf("enemy2") >= 0) dish = enemy2Dish;
+					else if (drawModel.attributes.selectedLayers.indexOf("ship") >= 0) dish = shipDish;
+					else if (drawModel.attributes.selectedLayers.indexOf("shipExplosion") >= 0) dish = shipExplosionDish;
 
-					var size = parseInt(document.getElementById("selectedState").value);
+					var state = 3;
+					var firstSel = drawModel.attributes.selectedStates[0];
+					if (firstSel) state = firstSel;
 
 					if (dish) {
-						if (drawModel.selectedDrawShape() == "circle")
-							reactor.mixDish(drawCircleShader, dish, {center: [x, y], radius: size/2, state: selectedState/255.});
+						if (drawModel.attributes.selectedDrawShape == "circle")
+						{
+							alert(drawModel.attributes.drawSizeX/2);
+							reactor.mixDish(drawCircleShader, dish, {center: [x, y], radius: drawModel.attributes.drawSizeX/2, state: state/255.});
+						}
 						else
-							reactor.mixDish(drawRectShader, dish, {rectPos: [x, y], rectSize: [drawModel.drawSize(), drawModel.drawSizeY()], state: selectedState/255.});
+							reactor.mixDish(drawRectShader, dish, {rectPos: [x, y], rectSize: [drawModel.attributes.drawSizeX, drawModel.attributes.drawSizeY], state: state/255.});
 					}
 				
 			}
