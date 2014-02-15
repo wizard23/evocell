@@ -3,6 +3,9 @@ require.config({
     paths: {
 		jquery: 'libs/jquery-1.10.2',
 		"jquery-ui": 'libs/jquery-ui-1.10.4.custom',
+		"underscore": "libs/underscore",
+		backbone: "libs/backbone",
+		knockback: "libs/knockback",
 		knockout: "libs/knockout-3.0.0",
     },
 	shim: {
@@ -10,14 +13,28 @@ require.config({
             exports: "$",
             deps: ['jquery', 'libs/farbtastic']
         },
-			"knockout": {
-            exports: "ko",
-        },
+		  underscore : {
+				exports: "_",
+		  },
+		  backbone : {
+				exports: "Backbone",
+				deps: ['underscore'],
+			},
+		  knockback: {
+				exports: "kb",
+				deps: ["backbone"],			
+				},
 		
+			knockout: {
+				exports: "ko",
+				deps: [],			
+				},
     }
 });
 
-require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "knockout"], function($, utils, resources, EC, ko) {
+require([
+	"jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "underscore", "backbone", "knockback", "knockout"], 
+	function($, utils, resources, EC, _, Backbone, kb, ko) {
 
 	var canvas;
 	var reactor;
@@ -50,14 +67,18 @@ require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "knockout"], fun
 	var fpsMonotor;
 
 
-	var viewModel = {
-		drawSize: ko.observable(10),
-		drawSizeY: ko.observable(30),
-		selectedDrawShape : ko.observable("rectangle"),
+
+	drawModel = new Backbone.Model({
+		drawSize: 50,
+		drawSizeY: 30,
+		selectedDrawShape : "rectangle",
 		availableLayers: ["enemy", "enemy2", "ship"],
-		selectedLayers : ko.observable("ship"),
-	};
-	ko.applyBindings(viewModel);
+		selectedLayers : ["ship"],
+	});
+
+	var view_model = kb.viewModel(drawModel);
+	//view_model.full_name = ko.computed((->return "#{@first_name()} #{@last_name()}"), view_model)
+	ko.applyBindings(view_model, document.getElementById("drawTool"));
 
 
 	var setupGui = function() {
@@ -99,18 +120,18 @@ require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "knockout"], fun
 			if (activeTool == 1) {
 				
 					var dish;
-					if (viewModel.selectedLayers().indexOf("enemy") >= 0) dish = enemyDish;
-					else if (viewModel.selectedLayers().indexOf("enemy2") >= 0) dish = enemy2Dish;
-					else if (viewModel.selectedLayers().indexOf("ship") >= 0) dish = shipDish;
-					else if (viewModel.selectedLayers().indexOf("shipExplosion") >= 0) dish = shipExplosionDish;
+					if (drawModel.selectedLayers().indexOf("enemy") >= 0) dish = enemyDish;
+					else if (drawModel.selectedLayers().indexOf("enemy2") >= 0) dish = enemy2Dish;
+					else if (drawModel.selectedLayers().indexOf("ship") >= 0) dish = shipDish;
+					else if (drawModel.selectedLayers().indexOf("shipExplosion") >= 0) dish = shipExplosionDish;
 
 					var size = parseInt(document.getElementById("selectedState").value);
 
 					if (dish) {
-						if (viewModel.selectedDrawShape() == "circle")
+						if (drawModel.selectedDrawShape() == "circle")
 							reactor.mixDish(drawCircleShader, dish, {center: [x, y], radius: size/2, state: selectedState/255.});
 						else
-							reactor.mixDish(drawRectShader, dish, {rectPos: [x, y], rectSize: [viewModel.drawSize(), viewModel.drawSizeY()], state: selectedState/255.});
+							reactor.mixDish(drawRectShader, dish, {rectPos: [x, y], rectSize: [drawModel.drawSize(), drawModel.drawSizeY()], state: selectedState/255.});
 					}
 				
 			}
@@ -305,7 +326,7 @@ require(["jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "knockout"], fun
 			if (keyboard.isPressed(27))
 			{
 				enemyDish.setAll(0);
-				alert(viewModel.selectedLayers() + " : " + viewModel.selectedDrawShape);
+				alert(drawModel.selectedLayers() + " : " + drawModel.selectedDrawShape);
 			}
 
 			if (keyboard.isPressed(65+1)) {

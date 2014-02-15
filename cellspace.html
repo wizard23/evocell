@@ -5,24 +5,12 @@
 	<link type="text/css" rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" />
 	<script data-main="src/game/CellSpace" src="src/game/libs/require.js"></script>
 	<style>
-		#feedback { font-size: 1.4em; }
-
-	  #selectableState .ui-selecting { background: #FECA40;}
-	  #selectableState .ui-selected { background: #444444; color: white; }
-	  #selectableState { list-style-type: none; margin: 0; padding: 0; }
-	  #selectableState li { margin: 3px; padding: 0.4em; font-size: 20px; display:inline-block; width: 20px; height: 20px; }
-
-		
-	  #selectableLayer .ui-selecting { background: #FECA40; border:1px solid #222222;}
-	  #selectableLayer .ui-selected { color: white; border:1px solid white; }
-	  #selectableLayer { list-style-type: none; margin: 0; padding: 0; border:1px solid #000000;}
-	  #selectableLayer li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 20px; }
 
 	</style>
 </head>
 <body style="font-family:sans-serif;">
 	<div id="mainMenu" style="border:0px solid #222222; position: fixed; top: 0px;left: 0px; z-index:2; color:#DDDDDD; width: 300px; background:rgba(0,0,0,0.7);" >
-		Start/Stop Step Load Save
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start/Stop Step Load Save
 	</div>
 	<div id="tools" style="border:0px solid #222222; position: fixed; top: 0px;right: 0px; z-index:2; color:#DDDDDD; width: 300px; background:rgba(0,0,0,0.7);" >
   <h3>About</h3>
@@ -30,30 +18,16 @@
     <p>CellSpace is a space shooter game built on cellular automata. Describe more...</p>
   </div>
   <h3>Draw</h3>
-  <div>
-
+  
+  <div id="drawTool">
 <label><input type="radio" value="circle" data-bind="checked: selectedDrawShape" />Circle</label>
-<label><input type="radio" value="rectangle" data-bind="checked: selectedDrawShape" />Recangle</label>
+<label><input type="radio" value="rectangle" data-bind="checked: selectedDrawShape" />Recangle</label><br/>
 
-<td class="label">Multi-select drop-down list:</td>
-<select multiple="multiple" data-bind="options: availableLayers, selectedOptions: selectedLayers"></select>
-
-<ol id="selectableState">
-  <li class="ui-state-default" value="0">0</li>
-  <li class="ui-state-default" value="1">1</li>
-  <li class="ui-state-default" value="2">2</li>
-  <li class="ui-state-default" value="3">3</li>
-  <li class="ui-state-default" value="4">4</li>
-  <li class="ui-state-default" value="5">5</li>
-</ol>
-
-<ol id="selectableLayer">
-  <li class="ui-state-default" value="0">Enemy1</li>
-  <li class="ui-state-default" value="1">Enemy2</li>
-  <li class="ui-state-default" value="2">Ship</li>
-  <li class="ui-state-default" value="3">Ship Explosions</li>
-</ol>
-	<input id="selectedState" type="number" min="1" max="1000"  value="20">
+<select multiple="multiple" data-bind="options: availableLayers, selectedOptions: selectedLayers"></select><br/>
+<input id="selectedState" type="number" min="1" max="1000"><br/>
+width: <input id="width" type="number" min="1" max="1000" ><br/>
+height: <input id="height" type="number" min="1" max="1000"><br/>
+<label><input type="checkbox" id="fixedRatio">fixedRatio</label><br/>
 
   </div>
   <h3>Copy&paste</h3>
