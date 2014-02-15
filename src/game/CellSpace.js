@@ -93,15 +93,6 @@ require([
 		active: 1,
 		}).draggable();
 
-		$( "#selectableState" ).selectable().
-			on( "selectableselected", function( event, ui ) {
-				selectedState = parseInt(ui.selected.value);
-			});
-		$( "#selectableLayer" ).selectable().
-			 on( "selectableselected", function( event, ui ) {
-				selectedLayer = parseInt(ui.selected.value);
-			});
-
 		//$('#colorpicker1').farbtastic('#color1');
 		$( "#menu" ).menu();
 		

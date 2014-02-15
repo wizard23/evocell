@@ -7,9 +7,30 @@
 	<style>
 
 #toolsMenu { 
-	padding: 0px 5px 0px 5px;
-	border:2px solid #AAAAAA; position: fixed; top: 0px;right: 0px; z-index:2; color:#FFFFFF; width: 200px;background:rgba(255,255,255,0.2);
+	padding: 0px 0x 0px 0px;
+	border:0px solid #AAAAAA; 
+position: fixed; top: 0px;right: 0px; z-index:2; 
+color: white; width: 330px;
+background:rgba(255,255,255,0.2);
 }
+
+#toolsMenu a {
+	background: white;
+}
+
+.toolMenuHeader {
+	background:rgba(255,255,255,0.2);
+	aamargin: 0px 0px 0px 0px;
+	margin: 5px 5px 5px 5px;
+	padding: 2px 2px 2px 2px;
+}
+.toolMenuContent {
+	background:rgba(255,255,255,0.2);
+	margin: 0px 0px 0px 0px;
+	margin: 5px 5px 5px 5px;
+	padding: 5px 5px 5px 5px;
+}
+
 
 select {
     font-size:9pt;
@@ -30,14 +51,17 @@ select option:nth-child(even) {  }
 	<div id="mainMenu" style="border:0px solid #222222; position: fixed; top: 0px;left: 0px; z-index:2; color:#DDDDDD; width: 300px; background:rgba(0,0,0,0.4);" >
 		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start/Stop Step Load Save
 	</div>
-	<div id="toolsMenu" style="" >
-  <h3>About</h3>
-  <div>
-    <p>CellSpace is a space shooter game built on cellular automata. Describe more...</p>
+
+
+	<div id="toolsMenu">
+
+  <h3 class="toolMenuHeader">About</h3>
+  <div class="toolMenuContent">
+    CellSpace is a space shooter game built on cellular automata. Describe more...
   </div>
-  <h3>Draw</h3>
-  
-  <div id="drawTool">
+
+  <h3 class="toolMenuHeader">Draw</h3>  
+  <div id="drawTool" class="toolMenuContent">
 <label><input type="radio" value="circle" data-bind="checked: selectedDrawShape" />Circle</label>
 <label><input type="radio" value="rectangle" data-bind="checked: selectedDrawShape" />Recangle</label><br/>
 
@@ -46,18 +70,28 @@ select option:nth-child(even) {  }
 width: <input id="width" type="number" min="1" max="1000" data-bind="value: drawSizeX, valueUpdate: 'keyup'"><br/>
 height: <input id="height" type="number" min="1" max="1000" data-bind="value: drawSizeY, valueUpdate: 'keyup'"><br/>
 <label><input type="checkbox" id="fixedRatio">fixedRatio</label><br/>
-
   </div>
-  <h3>Mutate</h3>
-  <div>
+
+  <h3 class="toolMenuHeader">Mutate</h3>
+  <div class="toolMenuContent">
 	</div>
-  <h3>Palette</h3>
-  <div>
+
+  <h3 class="toolMenuHeader">Palette</h3>
+  <div class="toolMenuContent">
 		<div class="colorpicker">
 		  <div id="colorpicker1"></div>
 		  <form><input type="text" id="color1" /></form>
 		</div>
   </div>
+
+	<h3 class="toolMenuHeader">Audio</h3>
+	<div class="toolMenuContent">
+		<audio controls>
+  			<source src="http://freemusicarchive.org/music/download/bb156f3e14a7cfce25cb7b47ae343cf92e9f1a8a" type="audio/mpeg">
+  			Your browser does not support this audio format.
+		</audio>
+		<a href="http://freemusicarchive.org/music/Frank_Dorittke/Mare_Tranquillitatis/pcr018_cd01_03_fd_project_another_place">"Another Place"</a> CC by <a href="http://freemusicarchive.org/music/Frank_Dorittke/">Frank Dorittke</a>
+	</div>
 </div>
 
 
