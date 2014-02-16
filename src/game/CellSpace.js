@@ -122,17 +122,16 @@ require([
 					if (firstSel) state = firstSel;
 
 					if (dish) {
-						if (drawModel.attributes.selectedDrawShape == "circle")
-						{
-							alert(drawModel.attributes.drawSizeX/2);
+						if (drawModel.attributes.selectedDrawShape == "circle") {
 							reactor.mixDish(drawCircleShader, dish, {center: [x, y], radius: drawModel.attributes.drawSizeX/2, state: state/255.});
 						}
-						else
+						else {
 							reactor.mixDish(drawRectShader, dish, {rectPos: [x, y], rectSize: [drawModel.attributes.drawSizeX, drawModel.attributes.drawSizeY], state: state/255.});
+						}
 					}
 				
 			}
-			else if (mouseMode == "shoot") {
+			else if (activeTool != 1) { // || mouseMode == "shoot") {
 				// spawn shot
 				var dX = x-shipX;
 				var dY = y-shipY;
@@ -293,7 +292,7 @@ require([
 			reactor.mixDish(mixShader, renderDish, {texNew: shipDish, texPalette: shipColors.getTexture()});
 			reactor.mixDish(mixShader, renderDish, {texNew: shipExplosionDish, texPalette: shipExplosionColors.getTexture()});
 			
-			reactor.mixDish(mixShader, renderDish, {texNew: copyDish, texPalette: copyColors.getTexture()});		
+			//reactor.mixDish(mixShader, renderDish, {texNew: copyDish, texPalette: copyColors.getTexture()});		
 
 			//RENDER			
 			reactor.paintDish(paintShader, renderDish, function(gl, shader) {
@@ -355,38 +354,6 @@ require([
 			if (keyboard.isPressed("T".charCodeAt()) || keyboard.isPressed("R".charCodeAt())) {
 				//document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD + " " + ((2*Math.PI)/game.bAD) + ":" + Math.E/Math.PI;
 			}
-			
-			// copy paste stuff
-			if (keyboard.isPressed(65+7))
-			{
-
-				reactor.mixDish(copyShader, bufferDish, {
-					destinationPos: [0, 0], destinationSize: [bufferDish.width, bufferDish.height],
-					texSource: enemy2Dish, sourcePos: [5, 10], sourceRes: [gameW, gameH], 	
-					}); 
-
-
-				var pixelValues2 = new Uint8Array(10*10*4);
-
-				gl.bindFramebuffer(gl.FRAMEBUFFER, bufferDish.getCurrentFramebuffer());
-				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, bufferDish.getCurrentTexture(), 0);
-				var xyz = gl.readPixels(0, 0, 10, 10, gl.RGBA, gl.UNSIGNED_BYTE, pixelValues2);
-
-				//var pattern = bufferDish.saveAsECFile();
-				//var ruleAsBlob = data.enemyRule.saveToBlob();
-				//utils.saveAs(ruleAsBlob, "ecPattern");
-
-				reactor.mixDish(copyShader, copyDish, {
-					destinationPos: [120, 100], destinationSize: [bufferDish.width, bufferDish.height],
-					texSource: bufferDish, sourcePos: [0, 0], sourceRes: [bufferDish.width, bufferDish.height], 	
-					}); 
-
-
-				reactor.mixDish(copyShader, copyDish, {
-					destinationPos: [20, 20], destinationSize: [80, 40],
-					texSource: enemy2Dish, sourcePos: [0, 0], sourceRes: [gameW, gameH], 
-					}); 
-			}
 
 			if (keyboard.isPressed("1".charCodeAt()))
 			{
@@ -424,10 +391,10 @@ require([
 					shotDelay = 10;
 					var px = (shipX/gameW)*2. - 1.;
 					var py = (shipY/gameH)*2. - 1.
-					var sX = 2*shotSpeed/gameW;
-					var sY = 2*shotSpeed/gameH; 
+					var sX = sDX * shotSpeed;
+					var sY = sDY*shotSpeed; 
 
-					allocateParticle(px, py, sDX*sX, sDY*sY);
+					shots.allocateParticle(shipX, shipY, sX, sY);
 				}
 				else 
 					shotDelay--;
