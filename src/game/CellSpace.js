@@ -48,12 +48,12 @@ require([
 
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
-	gameW = 500, gameH = 300;
+	gameW = 430, gameH = 230;
 
 	var shipX, shipY;
 	var shotSpeed = 2.9;
 	var zoom = 3;
-	var maxParticles = 1000;
+	var maxParticles = 400;
 	var mouseMode = "shoot";	
 	var cnt = 0; // used for executing enemyDish only every nth tep
 	// TODO what laws govern bangle and resulting bombingfield density. define density of bomb array
@@ -314,7 +314,7 @@ require([
 			
 			// space
 			if (keyboard.isPressed(32)) {
-				enemyDish.randomize(enemyRule.nrStates, 0.08);
+				enemyDish.randomize(enemyRule.nrStates, 0.0004);
 				enemy2Dish.randomize(enemyRule.nrStates, 0.01);
 				if (shipX < 0 || shipX > gameW || shipY < 0 || shipY > gameH)
 					shipX = gameW/2, shipY = gameH/2;
@@ -323,7 +323,6 @@ require([
 			if (keyboard.isPressed(27))
 			{
 				enemyDish.setAll(0);
-				alert(drawModel.selectedLayers() + " : " + drawModel.selectedDrawShape);
 			}
 
 			if (keyboard.isPressed(65+1)) {
@@ -342,7 +341,7 @@ require([
 					game.bAD += 0.001;
 				else
 					game.bAD = 0.00001;
-				document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD;
+				//document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD;
 			}
 
 			if (keyboard.isPressed("R".charCodeAt())) {
@@ -350,11 +349,11 @@ require([
 					game.bAD -= 0.001;
 				else
 					game.bAD = 0.00001;
-				document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD;
+				//document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD;
 			}
 
 			if (keyboard.isPressed("T".charCodeAt()) || keyboard.isPressed("R".charCodeAt())) {
-				document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD + " " + ((2*Math.PI)/game.bAD) + ":" + Math.E/Math.PI;
+				//document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD + " " + ((2*Math.PI)/game.bAD) + ":" + Math.E/Math.PI;
 			}
 			
 			// copy paste stuff
