@@ -48,12 +48,12 @@ require([
 
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
-	gameW = 430, gameH = 230;
+	gameW = 450, gameH = 300;
 
 	var shipX, shipY;
 	var shotSpeed = 2.9;
 	var zoom = 3;
-	var maxParticles = 400;
+	var maxParticles = 800;
 	var mouseMode = "shoot";	
 	var cnt = 0; // used for executing enemyDish only every nth tep
 	// TODO what laws govern bangle and resulting bombingfield density. define density of bomb array
