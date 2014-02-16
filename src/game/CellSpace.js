@@ -1,13 +1,13 @@
 require.config({
    // baseUrl: 'js/lib',
-    paths: {
+	paths: {
 		jquery: 'libs/jquery-1.10.2',
 		"jquery-ui": 'libs/jquery-ui-1.10.4.custom',
 		"underscore": "libs/underscore",
 		backbone: "libs/backbone",
 		knockback: "libs/knockback",
 		knockout: "libs/knockout-3.0.0",
-    },
+	},
 	shim: {
         "jquery-ui": {
             exports: "$",
@@ -89,11 +89,11 @@ require([
 		$( "#toolsMenu" ).accordion({
 		collapsible: true,
 		heightStyle: "content",
-		animate: false,
-		active: 1,
+		animate: true,
+		active: 0,
 		}).draggable();
 
-		//$('#colorpicker1').farbtastic('#color1');
+		$('#colorpicker1').farbtastic('#color1');
 		$( "#menu" ).menu();
 		
 		fpsMonotor = new utils.FPSMonitor("fpsMonitor");
