@@ -163,6 +163,7 @@ require([
 	var loadResources = function(callback) {
 		var loader = new EC.ResLoader();
 		loader.load("enemyRule", "rules/enemy_ludwigBuildships", "ecfile");
+		//loader.load("enemyRule", "rules/enemy_ludwigBuildships_lessActive", "ecfile");
 		//loader.load("enemyRule", "rules/enemy_linebuilder", "ecfile");
 		loader.load("enemy2Rule", "rules/enemy_linebuilder", "ecfile");
 		loader.load("weaponRule", "rules/ship_avg4_schweif", "ecfile");
@@ -189,9 +190,9 @@ require([
 
 
 		
-	var setupGame = function (data) { 
+	var setupGame = function (data, canvas) { 
 		// Setup core 	
-		canvas = document.getElementById('c');
+		
 		reactor = new  EC.Reactor(canvas, gameW, gameH);
 		reactor.setRenderSize(gameW*zoom, gameH*zoom);
 		gl = reactor.gl;		
@@ -405,8 +406,11 @@ require([
 
 	// game must be less than 20 LOC :
 	// MAIN GAME LOOP
+
+	var canvas = document.getElementById('c');
+
 	loadResources(function (data) {
-		setupGame(data);
+		setupGame(data, canvas);
 		setupGui();
 		var renderLoop = new utils.AnimationLoop(function() {
 			userInteraction();
