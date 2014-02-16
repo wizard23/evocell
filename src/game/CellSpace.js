@@ -48,7 +48,7 @@ require([
 
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
-	gameW = 430, gameH = 230;
+	gameW = 500, gameH = 300;
 
 	var shipX, shipY;
 	var shotSpeed = 2.9;

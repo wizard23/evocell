@@ -10,7 +10,7 @@
 	padding: 0px 0x 0px 0px;
 	border:0px solid #AAAAAA; 
 position: fixed; top: 0px;right: 0px; z-index:2; 
-color: white; width: 330px;
+color: white; width: 310px;
 background:rgba(255,255,255,0.2);
 }
 
@@ -19,14 +19,12 @@ background:rgba(255,255,255,0.2);
 }
 
 .toolMenuHeader {
-	background:rgba(255,255,255,0.2);
-	aamargin: 0px 0px 0px 0px;
+	background:rgba(0,0,0,0.8);
 	margin: 5px 5px 5px 5px;
-	padding: 2px 2px 2px 2px;
+	padding: 5px 5px 5px 5px;
 }
 .toolMenuContent {
-	background:rgba(255,255,255,0.2);
-	margin: 0px 0px 0px 0px;
+	background:rgba(0,0,0,0.8);
 	margin: 5px 5px 5px 5px;
 	padding: 5px 5px 5px 5px;
 }
@@ -35,7 +33,7 @@ background:rgba(255,255,255,0.2);
 select {
     font-size:9pt;
     letter-spacing:0.07em;
-    color:#FFFFFF;
+    color: white;
     background:transparent;
     border: solid 1px #808080;
     padding:3px;
@@ -48,16 +46,14 @@ select option:nth-child(even) {  }
 	</style>
 </head>
 <body style="font-family:sans-serif;">
-	<div id="mainMenu" style="border:0px solid #222222; position: fixed; top: 0px;left: 0px; z-index:2; color:#DDDDDD; width: 300px; background:rgba(0,0,0,0.4);" >
-		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start/Stop Step Load Save
-	</div>
-
-
 	<div id="toolsMenu">
 
   <h3 class="toolMenuHeader">About</h3>
   <div class="toolMenuContent">
-    CellSpace is a space shooter game built on cellular automata. Describe more...
+	<script id='fb3wlse'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=wizard23&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fb3wlse');</script>
+	<br/>
+    CellSpace is a HTML5/WebGL space shooter game built on cellular automata. It uses the EvoCell engine to all the rules and colission detection Describe more...
+
   </div>
 
   <h3 class="toolMenuHeader">Draw</h3>  
@@ -74,10 +70,12 @@ height: <input id="height" type="number" min="1" max="1000" data-bind="value: dr
 
   <h3 class="toolMenuHeader">Mutate</h3>
   <div class="toolMenuContent">
+	why u no implement me?
 	</div>
 
   <h3 class="toolMenuHeader">Palette</h3>
   <div class="toolMenuContent">
+		why u no implement me?
 		<div class="colorpicker">
 		  <div id="colorpicker1"></div>
 		  <form><input type="text" id="color1" /></form>
@@ -87,6 +85,12 @@ height: <input id="height" type="number" min="1" max="1000" data-bind="value: dr
 	<h3 class="toolMenuHeader">Audio</h3>
 	<div class="toolMenuContent">
 		<audio controls>
+  			<source src="sound/SuperR-TypeAsWetasaFish.mp3" type="audio/mpeg">
+  			Your browser does not support this audio format.
+		</audio>
+		Super R-Type Soundtrack<br/>
+		
+<audio controls>
   			<source src="http://freemusicarchive.org/music/download/bb156f3e14a7cfce25cb7b47ae343cf92e9f1a8a" type="audio/mpeg">
   			Your browser does not support this audio format.
 		</audio>
