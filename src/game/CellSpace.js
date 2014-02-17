@@ -66,9 +66,12 @@ require([
 	var selectedLayer = 0;
 	var fpsMonotor;
 
+	var snd = new Audio("sound/Digital_SFX_Set/laser8.mp3"); // buffers automatically when created
 
 
-	drawModel = new Backbone.Model({
+
+
+	var drawModel = new Backbone.Model({
 		availableLayers: ["enemy", "enemy2", "ship", "shipExplosion"],
 		availableStates: [0, 1, 2, 3],
 
@@ -140,6 +143,8 @@ require([
 				var sY = shotSpeed * dY/dL;
 
 				shots.allocateParticle(shipX, shipY, sX, sY);
+				snd.currentTime=0;
+				snd.play();
 			}	
 			else if (mouseMode == "copy") {
 				reactor.mixDish(copyShader, bufferDish, {
