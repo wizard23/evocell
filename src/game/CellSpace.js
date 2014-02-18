@@ -69,6 +69,7 @@ require([
 	var snd = new Audio("sound/Digital_SFX_Set/laser8.mp3"); // buffers automatically when created
 
 
+	var gameModel
 
 
 	var drawModel = new Backbone.Model({

@@ -8,12 +8,16 @@ require.config({
 		knockback: "libs/knockback",
 		knockout: "libs/knockout-3.0.0",
 		meSpeak: "libs/mespeak/mespeak",
+		"jquery-cycle":"libs/jquery.cycle.all",
 	},
 	shim: {
         "jquery-ui": {
             exports: "$",
             deps: ['jquery', 'libs/farbtastic']
         },
+		  "jquery-cycle": {
+				deps: ["jquery-ui"]
+			},
 		  underscore : {
 				exports: "_",
 		  },
@@ -38,7 +42,7 @@ require.config({
 });
 
 require([
-	"jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "underscore", "backbone", "knockback", "knockout", "meSpeak"], 
+	"jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "underscore", "backbone", "knockback", "knockout", "meSpeak", "jquery-cycle"], 
 	function($, utils, resources, EC, _, Backbone, kb, ko, meSpeak) {
 
 	function getSpeechURL(text, language) {
@@ -51,12 +55,10 @@ require([
 	meSpeak.loadConfig("src/game/libs/mespeak/mespeak_config.json");
 meSpeak.loadVoice('src/game/libs/mespeak/voices/en/en-us.json');
 
-
-
 	var htmlTemplate = _.template( $('#part-template').html() );
 
 	var story = {
-		parts: ["Due to <%= reason %>", 
+		parts: ["Alerted by <%= reason %>", 
 				  "<%= group%>", 
 					"used <%= explanation %>", 
 					"to shrink <%= device%> down to quantum scale", 
@@ -65,7 +67,7 @@ meSpeak.loadVoice('src/game/libs/mespeak/voices/en/en-us.json');
 
 		reason: [
 			{text: "an urgent national security concern of highly classified nature", image: "Classified.gif"},
-			{text: "ongoing loss of traditional values", image:"traditional-family.jpg" },
+			{text: "the ongoing loss of traditional values", image:"traditional-family.jpg" },
 			{text: "unexplained oscilations in the social web", image:"social-media1.jpg"},
 		],
 
@@ -102,10 +104,12 @@ meSpeak.loadVoice('src/game/libs/mespeak/voices/en/en-us.json');
 		],
  
 		finale: [
-			{text: "an adventure in a cellular world unseen by anyone before", image: "ca1.jpg"},
+			{text: "an adventure in a cellular world unseen by anyone before", image: "ca2.jpg"},
 			{text: "a universe of cellular automata hidden in every atom", image: "ca1.jpg"}, 
 		],
 	}
+
+	var audios = {};
 	
 	for (var partIndex in story.parts)
 	{
@@ -131,26 +135,43 @@ meSpeak.loadVoice('src/game/libs/mespeak/voices/en/en-us.json');
 		var id = "sc" + partIndex;
 		$("#container").append(htmlTemplate({text:text, image: "images/" + alt.image, id:id}));
 
+		var url = getSpeechURL(text);
+		var a = new Audio(url);
+		audios[id] = a;
+	}
+
 		/*_.delay(function(text) {
 			meSpeak.speak(text);
 		}, 8000*partIndex, text);
 */
-		_.delay(function(id, text) {
-			var cont = $(id);
-			cont.fadeIn();
-			_.delay(function(cont) {
-				cont.fadeOut();
-			}, 4600, cont);
-			var url = getSpeechURL(text);
-			var a = new Audio(url);
-			a.addEventListener("ended",function() { 
-				//alert("enden"); 
-			},false);
-			a.play();
-		}, 5000*partIndex, "#"+id, text);
-		
 
-	}
+		$('#container').cycle({
+			timeout: 0, 
+		fx: 'fade' // choose your transition type, ex: fade, scrollUp, shuffle, etc...
+		});
+		
+		var callMe = function () {};
+
+		for (var i = story.parts.length - 1; i >= 0; i--) {
+			callMe = (function (i, callMe) {
+				id = "sc" + i;
+				var cont = $("#"+id);
+				var a = audios[id];
+				
+				a.addEventListener("ended", function() {
+					$('#container').cycle("next");
+					cont.fadeOut();
+					_.delay(callMe, 500);
+				}, false);
+
+				return function() {
+					cont.fadeIn();		
+					a.play();
+				};
+			})(i, callMe);
+		}
+
+		callMe();	
 /*
 	storyItem = model({
 		text: "",
