@@ -13,12 +13,12 @@ body {
 
 .storyElement h2 { 
 	padding: 5px 5px 5px 5px;
-   position: absolute; 
-   top: 10px; 
-   left: 10px; 
-   width: 300px; 
+   kkhposition: absolute; 
+   bottom: 30px; 
+   right: -200px; 
+   width: 400px; 
 	color: white;
-	background:rgba(0,0,0,0.3);
+	background:rgba(0,0,0,0.7);
 }
 
 .storyElement img {
@@ -31,7 +31,9 @@ body {
 	
 	 <script type="text/template" id="part-template">
     <div class="storyElement" id="<%=id%>">
-      <h2><%= text %></h2><img src="<%= image %>" alt="<%= text %>"> </img>
+		<h2><%= text %></h2>
+      <img src="<%= image %>" alt="<%= text %>"> </img>
+		
     </div>
   </script>
 

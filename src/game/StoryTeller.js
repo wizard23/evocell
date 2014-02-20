@@ -69,6 +69,9 @@ meSpeak.loadVoice('src/game/libs/mespeak/voices/en/en-us.json');
 			{text: "an urgent national security concern of highly classified nature", image: "Classified.gif"},
 			{text: "the ongoing loss of traditional values", image:"traditional-family.jpg" },
 			{text: "unexplained oscilations in the social web", image:"social-media1.jpg"},
+			{text: "strange quantum events at a macroscopic scale", image:"entangled.jpg"},
+			{text: "a sudden increase of global warming", image:"polarbear.jpg"},
+			{text: "GNU violation reports", image:"polarbear.jpg"},
 		],
 
 		group: [
@@ -76,6 +79,7 @@ meSpeak.loadVoice('src/game/libs/mespeak/voices/en/en-us.json');
 				{text: "A team of alien scientists", image: "socialistspaceWorkers.jpg",
 				 url:"http://historiesofthingstocome.blogspot.co.at/2010/08/retro-futurism-4-russians-in-space.html"}, 
 				{text:"A paranoid superintelligent bonobo who escaped from a secret CIA prison", image:"bonobo-portrait.jpg"},
+				{text: "An adventurous giraffe", image:"giraffe.jpg", url:"http://www.giraffes.org/giraffelink.html"},
 		], 
 
 		explanation: [
@@ -101,11 +105,13 @@ meSpeak.loadVoice('src/game/libs/mespeak/voices/en/en-us.json');
 			{text: "a quest to kill space nazis", image:"spacenazi.jpg"}, 
 			{text: "the search for the holy grail of quantum mechanics", image: "quantum.jpg"},
 			{text: "an harmless adventure between consenting adults", image: "consenting.jpg"},
+			{text: "a quest to enlighten mankind", image: "enlightenment.jpeg"},
 		],
  
 		finale: [
 			{text: "an adventure in a cellular world unseen by anyone before", image: "ca2.jpg"},
 			{text: "a universe of cellular automata hidden in every atom", image: "ca1.jpg"}, 
+			{text: "ALL YOUR BASE ARE BELONG TO US!", image: "allYourBase.jpg"}, 
 		],
 	}
 
@@ -157,16 +163,28 @@ meSpeak.loadVoice('src/game/libs/mespeak/voices/en/en-us.json');
 				id = "sc" + i;
 				var cont = $("#"+id);
 				var a = audios[id];
+				var canceled = false;
+				
 				
 				a.addEventListener("ended", function() {
-					$('#container').cycle("next");
-					cont.fadeOut();
-					_.delay(callMe, 500);
+					if (!canceled) {
+						$('#container').cycle("next");
+						//cont.fadeOut();
+						_.delay(callMe, 500);	
+					}
+
 				}, false);
 
 				return function() {
-					cont.fadeIn();		
+					//cont.fadeIn();		
 					a.play();
+					cont.click(function(){
+						$('#container').cycle("next");
+						a.pause();
+						canceled = true;
+					  //cont.fadeOut();
+						_.delay(callMe, 500);
+					});
 				};
 			})(i, callMe);
 		}
