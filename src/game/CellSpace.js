@@ -50,10 +50,41 @@ require([
 	var gameW = 256, gameH = 256;
 	gameW = 450, gameH = 300;
 
+
+
+		var shotN = 8;
+
+
+///*
+	/*	var shotD = 3;
+		var wellen = 20;
+		var prim = 7;
+
+
+		var PK = Math.sqrt(gameW*gameW/4 + gameH*gameH/4) * 2*Math.PI;
+		var SK = PK/shotD;
+		var VK = Math.PI*2/SK;
+		shotN = SK/wellen;
+		
+		var bADelta = prim*VK;
+
+*/
+//*/
+///*
+		var SN = 101; //(coverLen / 5);
+		var W = 11;
+		var minA = 2*Math.PI/SN;
+		var bADelta = minA * W;
+		bADelta = 3*Math.E/Math.PI;
+		var wellen = 100;
+//*/
+	
+			var wk = wellen;
+
 	var shipX, shipY;
-	var shotSpeed = 2.9;
+	var shotSpeed = 2.7;
 	var zoom = 3;
-	var maxParticles = 800;
+	var maxParticles = 2800;
 	var mouseMode = "shoot";	
 	var cnt = 0; // used for executing enemyDish only every nth tep
 	// TODO what laws govern bangle and resulting bombingfield density. define density of bomb array
@@ -332,13 +363,23 @@ require([
 			}
 
 			if (keyboard.isPressed(65+1)) {
-				if (!game.bombFired) {
+				if (!game.bombFired && wk) {
 					//game.bombFired = 1;
-					shots.allocateSphere(10, shipX, shipY, shotSpeed, bAngle);
-					bAngle += game.bAD || Math.E/Math.PI; ///*-0.76599; */ 0.44301;
+
+					wk--;
+
+					
+					
+					
+					bAngle += bADelta;
+					shots.allocateSphere(shotN, shipX, shipY, shotSpeed, bAngle);
+
+					
+//					bAngle += game.bAD || Math.E/Math.PI; ///*-0.76599; */ 0.44301;
 				}
 			}
 			else {
+				wk = wellen;
 				game.bombFired = 0;
 			}
 
