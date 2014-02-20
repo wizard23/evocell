@@ -4,7 +4,40 @@
 	<link type="text/css" rel="stylesheet" href="style.css" />
 	<link type="text/css" rel="stylesheet" href="css/jquery-ui-1.10.4.custom.css" />
 	<script data-main="src/game/CellSpace" src="src/game/libs/require.js"></script>
+
+	<script type="text/template" id="part-template">
+    <div class="storyElement" id="<%=id%>">
+		<h2><%= text %></h2>
+      <img src="<%= image %>" alt="<%= text %>"> </img>
+    </div>
+  	</script>
+
 	<style>
+
+body {
+	font-family:sans-serif;
+}
+.storyElement { 
+   position: relative; 
+	display: none;
+}
+
+.storyElement h2 { 
+	padding: 5px 5px 5px 5px;
+   kkhposition: absolute; 
+   bottom: 30px; 
+   right: -200px; 
+   width: 400px; 
+	color: white;
+	background:rgba(0,0,0,0.7);
+
+	display: inline;
+    float: none;
+}
+
+.storyElement img {
+	height: 400px;
+}
 
 #toolsMenu { 
 	padding: 0px 0x 0px 0px;
@@ -110,6 +143,10 @@ height: <input id="height" type="number" min="1" max="1000" data-bind="value: dr
 	</div>
 </div>
 
+	<div id="storyContainer" style="border:0px solid black; position: fixed; top: 0px; left: 0px; z-index:1000;  background:rgba(255,255,255,1); width:100%; height:100%; text-align:center;" >
+
+		<div id="container" style="z-index:1001; border:1px solid black;  width:100%;" ></div>
+	</div>
 
 	<canvas id="c" width="100" height="100" style="border:0px solid black; position: fixed; top: 0px;left: 0px; z-index:0; cursor:crosshair" ></canvas>
 	<br>

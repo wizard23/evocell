@@ -7,12 +7,17 @@ require.config({
 		backbone: "libs/backbone",
 		knockback: "libs/knockback",
 		knockout: "libs/knockout-3.0.0",
+		meSpeak: "libs/mespeak/mespeak",
+		"jquery-cycle":"libs/jquery.cycle.all",
 	},
 	shim: {
         "jquery-ui": {
             exports: "$",
             deps: ['jquery', 'libs/farbtastic']
         },
+		  "jquery-cycle": {
+				deps: ["jquery-ui"]
+			},
 		  underscore : {
 				exports: "_",
 		  },
@@ -29,12 +34,20 @@ require.config({
 				exports: "ko",
 				deps: [],			
 				},
+			
+			meSpeak: {
+				exports: "meSpeak"
+			}
     }
 });
 
 require([
-	"jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "underscore", "backbone", "knockback", "knockout"], 
-	function($, utils, resources, EC, _, Backbone, kb, ko) {
+	"jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "story/StoryTeller", "underscore", "backbone", "knockback", "knockout"], 
+	function($, utils, resources, EC, storyTeller,_ , Backbone, kb, ko) {
+
+storyTeller.GetIntro()();
+
+
 
 	var canvas;
 	var reactor;
@@ -120,6 +133,8 @@ require([
 
 
 	var setupGui = function() {
+
+//		$( "#toolsMenu" ).hide();
 
 		$( "#toolsMenu" ).accordion({
 		collapsible: true,
