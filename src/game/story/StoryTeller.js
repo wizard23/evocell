@@ -9,10 +9,14 @@ define([
 		return x.replace(/ /g, "%20");
 	}
 
-	//meSpeak.loadConfig("src/game/libs/mespeak/mespeak_config.json");
-	//meSpeak.loadVoice('src/game/libs/mespeak/voices/en/en-us.json');
+	meSpeak.loadConfig("src/game/libs/mespeak/mespeak_config.json");
+	meSpeak.loadVoice('src/game/libs/mespeak/voices/en/en-us.json');
 
-	var htmlTemplate = _.template( $('#part-template').html() );
+	//meSpeak.speak("hello");
+
+	var templateSrc = $('#part-template').html();
+	
+	var htmlTemplate = templateSrc ? _.template(templateSrc) : function() { return "TODO: ADD TEMPLATE"};
 
 	var story = {
 		parts: ["Alerted by <%= reason %>", 
@@ -74,7 +78,8 @@ define([
 
 	var RunIntro = function() {
 		var audios = {};
-	
+		var texts = [];	
+
 		for (var partIndex in story.parts)
 		{
 			var part = story.parts[partIndex];
@@ -95,6 +100,7 @@ define([
 			var params = {};
 			params[key] = alt.text;
 			var text = partTemplate(params);
+			texts.push(text);
 		
 			var id = "sc" + partIndex;
 			$("#container").append(htmlTemplate({text:text, image: "images/" + alt.image, id:id}));
@@ -140,8 +146,9 @@ define([
 				}, false);
 
 				return function() {
+					meSpeak.speak(texts[i]);
 					a.play();
-					cont.click(function(){
+					cont.click(function() {
 						canceled = true;
 						a.pause();
 					 	next();
