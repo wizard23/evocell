@@ -6,9 +6,10 @@
 	<script data-main="src/game/CellSpace" src="src/game/libs/require.js"></script>
 
 	<script type="text/template" id="part-template">
-    <div class="storyElement" id="<%=id%>">
+    <div class="storyElement" id="<%=id%>" style="cursor:pointer;border:0px solid black; position: fixed; top: 0px; left: 0px; z-index:1000;  background:rgba(0,0,0,0); width:100%; height:100%; text-align:center;">
 		<h2><%= text %></h2>
       <img src="<%= image %>" alt="<%= text %>"> </img>
+		<p>(click to continue...)</p>
     </div>
   	</script>
 
@@ -18,15 +19,16 @@ body {
 	font-family:sans-serif;
 }
 .storyElement { 
-   position: relative; 
+   kjkjjposition: relative; 
 	display: none;
+	color: white;
 }
 
-.storyElement h2 { 
+.xxxstoryElement h2 { 
 	padding: 5px 5px 5px 5px;
-   kkhposition: absolute; 
+   position: absolute; 
    bottom: 30px; 
-   right: -200px; 
+   right: 200px; 
    width: 400px; 
 	color: white;
 	background:rgba(0,0,0,0.7);
@@ -36,7 +38,7 @@ body {
 }
 
 .storyElement img {
-	height: 400px;
+	height: 75%;
 }
 
 #toolsMenu { 
@@ -143,10 +145,10 @@ height: <input id="height" type="number" min="1" max="1000" data-bind="value: dr
 	</div>
 </div>
 
-	<div id="storyContainer" style="border:0px solid black; position: fixed; top: 0px; left: 0px; z-index:1000;  background:rgba(255,255,255,1); width:100%; height:100%; text-align:center;" >
-
-		<div id="container" style="z-index:1001; border:1px solid black;  width:100%;" ></div>
-	</div>
+	<!---<div id="storyContainer" style="border:0px solid black; position: fixed; top: 0px; left: 0px; z-index:1000;  background:rgba(255,255,255,1); width:100%; height:100%; text-align:center;" >
+-->
+		<div id="container" stylea="background:rgba(255,255,255,0.2);z-index:1001;" style="z-index:1001; border:1px solid black;  width:100%; border:0px solid black; position: fixed; top: 0px; left: 0px; z-index:1000;  background:rgba(0,0,0,0.8); width:100%; height:100%; text-align:center; display:none;" ></div>
+	<!--</div>-->
 
 	<canvas id="c" width="100" height="100" style="border:0px solid black; position: fixed; top: 0px;left: 0px; z-index:0; cursor:crosshair" ></canvas>
 	<br>
