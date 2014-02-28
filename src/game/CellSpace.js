@@ -45,10 +45,6 @@ require([
 	"jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "story/StoryTeller", "underscore", "backbone", "knockback", "knockout"], 
 	function($, utils, resources, EC, storyTeller,_ , Backbone, kb, ko) {
 
-storyTeller.GetIntro()();
-
-
-
 	var canvas;
 	var reactor;
 	var gl;		
@@ -134,6 +130,10 @@ storyTeller.GetIntro()();
 
 	var setupGui = function() {
 
+		document.getElementById("showIntroLink").addEventListener('click', function() {
+			storyTeller.GetIntro()();
+		}, false);
+
 //		$( "#toolsMenu" ).hide();
 
 		$( "#toolsMenu" ).accordion({
@@ -216,7 +216,22 @@ storyTeller.GetIntro()();
 		var loader = new EC.ResLoader();
 		loader.load("enemyRule", "rules/enemy_ludwigBuildships", "ecfile");
 		//loader.load("enemyRule", "rules/enemy_ludwigBuildships_lessActive", "ecfile");
-		//loader.load("enemyRule", "rules/enemy_linebuilder", "ecfile");
+		loader.load("enemyRule", "rules/enemy_d54_awesomeships", "ecfile");
+		//loader.load("enemyRule", "rules/enemy_d52_replicator", "ecfile");
+		//loader.load("enemyRule", "rules/enemy_holeshooter", "ecfile");
+
+//loader.load("enemyRule", "rules/enemy_holeshooter", "ecfile");
+//loader.load("enemyRule", "rules/gridworld6", "ecfile");
+//loader.load("enemyRule", "rules/enemy_quaderwelt_moreactive", "ecfile");
+//loader.load("enemyRule", "rules/enemy_d29", "ecfile");
+//loader.load("enemyRule", "rules/enemy_gridworldlike", "ecfile");
+		
+
+
+
+
+
+
 		loader.load("enemy2Rule", "rules/enemy_linebuilder", "ecfile");
 		loader.load("weaponRule", "rules/ship_avg4_schweif", "ecfile");
 		loader.load("weaponExplosionRule", "rules/ship_avg4_schweif", "ecfile");
@@ -366,7 +381,7 @@ storyTeller.GetIntro()();
 			
 			// space
 			if (keyboard.isPressed(32)) {
-				enemyDish.randomize(enemyRule.nrStates, 0.0004);
+				enemyDish.randomize(enemyRule.nrStates, 0.02);
 				enemy2Dish.randomize(enemyRule.nrStates, 0.01);
 				if (shipX < 0 || shipX > gameW || shipY < 0 || shipY > gameH)
 					shipX = gameW/2, shipY = gameH/2;

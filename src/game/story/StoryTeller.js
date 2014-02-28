@@ -42,7 +42,7 @@ define([
 				 url:"http://historiesofthingstocome.blogspot.co.at/2010/08/retro-futurism-4-russians-in-space.html"}, 
 				{text:"A paranoid superintelligent bonobo who escaped from a secret CIA prison", image:"bonobo-portrait.jpg"},
 				{text: "An adventurous giraffe", image:"giraffe.jpg", url:"http://www.giraffes.org/giraffelink.html"},
-				{text:"The US goverment in accordance with their handlers.", image:"usalien.png" },
+				{text:"The US goverment in accordance with their handlers", image:"usalien.png" },
 		], 
 
 		explanation: [
@@ -80,6 +80,7 @@ define([
 	}
 
 	var RunIntro = function() {
+		$("#container").html("");
 		$("#container").fadeIn();
 
 		var audios = {};
