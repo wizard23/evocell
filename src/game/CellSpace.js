@@ -42,8 +42,8 @@ require.config({
 });
 
 require([
-	"jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "story/StoryTeller", "underscore", "backbone", "knockback", "knockout"], 
-	function($, utils, resources, EC, storyTeller,_ , Backbone, kb, ko) {
+	"jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "story/StoryTeller", "underscore", "backbone", "knockback", "knockout", "data/FileStore"], 
+	function($, utils, resources, EC, storyTeller,_ , Backbone, kb, ko, fileStore) {
 
 	var canvas;
 	var reactor;
@@ -58,6 +58,7 @@ require([
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
 	gameW = 450, gameH = 300;
+		var zoom = 3;
 
 
 
@@ -92,7 +93,7 @@ require([
 
 	var shipX, shipY;
 	var shotSpeed = 2.7;
-	var zoom = 3;
+
 	var maxParticles = 2800;
 	var mouseMode = "shoot";	
 	var cnt = 0; // used for executing enemyDish only every nth tep
@@ -189,7 +190,12 @@ require([
 				var sX = shotSpeed * dX/dL;
 				var sY = shotSpeed * dY/dL;
 
-				shots.allocateParticle(shipX, shipY, sX, sY);
+				var aa = 0.07;
+				shots.allocateParticle(shipX, shipY, 1.1*sX, 1.1*sY);
+				shots.allocateParticle(shipX, shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
+				aa = -aa;
+				shots.allocateParticle(shipX, shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
+		
 				snd.currentTime=0;
 				snd.play();
 			}	
@@ -224,9 +230,9 @@ require([
 //loader.load("enemyRule", "rules/gridworld6", "ecfile");
 //loader.load("enemyRule", "rules/enemy_quaderwelt_moreactive", "ecfile");
 //loader.load("enemyRule", "rules/enemy_d29", "ecfile");
-//loader.load("enemyRule", "rules/enemy_gridworldlike", "ecfile");
+//loader.load("enemyRule", "rules/enemy_linesLounge_moreactive", "ecfile");
+//loader.load("enemyRule", "rules/enemy_linesLounge_moreactive-mutA_mut", "ecfile");
 		
-
 
 
 
@@ -286,6 +292,14 @@ require([
 		intersectSpawnShader = reactor.compileShader(data.intersectSpawn);
 		copyShader = reactor.compileShader(data.copyPaste);
 
+		//fileStore.storeRule(data.enemy2Rule);
+		//fileStore.loadRule("starwars", function(loadedRule) {
+		//	enemyRule = reactor.compileRule(loadedRule, enemyDish);
+		//})
+
+		//data.enemyRule.MakeStarWarsRule()
+		//fileStore.storeRule("starwars", data.enemyRule);
+
 		enemyRule = reactor.compileRule(data.enemyRule, enemyDish);
 		enemy2Rule = reactor.compileRule(data.enemy2Rule, enemy2Dish);
 		shipRule = reactor.compileRule(data.shipRule, shipDish);
@@ -297,6 +311,14 @@ require([
 		enemyColors.setColor(1, [140, 10, 140, 255]);
 		enemyColors.setColor(2, [255, 255, 255, 255]);
 		enemyColors.setColor(3, [255, 30, 255, 255]);
+
+		enemyColors = new EC.Palette(reactor, [
+			[0, 0, 0, 255],
+			[0, 120, 0, 255],
+			[0, 255, 0, 255],
+			[120, 255, 0, 255],
+		]);
+
 
 		enemy2Colors = new EC.Palette(reactor);
 		var bs = 0.12;
@@ -343,9 +365,11 @@ require([
 			// "DRAW" SHIP
 			reactor.mixDish(drawCircleShader, shipDish, {center: [shipX, shipY], radius: 3.5, state: (shipRule.nrStates-1)/255});
 
+			shots.collide(enemyDish);
 			shots.step();
 			shots.collide(enemyDish);
 			shots.draw(drawPointsShader, shipDish);
+			
 
 			// Dish INTERACTION ///////////////////////////////////
 			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: shipDish, tex2: enemyDish, state: (shipExplosionRule.nrStates-1)/255.});
@@ -378,7 +402,7 @@ require([
 			if (keyboard.isPressed(keyboard.DOWN)) shipY -= stepSize;
 			if (keyboard.isPressed(keyboard.LEFT)) shipX -= stepSize;
 			if (keyboard.isPressed(keyboard.RIGHT)) shipX += stepSize
-			
+	
 			// space
 			if (keyboard.isPressed(32)) {
 				enemyDish.randomize(enemyRule.nrStates, 0.02);
@@ -387,9 +411,15 @@ require([
 					shipX = gameW/2, shipY = gameH/2;
 			}
 
+			// escape
 			if (keyboard.isPressed(27))
 			{
-				enemyDish.setAll(0);
+				//enemyDish.setAll(0);
+				//fileStore.storeRule("starwars", enemyRule.ruleData);
+
+				fileStore.loadRule("starwars", function(loadedRule) {
+					enemyRule = reactor.compileRule(loadedRule.ruleData, enemyDish);
+				})
 			}
 
 			if (keyboard.isPressed(65+1)) {

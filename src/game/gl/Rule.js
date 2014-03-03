@@ -63,7 +63,6 @@ define(["gl/GLHelper"], function(glhelper) {
 	{
 		this.program = null;
 	}
-
 	
 //////////////////////////////////////////////////////////
 // Static functions

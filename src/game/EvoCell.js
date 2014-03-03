@@ -248,6 +248,58 @@ define(["Utils", "gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palette", "gl/ParticleS
 		return symmetryPermutations;
 	}
 
+	// dirty does not allocate assumes 4 states, moore
+	ECFile.prototype.MakeStarWarsRule = function() {
+		var rt = this.ruleTable;
+		var states = 4;
+
+		var d = [0,0,0, 0,0,0, 0,0,0];
+
+		var idx = 0;
+		for (d[8] = 0; d[8] < states; d[8]++) {
+			for (d[7] = 0; d[7] < states; d[7]++) {
+				for (d[6] = 0; d[6] < states; d[6]++) {
+					for (d[5] = 0; d[5] < states; d[5]++) {
+						for (d[4] = 0; d[4] < states; d[4]++) {
+							for (d[3] = 0; d[3] < states; d[3]++) {
+								for (d[2] = 0; d[2] < states; d[2]++) {
+									for (d[1] = 0; d[1] < states; d[1]++) {
+										for (d[0] = 0; d[0] < states; d[0]++) {
+											
+											var res = 0;
+
+											var sum = 0;
+											for (var i = 1; i < 9; i++) {
+												if (d[i] == 3) {
+													sum++;
+												}
+											}
+
+											if (d[0] == 0) {
+												if (sum ==2) res = 3;
+												else res = 0;
+											}
+											else if (d[0] == 3) {
+												if (sum == 3 || sum == 4 || sum == 5) res = 3;
+												else res = d[0]-1;
+											}
+											else {
+												res = d[0]-1;
+											}
+
+											rt[idx] = res;
+											idx++;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	function rot90(xy)
 	{
 		return [-xy[1], xy[0]];

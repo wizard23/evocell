@@ -1,12 +1,13 @@
 define(["gl/GLHelper"], function(glhelper) {
 	// RulesTexture and Dishes brauchen gemeinsames Basisobjekt das eine Textur zurueckgibt, RuleTexture ist auch ein shader
 	// public interface
-	var Palette = function(reactor)
+	var Palette = function(reactor, colors)
 	{
 		this.reactor = reactor;
 		this.gl = reactor.gl;
 	
-		this.colors = [];
+
+		this.colors = colors || [];
 	}
 
 	Palette.prototype.setColor = function(index, color)
