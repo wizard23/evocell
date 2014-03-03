@@ -69,7 +69,7 @@ var storeRule = function(name, ruleData) {
 };
 
 var loadRule = function(name, callback) {
-  objectStore = db.transaction([ruleStoreName], "readwrite").objectStore(ruleStoreName);
+  var objectStore = db.transaction([ruleStoreName]).objectStore(ruleStoreName);
   var request = objectStore.get(name);
   request.onerror = function(event) {
     alert("me so sorry, could not load rule with id name:" + name);
@@ -81,10 +81,27 @@ var loadRule = function(name, callback) {
   };
 }
 
+var loadAllRules = function(callback) {
+  var rules = [];
+  var objectStore = db.transaction(ruleStoreName).objectStore(ruleStoreName);
+  objectStore.openCursor().onsuccess = function(event) {
+    var cursor = event.target.result;
+    if (cursor) {
+      //alert("Rule " + cursor.value.id + " is " + cursor.value.ruleTableSize);
+      rules.push(cursor.value);
+      cursor.continue();
+    }
+    else {
+      callback(rules);
+    }
+  };
+}
+
 
 return {
   storeRule: storeRule,
   loadRule: loadRule,
+  loadAllRules: loadAllRules,
 };
 
 

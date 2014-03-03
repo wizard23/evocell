@@ -57,8 +57,8 @@ require([
 
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
-	gameW = 450, gameH = 300;
-		var zoom = 3;
+	gameW = 256, gameH = 256;
+		var zoom = 4;
 
 
 
@@ -133,6 +133,15 @@ require([
 
 		document.getElementById("showIntroLink").addEventListener('click', function() {
 			storyTeller.GetIntro()();
+		}, false);
+
+		var idxxxx = -1;
+		document.getElementById("switchLink").addEventListener('click', function() {
+			fileStore.loadAllRules(function(rulesModelData) {
+					idxxxx++;
+					idxxxx %= rulesModelData.length;
+					enemyRule = reactor.compileRule(rulesModelData[idxxxx].ruleData, enemyDish);
+				})
 		}, false);
 
 //		$( "#toolsMenu" ).hide();
@@ -253,7 +262,9 @@ require([
 		loader.load("drawRect", "src/game/shaders/drawRect.shader", "text");
 		loader.load("drawCircle", "src/game/shaders/drawCircle.shader", "text");
 
-		loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
+		//loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
+		loader.load("painter", "src/game/shaders/scrollingRenderer.shader", "text");
+
 		loader.load("intersectSpawn", "src/game/shaders/intersectSpawn.shader", "text");
 
 		loader.load("copyPaste", "src/game/shaders/copyPasteRect.shader", "text");
@@ -386,9 +397,12 @@ require([
 			
 			//reactor.mixDish(mixShader, renderDish, {texNew: copyDish, texPalette: copyColors.getTexture()});		
 
+			scrollX += 0.0008;
+			scrollY += Math.sin(40*scrollX)*0.0006;
 			//RENDER			
 			reactor.paintDish(paintShader, renderDish, function(gl, shader) {
 				gl.uniform1f(gl.getUniformLocation(shader, "scale"), zoom);
+				gl.uniform2f(gl.getUniformLocation(shader, "translate"), scrollX, scrollY);
 			});
 
 			cnt++;
@@ -415,11 +429,12 @@ require([
 			if (keyboard.isPressed(27))
 			{
 				//enemyDish.setAll(0);
-				//fileStore.storeRule("starwars", enemyRule.ruleData);
+				//fileStore.storeRule("enemy_ludwigBuildships", enemyRule.ruleData);
 
-				fileStore.loadRule("starwars", function(loadedRule) {
+				/*fileStore.loadRule("enemy_ludwigBuildships", function(loadedRule) {
 					enemyRule = reactor.compileRule(loadedRule.ruleData, enemyDish);
 				})
+*/				
 			}
 
 			if (keyboard.isPressed(65+1)) {

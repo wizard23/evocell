@@ -95,9 +95,11 @@ select option:nth-child(even) {  }
 		<li><b>'space'</b> to reset the game </li>
 	</ul>
 	<a id="showIntroLink">view background story</a>
+	<a id="switchLink">prebackbonemodel</a>
 	<br />
 	This is is an early beta realease please direct bug reports or ideas to the <a href="https://github.com/wizard23/evocell">EvoCell github page</a>
-	<script id='fb3wlse'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=wizard23&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fb3wlse');</script>
+	<!--script id='fb3wlse'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=wizard23&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fb3wlse');
+	</script-->
 	<br />
 	GPL 3.0 by Philipp Tiefenbacher / wizard23 
   </div>
@@ -135,15 +137,15 @@ height: <input id="height" type="number" min="1" max="1000" data-bind="value: dr
 		<br />
 		<br />
 		Awesome 8bit sound by Eric Skiff
-		<iframe width="100%" height="300" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/23678676&amp;auto_play=false&amp;hide_related=false&amp;visual=true"></iframe>
+		<!--iframe width="100%" height="300" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/23678676&amp;auto_play=false&amp;hide_related=false&amp;visual=true"></iframe -->
 		but the buttons dont work when the soundcloud iframe plays...
 		<br />
 		<br />
 		City of Iron by ozzed
-		<audio controls>
+		<!-- audio controls>
   			<source src="http://ozzed.net/files/Albums/Cor%20Metallicum/07%20City%20of%20Iron.mp3" type="audio/mpeg">
   			Your browser does not support this audio format.
-		</audio>
+		</audio -->
 	</div>
 </div>
 
@@ -154,10 +156,10 @@ height: <input id="height" type="number" min="1" max="1000" data-bind="value: dr
 
 	<canvas id="c" width="100" height="100" style="border:0px solid black; position: fixed; top: 0px;left: 0px; z-index:0; cursor:crosshair" ></canvas>
 	<br>
-	<div style="border:0px solid black; position: fixed; top: 0px;right: 0px; z-index:1; color:#DDDDDD; font-family:monospace;">
+	<div style="border:0px solid black; position: fixed; top: 0px;right: 0px; z-index:10000; color:#DDDDDD; font-family:monospace;">
 		fps: <span id="fpsMonitor">n/a</span><br>
 	</div>
-<script>
+<!-- script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -165,6 +167,6 @@ height: <input id="height" type="number" min="1" max="1000" data-bind="value: dr
 
   ga('create', 'UA-48124421-1', 'wizard23.github.io');
   ga('send', 'pageview');
-</script>
+</script -->
 </body>
 </html>
