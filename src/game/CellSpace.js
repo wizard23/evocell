@@ -58,7 +58,11 @@ require([
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
 	gameW = 256, gameH = 256;
-		var zoom = 4;
+		var zoom = 3;
+
+		var zoomF = 1;
+		var gridOffsetX=0, gridOffsetY=0;
+		var zoomFX = 1, zoomFY = 1;
 
 
 
@@ -278,7 +282,7 @@ require([
 		// Setup core 	
 		
 		reactor = new  EC.Reactor(canvas, gameW, gameH);
-		reactor.setRenderSize(gameW*zoom, gameH*zoom);
+		reactor.setRenderSize(zoom*gameW, zoom*gameH);
 		gl = reactor.gl;		
 
 		enemyDish = reactor.compileDish();
@@ -397,12 +401,31 @@ require([
 			
 			//reactor.mixDish(mixShader, renderDish, {texNew: copyDish, texPalette: copyColors.getTexture()});		
 
-			scrollX += 0.0008;
-			scrollY += Math.sin(40*scrollX)*0.0006;
+			//var pixel = 2 + Math.sin(0.05*shipX);
+			pixel = 4;
+
+			var ff = pixel/zoom;
+
+
+			//scrollX += 0.0008;
+			//scrollY += Math.sin(40*scrollX)*0.0006;
+
+			scrollX = -(0.5/ff) + shipX/enemyDish.width;
+			scrollY = -0.5/ff + shipY/enemyDish.height;
+
+
+			//zoomFX =  zoomFX * 1.0005;
+			//zoomFY = zoomFX * 1.0005;
+
+
+
 			//RENDER			
 			reactor.paintDish(paintShader, renderDish, function(gl, shader) {
-				gl.uniform1f(gl.getUniformLocation(shader, "scale"), zoom);
+				gl.uniform1f(gl.getUniformLocation(shader, "gridS"), ff*zoom);
+				gl.uniform2f(gl.getUniformLocation(shader, "gridOffset"), 
+					pixel*scrollX*enemyDish.width, pixel*scrollY*enemyDish.height);
 				gl.uniform2f(gl.getUniformLocation(shader, "translate"), scrollX, scrollY);
+				gl.uniform2f(gl.getUniformLocation(shader, "zoom"), 1/ff, 1/ff);
 			});
 
 			cnt++;
