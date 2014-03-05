@@ -51,7 +51,7 @@ require([
 
 	var enemyDish, enemy2Dish, shipDish, shipExplosionDish, copyDish, bufferDish, renderDish
 	var shots;
-	var drawPointsShader, clearShader, paintShader, drawRectShader, drawCircleShader, mixShader, intersectSpawnShader, copyShader;
+	var drawPointsShader, clearShader, scrollingRenderShader, drawRectShader, drawCircleShader, mixShader, intersectSpawnShader, copyShader;
 	var enemyRule, enemy2Rule, shipRule, weaponRule, shipExplosionRule;
 	var enemyColors, enemy2Colors, shipColors, shipExplosionColors, copyColors;
 
@@ -277,7 +277,8 @@ require([
 		loader.load("drawCircle", "src/game/shaders/drawCircle.shader", "text");
 
 		//loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
-		loader.load("painter", "src/game/shaders/scrollingRenderer.shader", "text");
+		loader.load("rendererVertex", "src/game/shaders/scrollingRenderer.vshader", "text");
+		loader.load("rendererFragment", "src/game/shaders/scrollingRenderer.shader", "text");
 
 		loader.load("intersectSpawn", "src/game/shaders/intersectSpawn.shader", "text");
 
@@ -308,7 +309,7 @@ require([
 		drawPointsShader = reactor.compileShader(data.vertexPoints, data.drawAll);
 		
 		clearShader = reactor.compileShader(data.clear);
-		paintShader = reactor.compileShader(data.painter);
+		scrollingRenderShader = reactor.compileShader(data.rendererVertex, data.rendererFragment);
 
 		drawRectShader = reactor.compileShader(data.drawRect);
 		drawCircleShader = reactor.compileShader(data.drawCircle);
@@ -420,33 +421,38 @@ require([
 			//scrollX += 0.0008;
 			//scrollY += Math.sin(40*scrollX)*0.0006;
 
+			shipX = (gameW/2) + (shipX-gameW/2) % 10;
+			shipY = (gameH/2) + (shipY-gameH/2) % 10;
+
+			console.log(shipX);
+
 			scrollX = -0.5/ff + shipX/enemyDish.width;
 			scrollY = -0.5/ff + shipY/enemyDish.height;
 
 
-			//RENDER			
-			/*reactor.applyShader(paintShader, renderDish.getCurrentFramebuffer(), function(gl, shader) {
-				gl.viewport(0,0, reactor.renderWidth, reactor.renderHeight);
-
-
+			//RENDER
+			/*			
+			reactor.applyShader(scrollingRenderShader, null, null, function(gl, shader) {
 				gl.uniform1f(gl.getUniformLocation(shader, "gridS"), ff*zoom);
 				gl.uniform2f(gl.getUniformLocation(shader, "gridOffset"), 
-					pixel*scrollX*enemyDish.width, pixel*scrollY*enemyDish.height);
+					(pixel*scrollX*enemyDish.width)%(pixel), pixel*scrollY*enemyDish.height);
 
 
 				gl.uniform2f(gl.getUniformLocation(shader, "translate"), scrollX, scrollY);
-				gl.uniform2f(gl.getUniformLocation(shader, "zoom"), 1/ff, 1/ff);
-			});
-*/
+				gl.uniform2f(gl.getUniformLocation(shader, "scale"), 1/ff, 1/ff);
+			});*/
 
-			reactor.paintDish(paintShader, renderDish, function(gl, shader) {
+
+			reactor.paintDish(scrollingRenderShader, renderDish, function(gl, shader) {
 				gl.uniform1f(gl.getUniformLocation(shader, "gridS"), ff*zoom);
 				gl.uniform2f(gl.getUniformLocation(shader, "gridOffset"), 
-					pixel*scrollX*enemyDish.width, pixel*scrollY*enemyDish.height);
+					(((shipX-enemyDish.width/2)%1)*pixel), 
+					(((shipY-enemyDish.height/2)%1)*pixel)
+					);
 
 
 				gl.uniform2f(gl.getUniformLocation(shader, "translate"), scrollX, scrollY);
-				gl.uniform2f(gl.getUniformLocation(shader, "zoom"), 1/ff, 1/ff);
+				gl.uniform2f(gl.getUniformLocation(shader, "scale"), 1/ff, 1/ff);
 			});
 
 			cnt++;
