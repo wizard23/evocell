@@ -136,20 +136,21 @@ require([
 
 	var setupGui = function() {
 
-		document.getElementById("zoomIn").addEventListener('click', function() {
+		document.getElementById("zoomIn").addEventListener('click', function(evt) {
 			pixel+=0.5;
 		}, false);
 
-		document.getElementById("zoomOut").addEventListener('click', function() {
+		document.getElementById("zoomOut").addEventListener('click', function(evt) {
 			pixel-=0.5;
 		}, false);
 
-		document.getElementById("showIntroLink").addEventListener('click', function() {
+
+		document.getElementById("showIntroLink").addEventListener('click', function(evt) {
 			storyTeller.GetIntro()();
 		}, false);
 
 		var idxxxx = -1;
-		document.getElementById("switchLink").addEventListener('click', function() {
+		document.getElementById("switchLink").addEventListener('click', function(evt) {
 			fileStore.loadAllRules(function(rulesModelData) {
 					idxxxx++;
 					idxxxx %= rulesModelData.length;
@@ -419,20 +420,31 @@ require([
 			//scrollX += 0.0008;
 			//scrollY += Math.sin(40*scrollX)*0.0006;
 
-			scrollX = -(0.5/ff) + shipX/enemyDish.width;
+			scrollX = -0.5/ff + shipX/enemyDish.width;
 			scrollY = -0.5/ff + shipY/enemyDish.height;
 
 
-			//zoomFX =  zoomFX * 1.0005;
-			//zoomFY = zoomFX * 1.0005;
-
-
-
 			//RENDER			
+			/*reactor.applyShader(paintShader, renderDish.getCurrentFramebuffer(), function(gl, shader) {
+				gl.viewport(0,0, reactor.renderWidth, reactor.renderHeight);
+
+
+				gl.uniform1f(gl.getUniformLocation(shader, "gridS"), ff*zoom);
+				gl.uniform2f(gl.getUniformLocation(shader, "gridOffset"), 
+					pixel*scrollX*enemyDish.width, pixel*scrollY*enemyDish.height);
+
+
+				gl.uniform2f(gl.getUniformLocation(shader, "translate"), scrollX, scrollY);
+				gl.uniform2f(gl.getUniformLocation(shader, "zoom"), 1/ff, 1/ff);
+			});
+*/
+
 			reactor.paintDish(paintShader, renderDish, function(gl, shader) {
 				gl.uniform1f(gl.getUniformLocation(shader, "gridS"), ff*zoom);
 				gl.uniform2f(gl.getUniformLocation(shader, "gridOffset"), 
 					pixel*scrollX*enemyDish.width, pixel*scrollY*enemyDish.height);
+
+
 				gl.uniform2f(gl.getUniformLocation(shader, "translate"), scrollX, scrollY);
 				gl.uniform2f(gl.getUniformLocation(shader, "zoom"), 1/ff, 1/ff);
 			});
