@@ -63,6 +63,7 @@ require([
 		var zoomF = 1;
 		var gridOffsetX=0, gridOffsetY=0;
 		var zoomFX = 1, zoomFY = 1;
+		var pixel = 4;
 
 
 
@@ -134,6 +135,14 @@ require([
 
 
 	var setupGui = function() {
+
+		document.getElementById("zoomIn").addEventListener('click', function() {
+			pixel+=0.5;
+		}, false);
+
+		document.getElementById("zoomOut").addEventListener('click', function() {
+			pixel-=0.5;
+		}, false);
 
 		document.getElementById("showIntroLink").addEventListener('click', function() {
 			storyTeller.GetIntro()();
@@ -402,7 +411,7 @@ require([
 			//reactor.mixDish(mixShader, renderDish, {texNew: copyDish, texPalette: copyColors.getTexture()});		
 
 			//var pixel = 2 + Math.sin(0.05*shipX);
-			pixel = 4;
+			
 
 			var ff = pixel/zoom;
 
