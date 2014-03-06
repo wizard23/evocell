@@ -57,13 +57,14 @@ require([
 
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
-	gameW = 256, gameH = 256;
+	gameW = 400, gameH = 356;
 		var zoom = 3;
 
 		var zoomF = 1;
 		var gridOffsetX=0, gridOffsetY=0;
 		var zoomFX = 1, zoomFY = 1;
 		var pixel = 4;
+		var pixX = 0;
 
 
 
@@ -415,19 +416,34 @@ require([
 			//var pixel = 2 + Math.sin(0.05*shipX);
 			
 
+
+			if (keyboard.isPressed("O".charCodeAt()))
+			{
+				pixel -= 0.1;
+			}
+
+			if (keyboard.isPressed("L".charCodeAt()))
+			{
+				pixel += 0.1;
+			}
+
 			var ff = pixel/zoom;
 
+
+			shipX += 0.7;
 
 			//scrollX += 0.0008;
 			//scrollY += Math.sin(40*scrollX)*0.0006;
 
-			shipX = (gameW/2) + (shipX-gameW/2) % 10;
-			shipY = (gameH/2) + (shipY-gameH/2) % 10;
+			shipX = (gameW/2) + (shipX-gameW/2) % 50;
+			shipY = (gameH/2) + (shipY-gameH/2) % 50;
 
-			console.log(shipX);
+			//console.log(shipX);
 
 			scrollX = -0.5/ff + shipX/enemyDish.width;
 			scrollY = -0.5/ff + shipY/enemyDish.height;
+
+
 
 
 			//RENDER
@@ -443,11 +459,14 @@ require([
 			});*/
 
 
+			var modXX = (scrollX*enemyDish.width*pixel + 1/(2*pixel))%pixel;
+			var modYY = (scrollY*enemyDish.height*pixel  + 1/(2*pixel))%pixel;
+			console.log(pixel, modXX, modYY);
 			reactor.paintDish(scrollingRenderShader, renderDish, function(gl, shader) {
-				gl.uniform1f(gl.getUniformLocation(shader, "gridS"), ff*zoom);
+				gl.uniform1f(gl.getUniformLocation(shader, "gridS"), pixel);
 				gl.uniform2f(gl.getUniformLocation(shader, "gridOffset"), 
-					(((shipX-enemyDish.width/2)%1)*pixel), 
-					(((shipY-enemyDish.height/2)%1)*pixel)
+					modXX, 
+					modYY
 					);
 
 
@@ -461,7 +480,7 @@ require([
 
 	var userInteraction = function() {
 	// USER INPUT Poll Keyboard //////////////////////////////////////////////////
-			var stepSize = 1.5;
+			var stepSize = 1;
 			if (keyboard.isPressed(keyboard.UP)) shipY += stepSize;
 			if (keyboard.isPressed(keyboard.DOWN)) shipY -= stepSize;
 			if (keyboard.isPressed(keyboard.LEFT)) shipX -= stepSize;
