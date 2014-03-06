@@ -57,7 +57,7 @@ require([
 
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
-	gameW = 400, gameH = 356;
+	gameW = 300, gameH = 300;
 		var zoom = 3;
 
 		var zoomF = 1;
@@ -113,7 +113,7 @@ require([
 	var selectedLayer = 0;
 	var fpsMonotor;
 
-	var snd = new Audio("sound/Digital_SFX_Set/laser8.mp3"); // buffers automatically when created
+	var snd = new Audio("sound/Digital_SFX_Set/laser4.mp3"); // buffers automatically when created
 
 
 	var gameModel
