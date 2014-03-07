@@ -28,14 +28,15 @@ define([
 
 		reason: [
 			{text: "an urgent national security concern of highly classified nature", image: "Classified.gif"},
+			{text: "an urgent national security concern of highly classified nature", image: "Classified.gif"},
 			{text: "the ongoing loss of traditional values", image:"traditional-family.jpg" },
 			{text: "unexplained oscilations in the social web", 
-				image:["social-media1.jpg", "vintage-social-networking.jpg"]},
+				image:["social-media1.jpg"]},
 			{text: "strange quantum events at a macroscopic scale", image:"entangled.jpg"},
 			{text: "a sudden increase of global warming", 
 				image:["polarbear.jpg", "Fight-Global-Warming-global-warming-prevention-725103_1280_1024.jpg"]},
 			{text: "GNU violation reports", image:"GNU-Linux.png"},
-						{text: "GNU violation reports", image:"GNU-Linux.png"},
+			{text: "GNU violation reports", image:"GNU-Linux.png"},
 		],
 
 		group: [
@@ -50,7 +51,7 @@ define([
 					image:["giraffe.jpg", "giraffe2.jpeg", "giraffe3.jpeg", "giraffe4.jpeg"],
 					url:"http://www.giraffes.org/giraffelink.html"},
 				{text:"the US goverment in accordance with their handlers", 
-					image:["illuminati.jpg", "usalien.png"] },
+					image:["usalien.png", "illuminati.jpg", "usalien.png"] },
 				{text:"Boxxy", image:["boxxy.jpg", "boxxy2.png"]},
 		], 
 
@@ -69,6 +70,7 @@ define([
 					{text: "a russian nuclear submarine with a critical core", image:"submarine.jpg"},
 					{text:"a timemachine", image:"timemachine.jpg"},
 					{text:"a DIY spaceship", image: "diy-spacecraft-1.jpg"},
+					{text:"a spaceship from a parallel timeline", image: "rocketpreparations.jpg"},
 					{text:"a huge robot", image:["landwalker.jpeg", "robotbog.jpg", "kidswalkerrobot.jpg"]},
 		],
 
@@ -85,8 +87,8 @@ define([
 		],
  
 		finale: [
-			{text: "an adventure in a cellular world unseen by anyone before", image: "ca2.jpg"},
-			{text: "a universe of cellular automata hidden in every atom", image: "ca1.jpg"}, 
+			{text: "an adventure in a cellular world unseen by anyone before", image: "blue.jpg"},
+			{text: "a universe of cellular automata hidden in every atom", image: "cellcity.jpg"}, 
 			{text: "ALL YOUR BASE ARE BELONG TO US", image: "allYourBase.jpg"}, 
 		],
 	}

@@ -100,7 +100,7 @@ require([
 			var wk = wellen;
 
 	var shipX, shipY;
-	var shotSpeed = 2.7;
+	var shotSpeed = 2.3;
 
 	var maxParticles = 2800;
 	var mouseMode = "shoot";	
@@ -115,10 +115,11 @@ require([
 	var selectedLayer = 0;
 	var fpsMonotor;
 
-	var sndInit = new Audio("sound/Digital_SFX_Set/laser3.mp3");
-	var snd = new Audio("sound/Digital_SFX_Set/laser6.mp3"); // buffers automatically when created
-	var sndBomb = new Audio("sound/Digital_SFX_Set/laser4.mp3"); // buffers automatically when created
-
+	var sndInit = new Audio("sound/Digital_SFX_Set/laser3.mp3"); // buffers automatically when created
+	var snd = new Audio("sound/Digital_SFX_Set/laser6.mp3"); 
+	var sndBomb = new Audio("sound/Digital_SFX_Set/laser4.mp3"); 
+	var sndHit = new Audio("sound/Digital_SFX_Set/laser10.mp3");
+	var sndHit2 = new Audio("sound/Digital_SFX_Set/laser9.mp3");
 
 	var gameModel
 
@@ -421,9 +422,17 @@ require([
 			// "DRAW" SHIP
 			reactor.mixDish(drawCircleShader, shipDish, {center: [shipX, shipY], radius: 3.5, state: (shipRule.nrStates-1)/255});
 
-			shots.collide(enemyDish);
+			var cb = function(pos) {
+				sndHit.currentTime=0;
+				sndHit.play();
+			}
+
+			shots.collide(enemyDish, cb);
 			shots.step();
-			shots.collide(enemyDish);
+			shots.collide(enemyDish, function(pos) {
+				sndHit2.currentTime=0;
+				sndHit2.play();
+			});
 			shots.draw(drawPointsShader, shipDish);
 			
 

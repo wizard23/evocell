@@ -13,6 +13,8 @@
     </div>
   	</script>
 
+  	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
 	<style>
 
 body {
@@ -44,7 +46,7 @@ body {
 #toolsMenu { 
 	padding: 0px 0x 0px 0px;
 	border:0px solid #AAAAAA; 
-position: fixed; top: 0px;left: 0px; z-index:2; 
+position: fixed; top: 0px;right: 0px; z-index:2; 
 color: white; width: 360px;
 background:rgba(255,255,255,0.2);
 }
@@ -55,14 +57,14 @@ background:rgba(255,255,255,0.2);
 
 .toolMenuHeader {
 	background:rgba(0,0,0,0.8);
-	margin: 5px 5px 5px 5px;
-	padding: 5px 5px 5px 5px;
+	margin: 5px;
+	padding: 5px;
 	cursor:pointer;
 }
 .toolMenuContent {
 	background:rgba(0,0,0,0.8);
-	margin: 5px 5px 5px 5px;
-	padding: 5px 5px 5px 5px;
+	margin: 5px;
+	padding: 5px;
 }
 
 
@@ -86,7 +88,7 @@ select option:nth-child(even) {  }
 
   <h3 class="toolMenuHeader">About</h3>
   <div class="toolMenuContent">
-    CellSpace is a HTML5/WebGL space shooter game built on <a href="http://en.wikipedia.org/wiki/Cellular_automaton">cellular automata</a>. All rule lookups and most of the collission detections are calculated on the GPU :)
+    CellSpace is a HTML5/JS/WebGL space shooter game built on <a href="http://en.wikipedia.org/wiki/Cellular_automaton">cellular automata</a>. All rule lookups and most of the collission detections are calculated on the GPU :)
 	<h4>Controls</h4>
 	<ul>
 		<li>mouse click to shoot</li>
@@ -94,8 +96,8 @@ select option:nth-child(even) {  }
 	  	<li><b>'b'</b> to fire many shots at once</li> 
 		<li><b>'space'</b> to reset the game </li>
 	</ul>
-	<a id="playPause">play/pause</a><br>
-	<a id="stepLink">step</a><br>
+	<a id="playPause"><i class="fa fa-play fa-2x"></i></a>
+	<a id="stepLink"><i class="fa fa-step-forward fa-2x"></i></a><br>
 	<br>
 	<a id="showIntroLink">view background story</a><br>
 	<a id="switchLink">prebackbonemodel</a><br>

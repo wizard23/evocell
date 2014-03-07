@@ -59,7 +59,7 @@ define([], function() {
 		}
 	}
 
-	ParticleSystem.prototype.collide = function(dish) {
+	ParticleSystem.prototype.collide = function(dish, cb) {
 		var gl = this.gl;
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, dish.getCurrentFramebuffer());
@@ -71,12 +71,15 @@ define([], function() {
 			var pX = Math.round(this.width*0.5*(this.pointCoordinates[2*i]+1));
 			var pY = Math.round(this.height*0.5*(this.pointCoordinates[2*i+1]+1));
 
-			if (this.pixelValues[(pX+pY*this.width)*4 + 3] != 0) {
-				this.pointCoordinates[2*i] = 10.; // out of range
-				this.pointCoordinates[2*i+1] = 10.;
+			if (pX >= 0 && pX < this.width && pY >= 0 && pY < this.height) {
+				if (this.pixelValues[(pX+pY*this.width)*4 + 3] != 0) {
+					if (cb) cb([pX, pY]);
+					this.pointCoordinates[2*i] = 10.; // out of range
+					this.pointCoordinates[2*i+1] = 10.;
+					this.pointSpeeds[2*i] = 0;
+					this.pointSpeeds[2*i+1] = 0;
+				}
 			}
-
-
 		}
 	} 
 
