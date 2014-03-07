@@ -49,6 +49,8 @@ require([
 	var reactor;
 	var gl;		
 
+	var renderLoop;
+
 	var enemyDish, enemy2Dish, shipDish, shipExplosionDish, copyDish, bufferDish, renderDish
 	var shots;
 	var drawPointsShader, clearShader, scrollingRenderShader, drawRectShader, drawCircleShader, mixShader, intersectSpawnShader, copyShader;
@@ -57,7 +59,7 @@ require([
 
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
-	gameW = 300, gameH = 300;
+	//gameW = 188, gameH = 188;
 		var zoom = 3;
 
 		var zoomF = 1;
@@ -65,7 +67,7 @@ require([
 		var zoomFX = 1, zoomFY = 1;
 		var pixel = 4;
 		var pixX = 0;
-
+		var rot = 0;
 
 
 		var shotN = 8;
@@ -113,7 +115,9 @@ require([
 	var selectedLayer = 0;
 	var fpsMonotor;
 
-	var snd = new Audio("sound/Digital_SFX_Set/laser4.mp3"); // buffers automatically when created
+	var sndInit = new Audio("sound/Digital_SFX_Set/laser3.mp3");
+	var snd = new Audio("sound/Digital_SFX_Set/laser6.mp3"); // buffers automatically when created
+	var sndBomb = new Audio("sound/Digital_SFX_Set/laser4.mp3"); // buffers automatically when created
 
 
 	var gameModel
@@ -121,7 +125,7 @@ require([
 
 	var drawModel = new Backbone.Model({
 		availableLayers: ["enemy", "enemy2", "ship", "shipExplosion"],
-		availableStates: [0, 1, 2, 3],
+		availableStates: [0, 1, 2, 3, 4, 5],
 
 		drawSizeX: 50,
 		drawSizeY: 30,
@@ -136,6 +140,13 @@ require([
 
 
 	var setupGui = function() {
+		document.getElementById("stepLink").addEventListener('click', function(evt) {
+			renderLoop.step();
+		}, false);
+
+		document.getElementById("playPause").addEventListener('click', function(evt) {
+			renderLoop.toggle();
+		}, false);
 
 		document.getElementById("zoomIn").addEventListener('click', function(evt) {
 			pixel+=0.5;
@@ -215,7 +226,7 @@ require([
 				var sY = shotSpeed * dY/dL;
 
 				var aa = 0.07;
-				shots.allocateParticle(shipX, shipY, 1.1*sX, 1.1*sY);
+				shots.allocateParticle(shipX, shipY, 1.05*sX, 1.05*sY);
 				shots.allocateParticle(shipX, shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
 				aa = -aa;
 				shots.allocateParticle(shipX, shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
@@ -245,8 +256,11 @@ require([
 	var loadResources = function(callback) {
 		var loader = new EC.ResLoader();
 		loader.load("enemyRule", "rules/enemy_ludwigBuildships", "ecfile");
-		//loader.load("enemyRule", "rules/enemy_ludwigBuildships_lessActive", "ecfile");
-		loader.load("enemyRule", "rules/enemy_d54_awesomeships", "ecfile");
+		
+		loader.load("enemyRule", "rules/moore5-coolspaceships", "ecfile");
+		loader.load("enemyRule", "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
+		
+		//loader.load("enemyRule", "rules/enemy_d54_awesomeships", "ecfile");
 		//loader.load("enemyRule", "rules/enemy_d52_replicator", "ecfile");
 		//loader.load("enemyRule", "rules/enemy_holeshooter", "ecfile");
 
@@ -266,7 +280,7 @@ require([
 		loader.load("weaponRule", "rules/ship_avg4_schweif", "ecfile");
 		loader.load("weaponExplosionRule", "rules/ship_avg4_schweif", "ecfile");
 		loader.load("shipExplosionRule", "rules/ship_avg4_nice", "ecfile");
-		loader.load("shipRule", "rules/ship_avg4_nice", "ecfile");
+		loader.load("shipRule", "rules/cross4-wave-spaceshipshoot", "ecfile");
 
 		loader.load("vertexPoints", "src/game/shaders/vertexPoints.vshader", "text");
 		loader.load("drawAll", "src/game/shaders/drawAll.shader", "text");
@@ -338,13 +352,28 @@ require([
 		enemyColors.setColor(1, [140, 10, 140, 255]);
 		enemyColors.setColor(2, [255, 255, 255, 255]);
 		enemyColors.setColor(3, [255, 30, 255, 255]);
+		enemyColors.setColor(4, [255, 110, 255, 255]);
 
+/*
 		enemyColors = new EC.Palette(reactor, [
 			[0, 0, 0, 255],
 			[0, 120, 0, 255],
 			[0, 255, 0, 255],
 			[120, 255, 0, 255],
+			[200, 255, 0, 255],
 		]);
+*/
+
+/*
+	enemyColors = new EC.Palette(reactor, [
+		[60, 60, 90, 255],
+		[23, 108, 126, 255],
+		[18, 164, 195, 255],
+		[0, 210, 255, 255],
+		[150, 210, 255, 255], 
+		[255, 255, 255, 255]
+	]);
+*/
 
 
 		enemy2Colors = new EC.Palette(reactor);
@@ -427,51 +456,71 @@ require([
 				pixel += 0.1;
 			}
 
-			var ff = pixel/zoom;
+			if (keyboard.isPressed("N".charCodeAt()))
+			{
+				rot += 0.05;
+			}
 
+			if (keyboard.isPressed("M".charCodeAt()))
+			{
+				rot -= 0.05;
+			}
 
-			shipX += 0.7;
+			
+			//shipX += 0.7;
 
-			//scrollX += 0.0008;
-			//scrollY += Math.sin(40*scrollX)*0.0006;
-
-			shipX = (gameW/2) + (shipX-gameW/2) % 50;
-			shipY = (gameH/2) + (shipY-gameH/2) % 50;
+			//shipX = (gameW/2) + (shipX-gameW/2) % 70;
+			//shipY = (gameH/2) + (shipY-gameH/2) % 70;
 
 			//console.log(shipX);
 
-			scrollX = -0.5/ff + shipX/enemyDish.width;
-			scrollY = -0.5/ff + shipY/enemyDish.height;
+
+			var ff = pixel/zoom;
 
 
+			var camCenter = [shipX, shipY];
+			/////
 
+			var transX = -0.5/ff + shipX/enemyDish.width;
+			var transY = -0.5/ff + shipY/enemyDish.height;
 
+			var offsetX = (transX*enemyDish.width*pixel + 1/(2*pixel))%pixel;
+			var offsetY = (transY*enemyDish.height*pixel  + 1/(2*pixel))%pixel;
+
+			var centerX = ff*shipX/enemyDish.width;
+			var centerY = ff*shipY/enemyDish.height;
 			//RENDER
 			/*			
 			reactor.applyShader(scrollingRenderShader, null, null, function(gl, shader) {
 				gl.uniform1f(gl.getUniformLocation(shader, "gridS"), ff*zoom);
 				gl.uniform2f(gl.getUniformLocation(shader, "gridOffset"), 
-					(pixel*scrollX*enemyDish.width)%(pixel), pixel*scrollY*enemyDish.height);
+					(pixel*transX*enemyDish.width)%(pixel), pixel*transY*enemyDish.height);
 
 
-				gl.uniform2f(gl.getUniformLocation(shader, "translate"), scrollX, scrollY);
+				gl.uniform2f(gl.getUniformLocation(shader, "translate"), transX, transY);
 				gl.uniform2f(gl.getUniformLocation(shader, "scale"), 1/ff, 1/ff);
 			});*/
 
-
-			var modXX = (scrollX*enemyDish.width*pixel + 1/(2*pixel))%pixel;
-			var modYY = (scrollY*enemyDish.height*pixel  + 1/(2*pixel))%pixel;
-			console.log(pixel, modXX, modYY);
+			//console.log(pixel, offsetX, offsetY);
 			reactor.paintDish(scrollingRenderShader, renderDish, function(gl, shader) {
 				gl.uniform1f(gl.getUniformLocation(shader, "gridS"), pixel);
-				gl.uniform2f(gl.getUniformLocation(shader, "gridOffset"), 
-					modXX, 
-					modYY
-					);
+				gl.uniform2f(gl.getUniformLocation(shader, "gridOffset"), offsetX, offsetY);
+				gl.uniform2f(gl.getUniformLocation(shader, "translate"), transX, transY);
+				gl.uniform2f(gl.getUniformLocation(shader, "center"), centerX, centerY);
+
+				//gl.uniform2f(gl.getUniformLocation(shader, "center"), ff*0.5, ff*0.5);
+				//gl.uniform2f(gl.getUniformLocation(shader, "center"), 0.999	, 0.999);
 
 
-				gl.uniform2f(gl.getUniformLocation(shader, "translate"), scrollX, scrollY);
+				// 0.5 -> 49
+				// 0 -? 0
+
+
+				//console.log(shipX, shipY);
+
 				gl.uniform2f(gl.getUniformLocation(shader, "scale"), 1/ff, 1/ff);
+
+				gl.uniform1f(gl.getUniformLocation(shader, "rot"), rot);
 			});
 
 			cnt++;
@@ -492,6 +541,9 @@ require([
 				enemy2Dish.randomize(enemyRule.nrStates, 0.01);
 				if (shipX < 0 || shipX > gameW || shipY < 0 || shipY > gameH)
 					shipX = gameW/2, shipY = gameH/2;
+
+				sndInit.currentTime=0;
+				sndInit.play();
 			}
 
 			// escape
@@ -517,6 +569,9 @@ require([
 					
 					bAngle += bADelta;
 					shots.allocateSphere(shotN, shipX, shipY, shotSpeed, bAngle);
+
+					sndBomb.currentTime=0;
+					sndBomb.play();
 
 					
 //					bAngle += game.bAD || Math.E/Math.PI; ///*-0.76599; */ 0.44301;
@@ -603,7 +658,7 @@ require([
 	loadResources(function (data) {
 		setupGame(data, canvas);
 		setupGui();
-		var renderLoop = new utils.AnimationLoop(function() {
+		renderLoop = new utils.AnimationLoop(function() {
 			userInteraction();
 			gameLoop();
 		});

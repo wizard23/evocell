@@ -38,23 +38,36 @@ define(["jquery", "libs/FileSaver"], function($, saveAs) {
 
 	var AnimationLoop = function(callback) {
 		this.callback = callback;
-		this.pauseRequested = false;
+		this.pauseRequested = true;
 	};
 
 	AnimationLoop.prototype.start = function() {
 		var loopContext = this;
+		this.pauseRequested = false;
 		var myFn = function() {
 			if (!loopContext.pauseRequested) {
 				loopContext.callback();
 				requestAnimFrame(myFn);
 			}
 		}
-		this.pauseRequested = false;
 		myFn();
+	}
+
+	AnimationLoop.prototype.step = function() {
+		this.callback();
 	}
 
 	AnimationLoop.prototype.stop = function() {
 		this.pauseRequested = true;
+	}
+
+	AnimationLoop.prototype.toggle = function() {
+		if (this.pauseRequested) {
+			this.start();
+		}
+		else {
+			this.stop();
+		}
 	}
 
 	var FPSMonitor = function(elementID) {

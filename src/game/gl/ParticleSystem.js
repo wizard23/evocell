@@ -80,6 +80,7 @@ define([], function() {
 		}
 	} 
 
+	var allocIdx = 0;
 	ParticleSystem.prototype.allocateParticle = function(x, y, xs, ys) {
 		var xScale = 2./this.width;
 		var yScale = 2./this.height;
@@ -89,8 +90,9 @@ define([], function() {
 		xs = xScale * xs;
 		ys = yScale * ys;
 
-		for (var i = 0; i < this.n; i++)
+		for (var j = 0; j < this.n; j++)
 		{
+			var  i = (j+allocIdx)%this.n;
 			var xx = this.pointCoordinates[2*i];
 			var yy = this.pointCoordinates[2*i+1];
 			if (xx < -1 || xx > 1 || yy < -1 || yy > 1)
@@ -100,9 +102,12 @@ define([], function() {
 
 				this.pointSpeeds[2*i] = xs;
 				this.pointSpeeds[2*i + 1] = ys;
+
+				allocIdx = i+1;
 				break;
 			}  
 		}		
+
 	}
 
 	ParticleSystem.prototype.allocateSphere = function(n, x, y, s, angle) {
