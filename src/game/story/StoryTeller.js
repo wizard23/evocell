@@ -28,7 +28,6 @@ define([
 
 		reason: [
 			{text: "an urgent national security concern of highly classified nature", image: "Classified.gif"},
-			{text: "an urgent national security concern of highly classified nature", image: "Classified.gif"},
 			{text: "the ongoing loss of traditional values", image:"traditional-family.jpg" },
 			{text: "unexplained oscilations in the social web", 
 				image:["social-media1.jpg"]},

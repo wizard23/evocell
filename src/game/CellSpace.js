@@ -8,6 +8,7 @@ require.config({
 		knockback: "libs/knockback",
 		knockout: "libs/knockout-3.0.0",
 		meSpeak: "libs/mespeak/mespeak",
+		three: "libs/three", 
 		"jquery-cycle":"libs/jquery.cycle.all",
 	},
 	shim: {
@@ -15,35 +16,43 @@ require.config({
             exports: "$",
             deps: ['jquery', 'libs/farbtastic']
         },
-		  "jquery-cycle": {
-				deps: ["jquery-ui"]
-			},
-		  underscore : {
-				exports: "_",
-		  },
-		  backbone : {
-				exports: "Backbone",
-				deps: ['underscore'],
-			},
-		  knockback: {
-				exports: "kb",
-				deps: ["backbone"],			
-				},
 		
-			knockout: {
-				exports: "ko",
-				deps: [],			
-				},
-			
-			meSpeak: {
-				exports: "meSpeak"
-			}
+		"jquery-cycle": {
+			deps: ["jquery-ui"]
+		},
+		
+		underscore : {
+			exports: "_",
+		},
+		
+		backbone : {
+			exports: "Backbone",
+			deps: ['underscore'],
+		},
+
+		knockback: {
+			exports: "kb",
+		deps: ["backbone"],			
+		},
+
+		knockout: {
+			exports: "ko",
+		deps: [],			
+		},
+
+		meSpeak: {
+			exports: "meSpeak",
+		},
+
+		three: {
+			exports: "THREE",
+		},
     }
 });
 
 require([
-	"jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "story/StoryTeller", "underscore", "backbone", "knockback", "knockout", "data/FileStore"], 
-	function($, utils, resources, EC, storyTeller,_ , Backbone, kb, ko, fileStore) {
+	"jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "story/StoryTeller", "underscore", "backbone", "knockback", "knockout", "data/FileStore", "three"], 
+	function($, utils, resources, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE) {
 
 	var canvas;
 	var reactor;
@@ -60,17 +69,22 @@ require([
 	var keyboard = utils.keyboard;
 	var gameW = 256, gameH = 256;
 	//gameW = 188, gameH = 188;
-		var zoom = 3;
+	var zoom = 3;
 
-		var zoomF = 1;
-		var gridOffsetX=0, gridOffsetY=0;
-		var zoomFX = 1, zoomFY = 1;
-		var pixel = 4;
-		var pixX = 0;
-		var rot = 0;
+	var zoomF = 1;
+	var gridOffsetX=0, gridOffsetY=0;
+	var zoomFX = 1, zoomFY = 1;
+	var pixel = 4;
+	var pixX = 0;
+	var rot = 0.0;
 
+	var shotN = 8;
 
-		var shotN = 8;
+	var rotMatrix = new THREE.Matrix4();
+	rotMatrix.makeRotationZ(rot);
+	var shipPos = new THREE.Vector2();
+	var kjkj = new THREE.Vector3();
+
 
 
 ///*
@@ -89,15 +103,15 @@ require([
 */
 //*/
 ///*
-		var SN = 101; //(coverLen / 5);
-		var W = 11;
-		var minA = 2*Math.PI/SN;
-		var bADelta = minA * W;
-		bADelta = 3*Math.E/Math.PI;
-		var wellen = 100;
+	var SN = 101; //(coverLen / 5);
+	var W = 11;
+	var minA = 2*Math.PI/SN;
+	var bADelta = minA * W;
+	bADelta = 3*Math.E/Math.PI;
+	var wellen = 100;
 //*/
 	
-			var wk = wellen;
+	var wk = wellen;
 
 	var shipX, shipY;
 	var shotSpeed = 2.3;
@@ -423,15 +437,15 @@ require([
 			reactor.mixDish(drawCircleShader, shipDish, {center: [shipX, shipY], radius: 3.5, state: (shipRule.nrStates-1)/255});
 
 			var cb = function(pos) {
-				sndHit.currentTime=0;
-				sndHit.play();
+				//sndHit.currentTime=0;
+				//sndHit.play();
 			}
 
 			shots.collide(enemyDish, cb);
 			shots.step();
 			shots.collide(enemyDish, function(pos) {
-				sndHit2.currentTime=0;
-				sndHit2.play();
+				//sndHit2.currentTime=0;
+				//sndHit2.play();
 			});
 			shots.draw(drawPointsShader, shipDish);
 			
@@ -567,18 +581,29 @@ require([
 */				
 			}
 
+			if (keyboard.isPressed("I".charCodeAt())) {
+				shotN++;
+			}
+
+			if (keyboard.isPressed("K".charCodeAt())) {
+				shotN--;
+				if (shotN <= 0) shotN = 1;
+			}
+
 			if (keyboard.isPressed(65+1)) {
 				if (!game.bombFired && wk) {
 					//game.bombFired = 1;
 
-					wk--;
+					//wk--;
 
 					
+					//bAngle = 0;
 					
-					
-					bAngle += bADelta;
-					shots.allocateSphere(shotN, shipX, shipY, shotSpeed, bAngle);
-
+					for (var i = 0; i < shotN; i++)
+					{
+						bAngle += Math.PI * 2 / 1.61803398875;
+						shots.allocateSphere(1, shipX, shipY, shotSpeed, bAngle);
+					}
 					sndBomb.currentTime=0;
 					sndBomb.play();
 
