@@ -26,8 +26,11 @@ body {
 }
 
 .buttons:hover{
-	color: white;
-	text-shadow: 0 0 0.5em yellow
+	text-shadow: 0 0 1.0em yellow
+}
+
+.buttons:active{
+	color: black;
 }
 
 .storyElement { 
@@ -106,8 +109,9 @@ select option:nth-child(even) {  }
 	  	<li><b>'b'</b> to fire many shots at once</li> 
 		<li><b>'space'</b> to reset the game </li>
 	</ul>
-	<a id="playPause" class="buttons"><i class="fa fa-play fa-2x"></i></a>
-	<a id="stepLink" class="buttons"><i class="fa fa-step-forward fa-2x"></i></a><br>
+	<a id="stepLink" class="buttons"><i class="fa fa-step-forward fa-2x"></i></a>&nbsp;
+	<a id="playPause" class="buttons"><i class="fa fa-pause fa-2x"></i></a>&nbsp;
+	<br>
 	<br>
 	<a id="showIntroLink">view background story</a><br>
 	<a id="switchLink">prebackbonemodel</a><br>

@@ -80,8 +80,9 @@ require([
 
 	var shotN = 8;
 
-	var rotMatrix = new THREE.Matrix4();
-	rotMatrix.makeRotationZ(rot);
+	var viewMatrix = new THREE.Matrix4();
+	//viewMatrix.makeRotationZ(rot);
+
 	var shipPos = new THREE.Vector2();
 	var kjkj = new THREE.Vector3();
 
@@ -154,6 +155,15 @@ require([
 	ko.applyBindings(view_model, document.getElementById("drawTool"));
 
 
+
+	var updateButtons = function() {
+		if (renderLoop.pauseRequested) {
+			document.getElementById("playPause").children[0].className = "fa fa-play fa-2x";
+		}
+		else {
+			document.getElementById("playPause").children[0].className = "fa fa-pause fa-2x";
+		}
+	}
 	var setupGui = function() {
 		document.getElementById("stepLink").addEventListener('click', function(evt) {
 			renderLoop.step();
@@ -161,6 +171,7 @@ require([
 
 		document.getElementById("playPause").addEventListener('click', function(evt) {
 			renderLoop.toggle();
+			updateButtons();
 		}, false);
 
 		document.getElementById("zoomIn").addEventListener('click', function(evt) {
