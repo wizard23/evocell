@@ -303,10 +303,12 @@ require([
 
 
 		loader.load("enemy2Rule", "rules/enemy_linebuilder", "ecfile");
-		loader.load("weaponRule", "rules/ship_avg4_schweif", "ecfile");
-		loader.load("weaponExplosionRule", "rules/ship_avg4_schweif", "ecfile");
-		loader.load("shipExplosionRule", "rules/ship_avg4_nice", "ecfile");
-		loader.load("shipRule", "rules/cross4-wave-spaceshipshoot", "ecfile");
+		loader.load("weaponRule", "rules/cross4-wave-spaceshipshoot", "ecfile");
+		loader.load("weaponExplosionRule", "rules/ship_avg4_nice", "ecfile");
+		loader.load("shipExplosionRule", "rules/cross4-wave-spaceshipshoot", "ecfile");
+		loader.load("shipRule", "rules/ship_avg4_nice", "ecfile");
+
+		// rules/ship_avg4_nice rules/ship_avg4_schweif
 
 		loader.load("vertexPoints", "src/game/shaders/vertexPoints.vshader", "text");
 		loader.load("drawAll", "src/game/shaders/drawAll.shader", "text");
@@ -341,6 +343,8 @@ require([
 		enemy2Dish = reactor.compileDish();
 		shipDish = reactor.compileDish();
 		shipExplosionDish = reactor.compileDish();
+		weaponDish = reactor.compileDish();
+		weaponExplosionDish = reactor.compileDish();
 		copyDish = reactor.compileDish();
 		bufferDish = reactor.compileDish(64, 64);
 		renderDish = reactor.compileDish();
@@ -372,6 +376,7 @@ require([
 		shipRule = reactor.compileRule(data.shipRule, shipDish);
 		weaponRule = reactor.compileRule(data.weaponRule, enemyDish);
 		shipExplosionRule = reactor.compileRule(data.shipExplosionRule, enemy2Dish);
+		weaponExplosionRule = reactor.compileRule(data.weaponExplosionRule, enemy2Dish);
 		
 		enemyColors = new EC.Palette(reactor);
 		enemyColors.setColor(0, [0, 0, 0, 255]);
@@ -380,18 +385,18 @@ require([
 		enemyColors.setColor(3, [255, 30, 255, 255]);
 		enemyColors.setColor(4, [255, 110, 255, 255]);
 
-/*
-		enemyColors = new EC.Palette(reactor, [
+
+		weaponColors = new EC.Palette(reactor, [
 			[0, 0, 0, 255],
 			[0, 120, 0, 255],
 			[0, 255, 0, 255],
 			[120, 255, 0, 255],
 			[200, 255, 0, 255],
 		]);
-*/
 
-/*
-	enemyColors = new EC.Palette(reactor, [
+
+
+	weaponExplosionColors = new EC.Palette(reactor, [
 		[60, 60, 90, 255],
 		[23, 108, 126, 255],
 		[18, 164, 195, 255],
@@ -399,7 +404,7 @@ require([
 		[150, 210, 255, 255], 
 		[255, 255, 255, 255]
 	]);
-*/
+
 
 
 		enemy2Colors = new EC.Palette(reactor);
@@ -441,6 +446,8 @@ require([
 				reactor.step(enemy2Rule, enemy2Dish);
 
 			// SHIP ///////////////////////////////////////////
+			reactor.step(weaponExplosionRule, weaponExplosionDish);
+			reactor.step(weaponRule, weaponDish);
 			reactor.step(shipExplosionRule, shipExplosionDish);
 			reactor.step(shipRule, shipDish);
 
@@ -458,12 +465,22 @@ require([
 				//sndHit2.currentTime=0;
 				//sndHit2.play();
 			});
-			shots.draw(drawPointsShader, shipDish);
+			shots.draw(drawPointsShader, weaponDish);
 			
 
 			// Dish INTERACTION ///////////////////////////////////
+
+			reactor.mixDish(intersectSpawnShader, weaponExplosionDish, {tex1: weaponDish, tex2: enemyDish, state: (weaponExplosionRule.nrStates-1)/255.});
+			reactor.mixDish(intersectSpawnShader, weaponExplosionDish, {tex1: enemyDish, tex2: weaponExplosionDish, state: 3./255.});
+		
+			reactor.mixDish(intersectSpawnShader, enemyDish, {tex1: enemyDish, tex2: weaponExplosionDish, state: 0./255.});
+			reactor.mixDish(intersectSpawnShader, weaponDish, {tex1: weaponDish, tex2: weaponExplosionDish, state: 3./255.});	
+
+
+
 			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: shipDish, tex2: enemyDish, state: (shipExplosionRule.nrStates-1)/255.});
 			reactor.mixDish(intersectSpawnShader, shipExplosionDish, {tex1: enemyDish, tex2: shipExplosionDish, state: 3./255.});
+		
 			reactor.mixDish(intersectSpawnShader, enemyDish, {tex1: enemyDish, tex2: shipExplosionDish, state: 0./255.});
 			reactor.mixDish(intersectSpawnShader, shipDish, {tex1: shipDish, tex2: shipExplosionDish, state: 3./255.});	
 
@@ -472,6 +489,8 @@ require([
 			reactor.mixDish(mixShader, renderDish, {texNew: enemy2Dish, texPalette: enemy2Colors.getTexture()});
 			reactor.mixDish(mixShader, renderDish, {texNew: enemyDish, texPalette: enemyColors.getTexture()});
 			reactor.mixDish(mixShader, renderDish, {texNew: shipDish, texPalette: shipColors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {texNew: weaponDish, texPalette: weaponColors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {texNew: weaponExplosionDish, texPalette: shipExplosionColors.getTexture()});
 			reactor.mixDish(mixShader, renderDish, {texNew: shipExplosionDish, texPalette: shipExplosionColors.getTexture()});
 			
 			//reactor.mixDish(mixShader, renderDish, {texNew: copyDish, texPalette: copyColors.getTexture()});		
