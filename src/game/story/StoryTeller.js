@@ -92,6 +92,38 @@ define([
 		],
 	}
 
+	var probabilities = {};
+
+	function choose(key) {
+		var alternatives = story[key];
+		//var l = alternatives.length;
+
+		if (!probabilities[key]) {
+			var prob = [];
+			for (var idx in alternatives) {
+				prob[idx] = 1;
+			}
+			probabilities[key] = prob;
+		}
+		var prob = probabilities[key];
+		var sum = _.reduce(prob, function(a, b) {return a+b;});
+
+		var selectedIdx = -1;
+		_.reduce(prob, function(a, b, idx) {
+			var v = a-b;
+			if (v <= 0 && a > 0)
+				selectedIdx = idx;
+			return v;
+		}, sum*Math.random());
+
+		var aIdx = selectedIdx;
+		prob[aIdx] /= 2;
+		//var aIdx = sum*Math.random();
+
+		var alt = alternatives[aIdx];
+		return alt;
+	}
+
 	var RunIntro = function() {
 		$("#container").html("");
 		$("#container").fadeIn();
@@ -108,10 +140,12 @@ define([
 			var r = paramsRegex.exec(part);
 			var key = r[1].trim();
 		
-			var alternatives = story[key];
-			var l = alternatives.length;
-			var aIdx = Math.floor(l*Math.random());
-			var alt = alternatives[aIdx];
+			//var alternatives = story[key];
+			//var l = alternatives.length;
+			//var aIdx = Math.floor(l*Math.random());
+			//var alt = alternatives[aIdx];
+			var alt = choose(key);
+
 
 			var image = alt.image;
 			if (Array.isArray(image)) {
