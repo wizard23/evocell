@@ -81,10 +81,6 @@ require([
 	var shotN = 8;
 
 	var viewMatrix = new THREE.Matrix4();
-	//viewMatrix.makeRotationZ(rot);
-
-	var shipPos = new THREE.Vector2();
-	var kjkj = new THREE.Vector3();
 
 
 
@@ -287,8 +283,8 @@ require([
 		loader.load("enemyRule", "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
 		
 		//loader.load("enemyRule", "rules/enemy_d54_awesomeships", "ecfile");
-		//loader.load("enemyRule", "rules/enemy_d52_replicator", "ecfile");
-		//loader.load("enemyRule", "rules/enemy_holeshooter", "ecfile");
+		loader.load("enemyRule", "rules/enemy_d52_replicator", "ecfile");
+		loader.load("enemyRule", "rules/enemy_holeshooter", "ecfile");
 
 //loader.load("enemyRule", "rules/enemy_holeshooter", "ecfile");
 //loader.load("enemyRule", "rules/gridworld6", "ecfile");
@@ -320,7 +316,7 @@ require([
 		loader.load("drawCircle", "src/game/shaders/drawCircle.shader", "text");
 
 		//loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
-		loader.load("rendererVertex", "src/game/shaders/scrollingRenderer.vshader", "text");
+		loader.load("rendererVertex", "src/game/shaders/scrollingRendererMatrix.vshader", "text");
 		loader.load("rendererFragment", "src/game/shaders/scrollingRenderer.shader", "text");
 
 		loader.load("intersectSpawn", "src/game/shaders/intersectSpawn.shader", "text");
@@ -555,11 +551,32 @@ require([
 			});*/
 
 			//console.log(pixel, offsetX, offsetY);
+
+
+			var camera = new THREE.PerspectiveCamera( 60, 1, 0.1, 1000 );
+			camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
+
+			viewMatrix = new THREE.Matrix4();
+
+			var quaternion = new THREE.Quaternion();
+			quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0.5, 1 ).normalize(), rot );
+
+			//viewMatrix.makeRotationZ(rot);
+			//viewMatrix.makeRotationX(rot);
+			viewMatrix.compose(new THREE.Vector3(-transX, -transY, -2), quaternion, 
+				new THREE.Vector3(1,1,1)
+				//new THREE.Vector3(1/enemyDish.width,1/enemyDish.height,1)
+			);
+
 			reactor.paintDish(scrollingRenderShader, renderDish, function(gl, shader) {
 				gl.uniform1f(gl.getUniformLocation(shader, "gridS"), pixel);
 				gl.uniform2f(gl.getUniformLocation(shader, "gridOffset"), offsetX, offsetY);
 				gl.uniform2f(gl.getUniformLocation(shader, "translate"), transX, transY);
 				gl.uniform2f(gl.getUniformLocation(shader, "center"), centerX, centerY);
+
+
+				gl.uniformMatrix4fv(gl.getUniformLocation(shader, "projectionMatrix"), false, camera.projectionMatrix.elements);
+				gl.uniformMatrix4fv(gl.getUniformLocation(shader, "modelViewMatrix"), false, viewMatrix.elements);
 
 				//gl.uniform2f(gl.getUniformLocation(shader, "center"), ff*0.5, ff*0.5);
 				//gl.uniform2f(gl.getUniformLocation(shader, "center"), 0.999	, 0.999);
