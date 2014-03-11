@@ -10,8 +10,13 @@ require.config({
 		meSpeak: "libs/mespeak/mespeak",
 		three: "libs/three", 
 		"jquery-cycle":"libs/jquery.cycle.all",
+		datgui: "libs/dat.gui.min",
 	},
 	shim: {
+		datgui: {
+			exports: "dat",
+		}, 
+
         "jquery-ui": {
             exports: "$",
             deps: ['jquery', 'libs/farbtastic']
@@ -51,8 +56,9 @@ require.config({
 });
 
 require([
-	"jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "story/StoryTeller", "underscore", "backbone", "knockback", "knockout", "data/FileStore", "three"], 
-	function($, utils, resources, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE) {
+	"jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "story/StoryTeller", "underscore", 
+	"backbone", "knockback", "knockout", "data/FileStore", "three", "datgui"], 
+	function($, utils, resources, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) {
 
 	var canvas;
 	var reactor;
@@ -81,7 +87,7 @@ require([
 	var shotN = 8;
 
 	var viewMatrix = new THREE.Matrix4();
-
+	var projectionMatrix = new THREE.Matrix4();
 
 
 ///*
@@ -129,10 +135,27 @@ require([
 	var sndInit = new Audio("sound/Digital_SFX_Set/laser3.mp3"); // buffers automatically when created
 	var snd = new Audio("sound/Digital_SFX_Set/laser6.mp3"); 
 	var sndBomb = new Audio("sound/Digital_SFX_Set/laser4.mp3"); 
-	var sndHit = new Audio("sound/Digital_SFX_Set/laser10.mp3");
+	var sndHit = new Audio("sound/Digital_SFX_Set/laser9.mp3");
 	var sndHit2 = new Audio("sound/Digital_SFX_Set/laser9.mp3");
 
-	var gameModel
+	var gameModel = {
+		message: "hello",
+		speed: 0,
+		civX: 0,
+		civY: 0,
+		civZ: 0,
+		civW: 0,
+
+	};
+
+
+ 	var gui = new dat.GUI();
+
+	var messageCtrl =  gui.add(gameModel, 'message');
+	gui.add(gameModel, 'civX');
+	gui.add(gameModel, 'civY');
+	gui.add(gameModel, 'civZ');
+	gui.add(gameModel, 'civW');
 
 
 	var drawModel = new Backbone.Model({
@@ -199,7 +222,7 @@ require([
 		heightStyle: "content",
 		animate: true,
 		active: 0,
-		}).draggable();
+		});// .draggable();
 
 		$('#colorpicker1').farbtastic('#color1');
 		$( "#menu" ).menu();
@@ -240,6 +263,26 @@ require([
 				
 			}
 			else if (activeTool != 1) { // || mouseMode == "shoot") {
+				var posV = new THREE.Vector4(x, y, 0, 0);
+
+				var invP = new THREE.Matrix4();
+				invP.getInverse(projectionMatrix);
+
+				var invMV = new THREE.Matrix4();
+				invMV.getInverse(viewMatrix);
+
+				posV.applyMatrix4(invP);
+				posV.applyMatrix4(invMV);
+				gameModel.civX = posV.x;
+				gameModel.civY = posV.y;
+				gameModel.civZ = posV.z;
+				gameModel.civW = posV.w;
+				//messageCtrl.updateDisplay();
+				for (var i in gui.__controllers) {
+    				gui.__controllers[i].updateDisplay();
+  				}
+
+
 				// spawn shot
 				var dX = x-shipX;
 				var dY = y-shipY;
@@ -451,13 +494,16 @@ require([
 			reactor.mixDish(drawCircleShader, shipDish, {center: [shipX, shipY], radius: 3.5, state: (shipRule.nrStates-1)/255});
 
 			var cb = function(pos) {
-				//sndHit.currentTime=0;
-				//sndHit.play();
+				sndHit.playbackRate = 3.5;
+				//sndHit.volume = 0.2;
+				sndHit.currentTime=0;
+				sndHit.play();
 			}
 
 			shots.collide(enemyDish, cb);
 			shots.step();
 			shots.collide(enemyDish, function(pos) {
+				cb();
 				//sndHit2.currentTime=0;
 				//sndHit2.play();
 			});
@@ -555,14 +601,12 @@ require([
 
 			var camera = new THREE.PerspectiveCamera( 60, 1, 0.1, 1000 );
 			camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
+			projectionMatrix = camera.projectionMatrix;
+
 
 			viewMatrix = new THREE.Matrix4();
-
 			var quaternion = new THREE.Quaternion();
 			quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0.5, 1 ).normalize(), rot );
-
-			//viewMatrix.makeRotationZ(rot);
-			//viewMatrix.makeRotationX(rot);
 			viewMatrix.compose(new THREE.Vector3(-transX, -transY, -2), quaternion, 
 				new THREE.Vector3(1,1,1)
 				//new THREE.Vector3(1/enemyDish.width,1/enemyDish.height,1)
@@ -575,7 +619,7 @@ require([
 				gl.uniform2f(gl.getUniformLocation(shader, "center"), centerX, centerY);
 
 
-				gl.uniformMatrix4fv(gl.getUniformLocation(shader, "projectionMatrix"), false, camera.projectionMatrix.elements);
+				gl.uniformMatrix4fv(gl.getUniformLocation(shader, "projectionMatrix"), false, projectionMatrix.elements);
 				gl.uniformMatrix4fv(gl.getUniformLocation(shader, "modelViewMatrix"), false, viewMatrix.elements);
 
 				//gl.uniform2f(gl.getUniformLocation(shader, "center"), ff*0.5, ff*0.5);
