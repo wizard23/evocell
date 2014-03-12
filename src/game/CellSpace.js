@@ -73,7 +73,7 @@ require([
 	var enemyColors, enemy2Colors, shipColors, shipExplosionColors, copyColors;
 
 	var keyboard = utils.keyboard;
-	var gameW = 256, gameH = 256;
+	var gameW = 400, gameH = 256;
 	//gameW = 188, gameH = 188;
 	var zoom = 3;
 
@@ -179,7 +179,35 @@ require([
 
 
 	///////
-	var intersectClick = function(x, y) {
+	var getNDCFromMouseEvent = function(canvas, evt) {
+		var coords = canvas.relMouseCoords(evt);
+		return new THREE.Vector2(coords.x/screenW, (screenH - coords.y)/screenH);
+	}
+
+	var lastMouseNDC = new THREE.Vector2();
+	var autoFireCounter = 0;
+	var autoFireOn = 1;
+	var pollAutoFire = function() {
+		
+		if (autoFireOn) {
+			if (autoFireCounter == 0) {
+				var clickedPoint = intersectClick(lastMouseNDC);
+				fireShotAt(gameW*(clickedPoint.x+1)/2, gameH*(clickedPoint.y+1)/2);	
+
+				autoFireCounter = 3;
+			}
+			else {
+				autoFireCounter--;
+			}
+		}
+	}
+
+	// TODO: should get normaliyed coords!
+	var intersectClick = function(clickedNDC) {
+
+		var x = clickedNDC.x*screenW;
+		var y = clickedNDC.y*screenH;
+
 		var invP = new THREE.Matrix4();
 		invP.getInverse(projectionMatrix);
 
@@ -229,8 +257,11 @@ require([
 		aa = -aa;
 		shots.allocateParticle(shipX, shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
 
+		try {
 		snd.currentTime=0;
 		snd.play();
+		}
+		catch (ex) {}
 	}
 
 
@@ -292,20 +323,18 @@ require([
 		function handleCanvasMouseDown(evt) {
 			var coords = canvas.relMouseCoords(evt);
 			var x = coords.x;
-			var y = coords.y;
-			y = screenH - y;
+			var y = screenH - coords.y;
 
 			var activeTool = $( "#toolsMenu" ).accordion( "option", "active" );
 
 			if (activeTool == 1) {
-				
 					var dish;
 					if (drawModel.attributes.selectedLayers.indexOf("enemy") >= 0) dish = enemyDish;
 					else if (drawModel.attributes.selectedLayers.indexOf("enemy2") >= 0) dish = enemy2Dish;
 					else if (drawModel.attributes.selectedLayers.indexOf("ship") >= 0) dish = shipDish;
 					else if (drawModel.attributes.selectedLayers.indexOf("shipExplosion") >= 0) dish = shipExplosionDish;
 
-					var state = 3;
+					var state = 0;
 					var firstSel = drawModel.attributes.selectedStates[0];
 					if (firstSel) state = firstSel;
 
@@ -320,8 +349,9 @@ require([
 				
 			}
 			else if (activeTool != 1) { // || mouseMode == "shoot") {
-				var clickedPoint = intersectClick(x, y);
-				fireShotAt(gameW*(clickedPoint.x+1)/2, gameH*(clickedPoint.y+1)/2);	
+				var clickedNDC = getNDCFromMouseEvent(canvas, evt);	
+				var clickedPoint = intersectClick(clickedNDC);
+				fireShotAt(gameW*(clickedPoint.x+1)/2, gameH*(clickedPoint.y+1)/2);		
 			}	
 			else if (mouseMode == "copy") {
 				reactor.mixDish(copyShader, bufferDish, {
@@ -341,11 +371,12 @@ require([
 		}
 		canvas.addEventListener('mousedown', handleCanvasMouseDown, false);
 
-		var handleCanvasMouseMove = function()
+		var handleCanvasMouseMove = function(evt)
 		{
-			shots.allocateParticle(shipX, shipY, 2, 1);
+			lastMouseNDC = getNDCFromMouseEvent(canvas, evt);	
 		}
 		canvas.addEventListener('mousemove', handleCanvasMouseMove, false);
+
 	}
 
 	var loadResources = function(callback) {
@@ -372,8 +403,8 @@ require([
 
 
 		loader.load("enemy2Rule", "rules/enemy_linebuilder", "ecfile");
-		loader.load("weaponRule", "rules/cross4-wave-spaceshipshoot", "ecfile");
-		loader.load("weaponExplosionRule", "rules/ship_avg4_nice", "ecfile");
+		loader.load("weaponRule", "rules/ship_avg4_nice", "ecfile");
+		loader.load("weaponExplosionRule", "rules/cross4-wave-spaceshipshoot", "ecfile");
 		loader.load("shipExplosionRule", "rules/cross4-wave-spaceshipshoot", "ecfile");
 		loader.load("shipRule", "rules/ship_avg4_nice", "ecfile");
 
@@ -637,7 +668,7 @@ require([
 			viewMatrix = new THREE.Matrix4();
 			var quaternion = new THREE.Quaternion();
 			quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0.5, 1 ).normalize(), rot );
-			viewMatrix.compose(new THREE.Vector3(0, 0, -2), quaternion, 
+			viewMatrix.compose(new THREE.Vector3(0, 0, -1), quaternion, 
 				new THREE.Vector3(1,1,1)
 				//new THREE.Vector3(1/enemyDish.width,1/enemyDish.height,1)
 			);
@@ -672,6 +703,7 @@ require([
 	};
 
 	var userInteraction = function() {
+			pollAutoFire();
 	// USER INPUT Poll Keyboard //////////////////////////////////////////////////
 			var stepSize = 1;
 			if (keyboard.isPressed(keyboard.UP)) shipY += stepSize;
