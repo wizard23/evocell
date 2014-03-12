@@ -186,7 +186,7 @@ require([
 
 	var lastMouseNDC = new THREE.Vector2();
 	var autoFireCounter = 0;
-	var autoFireOn = 1;
+	var autoFireOn = 0;
 	var pollAutoFire = function() {
 		
 		if (autoFireOn) {
@@ -321,6 +321,7 @@ require([
 		fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
 		function handleCanvasMouseDown(evt) {
+			autoFireOn = 1- autoFireOn;
 			var coords = canvas.relMouseCoords(evt);
 			var x = coords.x;
 			var y = screenH - coords.y;
