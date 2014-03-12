@@ -178,6 +178,62 @@ require([
 	ko.applyBindings(view_model, document.getElementById("drawTool"));
 
 
+	///////
+	var intersectClick = function(x, y) {
+		var invP = new THREE.Matrix4();
+		invP.getInverse(projectionMatrix);
+
+		var invMV = new THREE.Matrix4();
+		invMV.getInverse(viewMatrix);
+
+		var planeNormal = new THREE.Vector4(0, 0, -1, 0);
+		var planePoint = new THREE.Vector4(0, 0, 0, 1);
+
+		var sf = Math.sin(cameraAngle/2)/Math.cos(cameraAngle/2);
+		var lineDir = new THREE.Vector4(sf*(2*x/screenW - 1), sf*(2*y/screenH - 1), -1, 0);
+		var linePoint = new THREE.Vector4();
+
+		planeNormal.applyMatrix4(viewMatrix);
+		planePoint.applyMatrix4(viewMatrix);
+
+		var a = new THREE.Vector4().subVectors(planePoint, linePoint).dot(planeNormal);
+		var b = lineDir.dot(planeNormal);
+
+		var pointPos = a / b;
+
+		var point = new THREE.Vector4().addVectors(linePoint, lineDir.clone().multiplyScalar(pointPos));
+		var deltaPoint = point.clone().applyMatrix4(invMV);
+
+		gameModel.civX = deltaPoint.x;
+		gameModel.civY = deltaPoint.y;
+		gameModel.civZ = deltaPoint.z;
+		gameModel.civW = deltaPoint.w;
+
+		for (var i in gui.__controllers) {
+			gui.__controllers[i].updateDisplay();
+		}
+
+		return deltaPoint;
+	}
+	var fireShotAt = function(tx, ty) {
+		// spawn shot
+		var dX = tx-shipX;
+		var dY = ty-shipY;
+		var dL = Math.sqrt(dX*dX+dY*dY);
+		var sX = shotSpeed * dX/dL;
+		var sY = shotSpeed * dY/dL;
+
+		var aa = 0.07;
+		shots.allocateParticle(shipX, shipY, 1.05*sX, 1.05*sY);
+		shots.allocateParticle(shipX, shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
+		aa = -aa;
+		shots.allocateParticle(shipX, shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
+
+		snd.currentTime=0;
+		snd.play();
+	}
+
+
 
 	var updateButtons = function() {
 		if (renderLoop.pauseRequested) {
@@ -237,10 +293,7 @@ require([
 			var coords = canvas.relMouseCoords(evt);
 			var x = coords.x;
 			var y = coords.y;
-
-			x /= zoom;
-			y /= zoom;
-			y = gameH-y;
+			y = screenH - y;
 
 			var activeTool = $( "#toolsMenu" ).accordion( "option", "active" );
 
@@ -267,107 +320,8 @@ require([
 				
 			}
 			else if (activeTool != 1) { // || mouseMode == "shoot") {
-				var x = coords.x;gameModel.civX
-				var y = coords.y;
-				y = screenH - y;
-
-				var invP = new THREE.Matrix4();
-				invP.getInverse(projectionMatrix);
-
-				var invMV = new THREE.Matrix4();
-				invMV.getInverse(viewMatrix);
-
-
-				var planeNormal = new THREE.Vector4(0, 0, -1, 0);
-				var planeX = new THREE.Vector4(1, 0, 0, 0);
-				var planeY = new THREE.Vector4(0, 1, 0, 0);
-				var planePoint = new THREE.Vector4(0, 0, 0, 1);
-
-				var sf = Math.sin(cameraAngle/2)/Math.cos(cameraAngle/2);
-				var lineDir = new THREE.Vector4(sf*(2*x/screenW - 1), sf*(2*y/screenH - 1), -1, 0);
-				var linePoint = new THREE.Vector4();
-
-/*
-
-				planeNormal.applyMatrix4(invMV);
-				planeNormal.applyMatrix4(invP);
-
-				planeX.applyMatrix4(invMV);
-				planeX.applyMatrix4(invP);
-
-				planeY.applyMatrix4(invMV);
-				planeY.applyMatrix4(invP);
-				
-				planePoint.applyMatrix4(invMV);
-				planePoint.applyMatrix4(invP);
-				*/
-
-
-				planeNormal.applyMatrix4(viewMatrix);
-				planeX.applyMatrix4(viewMatrix);
-				planeY.applyMatrix4(viewMatrix);
-				planePoint.applyMatrix4(viewMatrix);
-				//lineDir.applyMatrix4(invP);
-				//lineDir.applyMatrix4(invMV);
-
-				//linePoint.applyMatrix4(invP);
-				//linePoint.applyMatrix4(invMV);
-
-
-				var a = new THREE.Vector4().subVectors(planePoint, linePoint).dot(planeNormal);
-				var b = lineDir.dot(planeNormal);
-
-				var pointPos = a / b;
-
-
-				var point = new THREE.Vector4().addVectors(linePoint, lineDir.clone().multiplyScalar(pointPos));
-				var deltaPoint;// = new THREE.Vector4().subVectors(point, planePoint);
-				deltaPoint = point.clone().applyMatrix4(invMV);
-
-				gameModel.civX = deltaPoint.x;
-				gameModel.civY = deltaPoint.y;
-				gameModel.civZ = deltaPoint.z;
-				gameModel.civW = deltaPoint.w;
-/*
-				var posV = new THREE.Vector4(x, y, 0, 0);
-
-				var invP = new THREE.Matrix4();
-				invP.getInverse(projectionMatrix);
-
-				var invMV = new THREE.Matrix4();
-				invMV.getInverse(viewMatrix);
-
-				posV.applyMatrix4(invP);
-				posV.applyMatrix4(invMV);
-
-
-
-				gameModel.civX = posV.x;
-				gameModel.civY = posV.y;
-				gameModel.civZ = posV.z;
-				gameModel.civW = posV.w;
-				*/
-				//messageCtrl.updateDisplay();
-				for (var i in gui.__controllers) {
-    				gui.__controllers[i].updateDisplay();
-  				}
-
-
-				// spawn shot
-				var dX = gameW*(gameModel.civX+1)/2-shipX;
-				var dY = gameH*(gameModel.civY+1)/2-shipY;
-				var dL = Math.sqrt(dX*dX+dY*dY);
-				var sX = shotSpeed * dX/dL;
-				var sY = shotSpeed * dY/dL;
-
-				var aa = 0.07;
-				shots.allocateParticle(shipX, shipY, 1.05*sX, 1.05*sY);
-				shots.allocateParticle(shipX, shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
-				aa = -aa;
-				shots.allocateParticle(shipX, shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
-		
-				snd.currentTime=0;
-				snd.play();
+				var clickedPoint = intersectClick(x, y);
+				fireShotAt(gameW*(clickedPoint.x+1)/2, gameH*(clickedPoint.y+1)/2);	
 			}	
 			else if (mouseMode == "copy") {
 				reactor.mixDish(copyShader, bufferDish, {
@@ -386,6 +340,12 @@ require([
 			evt.stopPropagation();
 		}
 		canvas.addEventListener('mousedown', handleCanvasMouseDown, false);
+
+		var handleCanvasMouseMove = function()
+		{
+			shots.allocateParticle(shipX, shipY, 2, 1);
+		}
+		canvas.addEventListener('mousemove', handleCanvasMouseMove, false);
 	}
 
 	var loadResources = function(callback) {
