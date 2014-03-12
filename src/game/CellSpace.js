@@ -77,6 +77,9 @@ require([
 	//gameW = 188, gameH = 188;
 	var zoom = 3;
 
+	var screenW = 1024;
+	var screenH = 600;
+
 	var zoomF = 1;
 	var gridOffsetX=0, gridOffsetY=0;
 	var zoomFX = 1, zoomFY = 1;
@@ -86,6 +89,7 @@ require([
 
 	var shotN = 8;
 
+	var cameraAngle = Math.PI/2;
 	var viewMatrix = new THREE.Matrix4();
 	var projectionMatrix = new THREE.Matrix4();
 
@@ -141,10 +145,10 @@ require([
 	var gameModel = {
 		message: "hello",
 		speed: 0,
-		civX: 0,
-		civY: 0,
-		civZ: 0,
-		civW: 0,
+		civX: 0.1,
+		civY: 0.1,
+		civZ: 0.1,
+		civW: 0.1,
 
 	};
 
@@ -263,6 +267,66 @@ require([
 				
 			}
 			else if (activeTool != 1) { // || mouseMode == "shoot") {
+				var x = coords.x;gameModel.civX
+				var y = coords.y;
+				y = screenH - y;
+
+				var invP = new THREE.Matrix4();
+				invP.getInverse(projectionMatrix);
+
+				var invMV = new THREE.Matrix4();
+				invMV.getInverse(viewMatrix);
+
+
+				var planeNormal = new THREE.Vector4(0, 0, -1, 0);
+				var planeX = new THREE.Vector4(1, 0, 0, 0);
+				var planeY = new THREE.Vector4(0, 1, 0, 0);
+				var planePoint = new THREE.Vector4(0, 0, -1, 0);
+
+				var sf = Math.sin(cameraAngle/1)/Math.cos(cameraAngle/1);
+				var lineDir = new THREE.Vector4(sf*(2*x/screenW - 1), sf*(2*y/screenH - 1), -1, 0).normalize();
+				var linePoint = new THREE.Vector4();
+
+/*
+
+				planeNormal.applyMatrix4(invMV);
+				planeNormal.applyMatrix4(invP);
+
+				planeX.applyMatrix4(invMV);
+				planeX.applyMatrix4(invP);
+
+				planeY.applyMatrix4(invMV);
+				planeY.applyMatrix4(invP);
+				
+				planePoint.applyMatrix4(invMV);
+				planePoint.applyMatrix4(invP);
+				*/
+
+
+				planeNormal.applyMatrix4(viewMatrix);
+				planeX.applyMatrix4(viewMatrix);
+				planeY.applyMatrix4(viewMatrix);
+				planePoint.applyMatrix4(viewMatrix);
+				//lineDir.applyMatrix4(invP);
+				//lineDir.applyMatrix4(invMV);
+
+				//linePoint.applyMatrix4(invP);
+				//linePoint.applyMatrix4(invMV);
+
+
+				var pointPos = new THREE.Vector4().subVectors(planePoint, linePoint).dot(planeNormal) / 
+					lineDir.dot(planeNormal);
+
+
+				var point = new THREE.Vector4().addVectors(linePoint, lineDir.clone().multiplyScalar(pointPos));
+				var deltaPoint;// = new THREE.Vector4().subVectors(point, planePoint);
+				deltaPoint = point.clone().applyMatrix4(invMV);
+
+				gameModel.civX = deltaPoint.x;
+				gameModel.civY = deltaPoint.y;
+				gameModel.civZ = deltaPoint.z;
+				gameModel.civW = deltaPoint.w;
+/*
 				var posV = new THREE.Vector4(x, y, 0, 0);
 
 				var invP = new THREE.Matrix4();
@@ -273,10 +337,14 @@ require([
 
 				posV.applyMatrix4(invP);
 				posV.applyMatrix4(invMV);
+
+
+
 				gameModel.civX = posV.x;
 				gameModel.civY = posV.y;
 				gameModel.civZ = posV.z;
 				gameModel.civW = posV.w;
+				*/
 				//messageCtrl.updateDisplay();
 				for (var i in gui.__controllers) {
     				gui.__controllers[i].updateDisplay();
@@ -284,8 +352,8 @@ require([
 
 
 				// spawn shot
-				var dX = x-shipX;
-				var dY = y-shipY;
+				var dX = gameW*(gameModel.civX+1)/2-shipX;
+				var dY = gameH*(gameModel.civY+1)/2-shipY;
 				var dL = Math.sqrt(dX*dX+dY*dY);
 				var sX = shotSpeed * dX/dL;
 				var sY = shotSpeed * dY/dL;
@@ -375,7 +443,7 @@ require([
 		// Setup core 	
 		
 		reactor = new  EC.Reactor(canvas, gameW, gameH);
-		reactor.setRenderSize(zoom*gameW, zoom*gameH);
+		reactor.setRenderSize(screenW, screenH);
 		gl = reactor.gl;		
 
 		enemyDish = reactor.compileDish();
@@ -598,16 +666,16 @@ require([
 
 			//console.log(pixel, offsetX, offsetY);
 
-
-			var camera = new THREE.PerspectiveCamera( 60, 1, 0.1, 1000 );
+			var camera = new THREE.PerspectiveCamera( 180*cameraAngle/Math.PI, 1, 0.01, 1000 );
 			camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
 			projectionMatrix = camera.projectionMatrix;
+			projectionMatrix = new THREE.Matrix4();
 
 
 			viewMatrix = new THREE.Matrix4();
 			var quaternion = new THREE.Quaternion();
 			quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0.5, 1 ).normalize(), rot );
-			viewMatrix.compose(new THREE.Vector3(-transX, -transY, -2), quaternion, 
+			viewMatrix.compose(new THREE.Vector3(0, 0, -1), quaternion, 
 				new THREE.Vector3(1,1,1)
 				//new THREE.Vector3(1/enemyDish.width,1/enemyDish.height,1)
 			);
