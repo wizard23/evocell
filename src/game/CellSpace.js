@@ -89,7 +89,7 @@ require([
 
 	var shotN = 8;
 
-	var cameraAngle = Math.PI/2;
+	var cameraAngle = 60 * (Math.PI/180);
 	var viewMatrix = new THREE.Matrix4();
 	var projectionMatrix = new THREE.Matrix4();
 
@@ -281,10 +281,10 @@ require([
 				var planeNormal = new THREE.Vector4(0, 0, -1, 0);
 				var planeX = new THREE.Vector4(1, 0, 0, 0);
 				var planeY = new THREE.Vector4(0, 1, 0, 0);
-				var planePoint = new THREE.Vector4(0, 0, -1, 0);
+				var planePoint = new THREE.Vector4(0, 0, 0, 1);
 
-				var sf = Math.sin(cameraAngle/1)/Math.cos(cameraAngle/1);
-				var lineDir = new THREE.Vector4(sf*(2*x/screenW - 1), sf*(2*y/screenH - 1), -1, 0).normalize();
+				var sf = Math.sin(cameraAngle/2)/Math.cos(cameraAngle/2);
+				var lineDir = new THREE.Vector4(sf*(2*x/screenW - 1), sf*(2*y/screenH - 1), -1, 0);
 				var linePoint = new THREE.Vector4();
 
 /*
@@ -314,8 +314,10 @@ require([
 				//linePoint.applyMatrix4(invMV);
 
 
-				var pointPos = new THREE.Vector4().subVectors(planePoint, linePoint).dot(planeNormal) / 
-					lineDir.dot(planeNormal);
+				var a = new THREE.Vector4().subVectors(planePoint, linePoint).dot(planeNormal);
+				var b = lineDir.dot(planeNormal);
+
+				var pointPos = a / b;
 
 
 				var point = new THREE.Vector4().addVectors(linePoint, lineDir.clone().multiplyScalar(pointPos));
@@ -669,13 +671,13 @@ require([
 			var camera = new THREE.PerspectiveCamera( 180*cameraAngle/Math.PI, 1, 0.01, 1000 );
 			camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
 			projectionMatrix = camera.projectionMatrix;
-			projectionMatrix = new THREE.Matrix4();
+			//projectionMatrix = new THREE.Matrix4();
 
 
 			viewMatrix = new THREE.Matrix4();
 			var quaternion = new THREE.Quaternion();
 			quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0.5, 1 ).normalize(), rot );
-			viewMatrix.compose(new THREE.Vector3(0, 0, -1), quaternion, 
+			viewMatrix.compose(new THREE.Vector3(0, 0, -2), quaternion, 
 				new THREE.Vector3(1,1,1)
 				//new THREE.Vector3(1/enemyDish.width,1/enemyDish.height,1)
 			);
