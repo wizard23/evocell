@@ -9,8 +9,8 @@ define([
 		return x.replace(/ /g, "%20");
 	}
 
-	meSpeak.loadConfig("src/game/libs/mespeak/mespeak_config.json");
-	meSpeak.loadVoice('src/game/libs/mespeak/voices/en/en-us.json');
+	meSpeak.loadConfig(resPath + "src/libs/mespeak/mespeak_config.json");
+	meSpeak.loadVoice(resPath + 'src/libs/mespeak/voices/en/en-us.json');
 
 	//meSpeak.speak("hello", {}, function() {alert();});
 
@@ -34,7 +34,6 @@ define([
 			{text: "strange quantum events at a macroscopic scale", image:"entangled.jpg"},
 			{text: "a sudden increase of global warming", 
 				image:["polarbear.jpg", "Fight-Global-Warming-global-warming-prevention-725103_1280_1024.jpg"]},
-			{text: "GNU violation reports", image:"GNU-Linux.png"},
 			{text: "GNU violation reports", image:"GNU-Linux.png"},
 		],
 

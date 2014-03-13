@@ -1,16 +1,23 @@
+var resPath = "./";
+var resPath = "../media_evocel/";
+
+
+var libPath = "../" + resPath + "src/libs/";
+
+
 require.config({
-   // baseUrl: 'js/lib',
+	baseUrl: 'src',
 	paths: {
-		jquery: 'libs/jquery-1.10.2',
-		"jquery-ui": 'libs/jquery-ui-1.10.4.custom',
-		"underscore": "libs/underscore",
-		backbone: "libs/backbone",
-		knockback: "libs/knockback",
-		knockout: "libs/knockout-3.0.0",
-		meSpeak: "libs/mespeak/mespeak",
-		three: "libs/three", 
-		"jquery-cycle":"libs/jquery.cycle.all",
-		datgui: "libs/dat.gui.min",
+		jquery: libPath + 'jquery-1.10.2',
+		"jquery-ui": libPath + 'jquery-ui-1.10.4.custom',
+		"underscore": libPath + "underscore",
+		backbone: libPath + "backbone",
+		knockback: libPath + "knockback",
+		knockout: libPath + "knockout-3.0.0",
+		meSpeak: libPath + "mespeak/mespeak",
+		three: libPath + "three", 
+		"jquery-cycle": libPath + "jquery.cycle.all",
+		datgui: libPath + "dat.gui.min",
 	},
 	shim: {
 		datgui: {
@@ -19,7 +26,7 @@ require.config({
 
         "jquery-ui": {
             exports: "$",
-            deps: ['jquery', 'libs/farbtastic']
+            deps: ['jquery', libPath + 'farbtastic']
         },
 		
 		"jquery-cycle": {
@@ -37,12 +44,11 @@ require.config({
 
 		knockback: {
 			exports: "kb",
-		deps: ["backbone"],			
+			deps: ["backbone"],			
 		},
 
 		knockout: {
-			exports: "ko",
-		deps: [],			
+			exports: "ko",			
 		},
 
 		meSpeak: {
@@ -136,11 +142,11 @@ require([
 	var selectedLayer = 0;
 	var fpsMonotor;
 
-	var sndInit = new Audio("sound/Digital_SFX_Set/laser3.mp3"); // buffers automatically when created
-	var snd = new Audio("sound/Digital_SFX_Set/laser6.mp3"); 
-	var sndBomb = new Audio("sound/Digital_SFX_Set/laser4.mp3"); 
-	var sndHit = new Audio("sound/Digital_SFX_Set/laser9.mp3");
-	var sndHit2 = new Audio("sound/Digital_SFX_Set/laser9.mp3");
+	var sndInit = new Audio(resPath + "sound/Digital_SFX_Set/laser3.mp3"); // buffers automatically when created
+	var snd = new Audio(resPath + "sound/Digital_SFX_Set/laser6.mp3"); 
+	var sndBomb = new Audio(resPath + "sound/Digital_SFX_Set/laser4.mp3"); 
+	var sndHit = new Audio(resPath + "sound/Digital_SFX_Set/laser9.mp3");
+	var sndHit2 = new Audio(resPath + "sound/Digital_SFX_Set/laser9.mp3");
 
 	var gameModel = {
 		message: "hello",
@@ -386,14 +392,14 @@ require([
 
 	var loadResources = function(callback) {
 		var loader = new EC.ResLoader();
-		loader.load("enemyRule", "rules/enemy_ludwigBuildships", "ecfile");
+		loader.load("enemyRule", resPath + "rules/enemy_ludwigBuildships", "ecfile");
 		
-		loader.load("enemyRule", "rules/moore5-coolspaceships", "ecfile");
-		loader.load("enemyRule", "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
+		loader.load("enemyRule", resPath + "rules/moore5-coolspaceships", "ecfile");
+		loader.load("enemyRule", resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
 		
 		//loader.load("enemyRule", "rules/enemy_d54_awesomeships", "ecfile");
-		loader.load("enemyRule", "rules/enemy_d52_replicator", "ecfile");
-		loader.load("enemyRule", "rules/enemy_holeshooter", "ecfile");
+		loader.load("enemyRule", resPath + "rules/enemy_d52_replicator", "ecfile");
+		loader.load("enemyRule", resPath + "rules/enemy_holeshooter", "ecfile");
 
 //loader.load("enemyRule", "rules/enemy_holeshooter", "ecfile");
 //loader.load("enemyRule", "rules/gridworld6", "ecfile");
@@ -407,30 +413,30 @@ require([
 
 
 
-		loader.load("enemy2Rule", "rules/enemy_linebuilder", "ecfile");
-		loader.load("weaponRule", "rules/ship_avg4_nice", "ecfile");
-		loader.load("weaponExplosionRule", "rules/cross4-wave-spaceshipshoot", "ecfile");
-		loader.load("shipExplosionRule", "rules/cross4-wave-spaceshipshoot", "ecfile");
-		loader.load("shipRule", "rules/ship_avg4_nice", "ecfile");
+		loader.load("enemy2Rule", resPath + "rules/enemy_linebuilder", "ecfile");
+		loader.load("weaponRule", resPath + "rules/ship_avg4_nice", "ecfile");
+		loader.load("weaponExplosionRule", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
+		loader.load("shipExplosionRule", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
+		loader.load("shipRule", resPath + "rules/ship_avg4_nice", "ecfile");
 
 		// rules/ship_avg4_nice rules/ship_avg4_schweif
 
-		loader.load("vertexPoints", "src/game/shaders/vertexPoints.vshader", "text");
-		loader.load("drawAll", "src/game/shaders/drawAll.shader", "text");
+		loader.load("vertexPoints", "src/shaders/vertexPoints.vshader", "text");
+		loader.load("drawAll", "src/shaders/drawAll.shader", "text");
 
-		loader.load("clear", "src/game/shaders/clear.shader", "text");
-		loader.load("mixPalette", "src/game/shaders/mixPalette.shader", "text");	
+		loader.load("clear", "src/shaders/clear.shader", "text");
+		loader.load("mixPalette", "src/shaders/mixPalette.shader", "text");	
 
-		loader.load("drawRect", "src/game/shaders/drawRect.shader", "text");
-		loader.load("drawCircle", "src/game/shaders/drawCircle.shader", "text");
+		loader.load("drawRect", "src/shaders/drawRect.shader", "text");
+		loader.load("drawCircle", "src/shaders/drawCircle.shader", "text");
 
-		//loader.load("painter", "src/game/shaders/primitiveRenderer.shader", "text");
-		loader.load("rendererVertex", "src/game/shaders/scrollingRendererMatrix.vshader", "text");
-		loader.load("rendererFragment", "src/game/shaders/scrollingRenderer.shader", "text");
+		//loader.load("painter", "src/shaders/primitiveRenderer.shader", "text");
+		loader.load("rendererVertex", "src/shaders/scrollingRendererMatrix.vshader", "text");
+		loader.load("rendererFragment", "src/shaders/scrollingRenderer.shader", "text");
 
-		loader.load("intersectSpawn", "src/game/shaders/intersectSpawn.shader", "text");
+		loader.load("intersectSpawn", "src/shaders/intersectSpawn.shader", "text");
 
-		loader.load("copyPaste", "src/game/shaders/copyPasteRect.shader", "text");
+		loader.load("copyPaste", "src/shaders/copyPasteRect.shader", "text");
 
 		loader.start(callback);
 	}
