@@ -1,6 +1,9 @@
 NEW:
 ====
 
+Cleanup App by splitting CellSpace.js
+
+
 /*
 		reactor.moveParticles(particlesMoveShader, particlesDish);
 		reactor.renderParticles(particlesRenderShader, particlesDish, state, size);

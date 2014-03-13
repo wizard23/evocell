@@ -1,4 +1,6 @@
 rules/
 
+cellspace.sublime-project
+cellspace.sublime-workspace
 *.js~
 *.html~
