@@ -186,6 +186,14 @@ require([
 
 
 	///////
+
+	var playSound = function(snd) {
+		try {
+			snd.currentTime=0;
+			snd.play();
+		} catch(ex) {}
+	} 
+
 	var getNDCFromMouseEvent = function(canvas, evt) {
 		var coords = canvas.relMouseCoords(evt);
 		return new THREE.Vector2(coords.x/screenW, (screenH - coords.y)/screenH);
@@ -201,7 +209,7 @@ require([
 				var clickedPoint = intersectClick(lastMouseNDC);
 				fireShotAt(gameW*(clickedPoint.x+1)/2, gameH*(clickedPoint.y+1)/2);	
 
-				autoFireCounter = 3;
+				autoFireCounter = 5;
 			}
 			else {
 				autoFireCounter--;
@@ -258,17 +266,13 @@ require([
 		var sX = shotSpeed * dX/dL;
 		var sY = shotSpeed * dY/dL;
 
-		var aa = 0.07;
+		var aa = 0.2;
 		shots.allocateParticle(shipX, shipY, 1.05*sX, 1.05*sY);
 		shots.allocateParticle(shipX, shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
 		aa = -aa;
 		shots.allocateParticle(shipX, shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
 
-		try {
-		snd.currentTime=0;
-		snd.play();
-		}
-		catch (ex) {}
+		playSound(snd);
 	}
 
 
@@ -395,12 +399,12 @@ require([
 		var loader = new EC.ResLoader();
 		loader.load("enemyRule", resPath + "rules/enemy_ludwigBuildships", "ecfile");
 		
-		loader.load("enemyRule", resPath + "rules/moore5-coolspaceships", "ecfile");
-		loader.load("enemyRule", resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
+		//loader.load("enemyRule", resPath + "rules/moore5-coolspaceships", "ecfile");
+		//loader.load("enemyRule", resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
 		
 		//loader.load("enemyRule", "rules/enemy_d54_awesomeships", "ecfile");
-		loader.load("enemyRule", resPath + "rules/enemy_d52_replicator", "ecfile");
-		loader.load("enemyRule", resPath + "rules/enemy_holeshooter", "ecfile");
+		//loader.load("enemyRule", resPath + "rules/enemy_d52_replicator", "ecfile");
+		//loader.load("enemyRule", resPath + "rules/enemy_holeshooter", "ecfile");
 
 //loader.load("enemyRule", "rules/enemy_holeshooter", "ecfile");
 //loader.load("enemyRule", "rules/gridworld6", "ecfile");
@@ -567,19 +571,17 @@ require([
 			reactor.mixDish(drawCircleShader, shipDish, {center: [shipX, shipY], radius: 3.5, state: (shipRule.nrStates-1)/255});
 
 			var cb = function(pos) {
-				sndHit.playbackRate = 3.5;
-				//sndHit.volume = 0.2;
-				sndHit.currentTime=0;
-				sndHit.play();
+				try
+				{
+					sndHit.playbackRate = 3.5;
+					sndHit.volume = 0.5;
+					playSound(sndHit);
+				} catch(ex) {}
 			}
 
 			shots.collide(enemyDish, cb);
 			shots.step();
-			shots.collide(enemyDish, function(pos) {
-				cb();
-				//sndHit2.currentTime=0;
-				//sndHit2.play();
-			});
+			shots.collide(enemyDish, cb);
 			shots.draw(drawPointsShader, weaponDish);
 			
 
@@ -732,8 +734,8 @@ require([
 				if (shipX < 0 || shipX > gameW || shipY < 0 || shipY > gameH)
 					shipX = gameW/2, shipY = gameH/2;
 
-				sndInit.currentTime=0;
-				sndInit.play();
+				playSound(sndInit);
+				
 			}
 
 			// escape
@@ -771,8 +773,8 @@ require([
 						bAngle += Math.PI * 2 / 1.61803398875;
 						shots.allocateSphere(1, shipX, shipY, shotSpeed, bAngle);
 					}
-					sndBomb.currentTime=0;
-					sndBomb.play();
+
+					playSound(sndBomb);
 
 					
 //					bAngle += game.bAD || Math.E/Math.PI; ///*-0.76599; */ 0.44301;
