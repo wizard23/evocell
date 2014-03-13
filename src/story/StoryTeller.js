@@ -127,7 +127,7 @@ define([
 		$("#container").html("");
 		$("#container").fadeIn();
 
-		var audios = {};
+		//var audios = {};
 		var texts = [];	
 
 		for (var partIndex in story.parts)
@@ -162,9 +162,9 @@ define([
 			var id = "sc" + partIndex;
 			$("#container").append(htmlTemplate({text:text, image: resPath + "images/" + image, id:id}));
 
-			var url = getSpeechURL(text);
-			var a = new Audio(url);
-			audios[id] = a;
+			//var url = getSpeechURL(text);
+			//var a = new Audio(url);
+			//audios[id] = a;
 		}
 
 		/*_.delay(function(text) {
@@ -185,7 +185,7 @@ define([
 			callMe = (function (i, callMe) {
 				id = "sc" + i;
 				var cont = $("#"+id);
-				var a = audios[id];
+				//var a = audios[id];
 				var canceled = false;
 
 
