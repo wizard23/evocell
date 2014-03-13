@@ -160,7 +160,7 @@ define([
 			texts.push(text);
 		
 			var id = "sc" + partIndex;
-			$("#container").append(htmlTemplate({text:text, image: "images/" + image, id:id}));
+			$("#container").append(htmlTemplate({text:text, image: resPath + "images/" + image, id:id}));
 
 			var url = getSpeechURL(text);
 			var a = new Audio(url);

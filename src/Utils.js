@@ -1,4 +1,4 @@
-define(["jquery", "libs/FileSaver"], function($, saveAs) {
+define(["jquery", "FileSaver"], function($, saveAs) {
 	function relMouseCoords(event){
 		var totalOffsetX = 0;
 		var totalOffsetY = 0;

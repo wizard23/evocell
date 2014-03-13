@@ -18,6 +18,7 @@ require.config({
 		three: libPath + "three", 
 		"jquery-cycle": libPath + "jquery.cycle.all",
 		datgui: libPath + "dat.gui.min",
+		FileSaver: libPath + "FileSaver",
 	},
 	shim: {
 		datgui: {
