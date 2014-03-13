@@ -1,0 +1,22 @@
+html {
+	/* overflow:hidden; */
+}
+body { 
+	background-color: #222;
+	margin: 0; 
+}
+form { 
+	margin: 1em;
+	border: 1px solid #666;
+	background-color:#aaa;
+}
+
+#dropzone{ 
+	height: 150px;
+	width: 100%;
+	-webkit-border-radius: 10px;
+	-khtml-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	border: 2px dashed #0687FF;
+}
