@@ -2,7 +2,10 @@
 <html lang="en-us">
 <head>
 	<link type="text/css" rel="stylesheet" href="css/style.css" />
-	<link type="text/css" rel="stylesheet" href="../media_evocell/css/jquery-ui-1.10.4.custom.css" />
+	<link type="text/css" rel="stylesheet" href="../res_evocell/css/jquery-ui-1.10.4.custom.css" />
+	<link href="../res_evocell/css/font-awesome.css" rel="stylesheet">
+  	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
 	<script data-main="src/CellSpace" src="src/libs/require.js"></script>
 
 	<script type="text/template" id="part-template">
@@ -13,9 +16,7 @@
     </div>
   	</script>
 
-  	<link href="../media_evocell/css/font-awesome.css" rel="stylesheet">
-  	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-
+  	
 	<style>
 
 body {
@@ -119,8 +120,8 @@ select option:nth-child(even) {  }
 	<a id="zoomIn">zoom in</a> | <a id="zoomOut">zoom out</a>
 	<br />
 	This is is an early beta realease please direct bug reports or ideas to the <a href="https://github.com/wizard23/evocell">EvoCell github page</a>
-	<!--script id='fb3wlse'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=wizard23&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fb3wlse');
-	</script-->
+	<script id='fb3wlse'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=wizard23&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fb3wlse');
+	</script>
 	<br />
 	GPL 3.0 by Philipp Tiefenbacher / wizard23 
   </div>
@@ -180,7 +181,7 @@ height: <input id="height" type="number" min="1" max="1000" data-bind="value: dr
 	<div style="border:0px solid black; position: fixed; top: 0px;right: 0px; z-index:10000; color:#DDDDDD; font-family:monospace;">
 		fps: <span id="fpsMonitor">n/a</span><br>
 	</div>
-<!-- script>
+<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -188,6 +189,6 @@ height: <input id="height" type="number" min="1" max="1000" data-bind="value: dr
 
   ga('create', 'UA-48124421-1', 'wizard23.github.io');
   ga('send', 'pageview');
-</script -->
+</script>
 </body>
 </html>

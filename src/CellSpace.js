@@ -1,5 +1,5 @@
 var resPath = "./";
-var resPath = "../media_evocel/";
+var resPath = "../res_evocell/";
 
 
 var libPath = "../" + resPath + "src/libs/";
@@ -63,9 +63,9 @@ require.config({
 });
 
 require([
-	"jquery-ui", "Utils", "CellSpaceResources", "EvoCell", "story/StoryTeller", "underscore", 
+	"jquery-ui", "Utils", "EvoCell", "story/StoryTeller", "underscore", 
 	"backbone", "knockback", "knockout", "data/FileStore", "three", "datgui"], 
-	function($, utils, resources, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) {
+	function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) {
 
 	var canvas;
 	var reactor;
