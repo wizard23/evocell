@@ -73,7 +73,7 @@ require([
 	var enemyColors, enemy2Colors, shipColors, shipExplosionColors, copyColors;
 
 	var keyboard = utils.keyboard;
-	var gameW = 400, gameH = 256;
+	var gameW = 300, gameH = 300;
 	//gameW = 188, gameH = 188;
 	var zoom = 3;
 
@@ -321,12 +321,14 @@ require([
 		fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
 		function handleCanvasMouseDown(evt) {
-			autoFireOn = 1- autoFireOn;
 			var coords = canvas.relMouseCoords(evt);
 			var x = coords.x;
 			var y = screenH - coords.y;
 
 			var activeTool = $( "#toolsMenu" ).accordion( "option", "active" );
+
+			var clickedNDC = getNDCFromMouseEvent(canvas, evt);	
+			var clickedPoint = intersectClick(clickedNDC);
 
 			if (activeTool == 1) {
 					var dish;
@@ -341,10 +343,10 @@ require([
 
 					if (dish) {
 						if (drawModel.attributes.selectedDrawShape == "circle") {
-							reactor.mixDish(drawCircleShader, dish, {center: [x, y], radius: drawModel.attributes.drawSizeX/2, state: state/255.});
+							reactor.mixDish(drawCircleShader, dish, {center: [gameW*(clickedPoint.x+1)/2, gameH*(clickedPoint.y+1)/2], radius: drawModel.attributes.drawSizeX/2, state: state/255.});
 						}
 						else {
-							reactor.mixDish(drawRectShader, dish, {rectPos: [x, y], rectSize: [drawModel.attributes.drawSizeX, drawModel.attributes.drawSizeY], state: state/255.});
+							reactor.mixDish(drawRectShader, dish, {rectPos: [gameW*(clickedPoint.x+1)/2, gameH*(clickedPoint.y+1)/2], rectSize: [drawModel.attributes.drawSizeX, drawModel.attributes.drawSizeY], state: state/255.});
 						}
 					}
 				
@@ -352,7 +354,9 @@ require([
 			else if (activeTool != 1) { // || mouseMode == "shoot") {
 				var clickedNDC = getNDCFromMouseEvent(canvas, evt);	
 				var clickedPoint = intersectClick(clickedNDC);
-				fireShotAt(gameW*(clickedPoint.x+1)/2, gameH*(clickedPoint.y+1)/2);		
+				fireShotAt(gameW*(clickedPoint.x+1)/2, gameH*(clickedPoint.y+1)/2);	
+
+				autoFireOn = 1- autoFireOn;	
 			}	
 			else if (mouseMode == "copy") {
 				reactor.mixDish(copyShader, bufferDish, {
@@ -679,6 +683,8 @@ require([
 				gl.uniform2f(gl.getUniformLocation(shader, "gridOffset"), offsetX, offsetY);
 				gl.uniform2f(gl.getUniformLocation(shader, "translate"), transX, transY);
 				gl.uniform2f(gl.getUniformLocation(shader, "center"), centerX, centerY);
+
+				gl.uniform2f(gl.getUniformLocation(shader, "resolution"), gameW, gameH);
 
 
 				gl.uniformMatrix4fv(gl.getUniformLocation(shader, "projectionMatrix"), false, projectionMatrix.elements);
