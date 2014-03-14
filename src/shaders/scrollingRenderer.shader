@@ -3,22 +3,14 @@
 #endif
 
 uniform sampler2D texFrame;
-
-uniform float gridS;
-uniform vec2 gridOffset;
-uniform vec2 translate;
-uniform vec2 scale;
-const float damp = 0.3;
-
 uniform vec2 resolution;
-//vec2 resolution = vec2(256., 256.);
-const float borderW = 0.15;
 
 varying vec2 vTexCoord;
-void main(void) {
-	
-	//vec4 color = texture2D(texFrame, vTexCoord*scale+translate);
 
+const float borderW = 0.15;
+const float damp = 0.3;
+
+void main(void) {
 	vec4 color = texture2D(texFrame, vTexCoord);
 	
 	float modX = mod(vTexCoord.x*resolution.x, 1.);

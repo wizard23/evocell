@@ -81,8 +81,6 @@ require([
 
 	var keyboard = utils.keyboard;
 	var gameW = 300, gameH = 300;
-	//gameW = 188, gameH = 188;
-	var zoom = 3;
 
 	var screenW = 1024;
 	var screenH = 1024;
@@ -638,48 +636,10 @@ require([
 				rot -= 0.05;
 			}
 
-			
-			//shipX += 0.7;
-
-			//shipX = (gameW/2) + (shipX-gameW/2) % 70;
-			//shipY = (gameH/2) + (shipY-gameH/2) % 70;
-
-			//console.log(shipX);
-
-
-			var ff = pixel/zoom;
-
-
-			var camCenter = [shipX, shipY];
-			/////
-
-			var transX = -0.5/ff + shipX/enemyDish.width;
-			var transY = -0.5/ff + shipY/enemyDish.height;
-
-			var offsetX = (transX*enemyDish.width*pixel + 1/(2*pixel))%pixel;
-			var offsetY = (transY*enemyDish.height*pixel  + 1/(2*pixel))%pixel;
-
-			var centerX = ff*shipX/enemyDish.width;
-			var centerY = ff*shipY/enemyDish.height;
-			//RENDER
-			/*			
-			reactor.applyShader(scrollingRenderShader, null, null, function(gl, shader) {
-				gl.uniform1f(gl.getUniformLocation(shader, "gridS"), ff*zoom);
-				gl.uniform2f(gl.getUniformLocation(shader, "gridOffset"), 
-					(pixel*transX*enemyDish.width)%(pixel), pixel*transY*enemyDish.height);
-
-
-				gl.uniform2f(gl.getUniformLocation(shader, "translate"), transX, transY);
-				gl.uniform2f(gl.getUniformLocation(shader, "scale"), 1/ff, 1/ff);
-			});*/
-
-			//console.log(pixel, offsetX, offsetY);
 
 			var camera = new THREE.PerspectiveCamera( 180*cameraAngle/Math.PI, 1, 0.01, 1000 );
 			camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
 			projectionMatrix = camera.projectionMatrix;
-			//projectionMatrix = new THREE.Matrix4();
-
 
 			viewMatrix = new THREE.Matrix4();
 			var quaternion = new THREE.Quaternion();
@@ -687,37 +647,15 @@ require([
 			viewMatrix.compose(new THREE.Vector3(
 					2*-(shipX-enemyDish.width/2)/enemyDish.width,
 					2*-(shipY-enemyDish.height/2)/enemyDish.height,
-					-1 * pixel), 
+					-1 / pixel), 
 				quaternion, 
 				new THREE.Vector3(1,1,1)
-				//new THREE.Vector3(shipX/enemyDish.width,shipY/enemyDish.height,1)
 			);
 
 			reactor.paintDish(scrollingRenderShader, renderDish, function(gl, shader) {
-				gl.uniform1f(gl.getUniformLocation(shader, "gridS"), pixel);
-				gl.uniform2f(gl.getUniformLocation(shader, "gridOffset"), offsetX, offsetY);
-				gl.uniform2f(gl.getUniformLocation(shader, "translate"), transX, transY);
-				gl.uniform2f(gl.getUniformLocation(shader, "center"), centerX, centerY);
-
 				gl.uniform2f(gl.getUniformLocation(shader, "resolution"), gameW, gameH);
-
-
 				gl.uniformMatrix4fv(gl.getUniformLocation(shader, "projectionMatrix"), false, projectionMatrix.elements);
 				gl.uniformMatrix4fv(gl.getUniformLocation(shader, "modelViewMatrix"), false, viewMatrix.elements);
-
-				//gl.uniform2f(gl.getUniformLocation(shader, "center"), ff*0.5, ff*0.5);
-				//gl.uniform2f(gl.getUniformLocation(shader, "center"), 0.999	, 0.999);
-
-
-				// 0.5 -> 49
-				// 0 -? 0
-
-
-				//console.log(shipX, shipY);
-
-				gl.uniform2f(gl.getUniformLocation(shader, "scale"), 1/ff, 1/ff);
-
-				gl.uniform1f(gl.getUniformLocation(shader, "rot"), rot);
 			});
 
 			cnt++;
