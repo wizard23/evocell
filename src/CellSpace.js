@@ -317,7 +317,7 @@ require([
 				})
 		}, false);
 
-//		$( "#toolsMenu" ).hide();
+		//$( "#toolsMenu" ).hide();
 
 		$( "#toolsMenu" ).accordion({
 		collapsible: true,
@@ -856,15 +856,17 @@ require([
 	// game must be less than 20 LOC :
 	// MAIN GAME LOOP
 
-	var canvas = document.getElementById('c');
+	//$(window).load(function(e) { 
+		var canvas = document.getElementById('c');
 
-	loadResources(function (data) {
-		setupGame(data, canvas);
-		setupGui();
-		renderLoop = new utils.AnimationLoop(function() {
-			userInteraction();
-			gameLoop();
+		loadResources(function (data) {
+			setupGame(data, canvas);
+			setupGui();
+			renderLoop = new utils.AnimationLoop(function() {
+				userInteraction();
+				gameLoop();
+			});
+			renderLoop.start();
 		});
-		renderLoop.start();
-	});
+	//});
 });
