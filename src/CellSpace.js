@@ -1,6 +1,9 @@
-var resPath = "./";
-var resPath = "../res_evocell/";
 
+// Example: local resources in the same directory
+// var resPath = "./"; 
+
+// resources in res_evocell repository
+var resPath = "../res_evocell/";
 
 var libPath = "../" + resPath + "src/libs/";
 
@@ -24,38 +27,30 @@ require.config({
 		datgui: {
 			exports: "dat",
 		}, 
-
         "jquery-ui": {
             exports: "$",
             deps: ['jquery', libPath + 'farbtastic']
         },
-		
 		"jquery-cycle": {
 			deps: ["jquery-ui"]
 		},
-		
 		underscore : {
 			exports: "_",
 		},
-		
 		backbone : {
 			exports: "Backbone",
 			deps: ['underscore'],
 		},
-
 		knockback: {
 			exports: "kb",
 			deps: ["backbone"],			
 		},
-
 		knockout: {
 			exports: "ko",			
 		},
-
 		meSpeak: {
 			exports: "meSpeak",
 		},
-
 		three: {
 			exports: "THREE",
 		},
@@ -370,25 +365,18 @@ require([
 	var loadResources = function(callback) {
 		var loader = new EC.ResLoader();
 		loader.load("enemyRule", resPath + "rules/enemy_ludwigBuildships", "ecfile");
-		
 		//loader.load("enemyRule", resPath + "rules/moore5-coolspaceships", "ecfile");
 		//loader.load("enemyRule", resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
-		
 		//loader.load("enemyRule", "rules/enemy_d54_awesomeships", "ecfile");
 		//loader.load("enemyRule", resPath + "rules/enemy_d52_replicator", "ecfile");
 		//loader.load("enemyRule", resPath + "rules/enemy_holeshooter", "ecfile");
-
-//loader.load("enemyRule", "rules/enemy_holeshooter", "ecfile");
-//loader.load("enemyRule", "rules/gridworld6", "ecfile");
-//loader.load("enemyRule", "rules/enemy_quaderwelt_moreactive", "ecfile");
-//loader.load("enemyRule", "rules/enemy_d29", "ecfile");
-//loader.load("enemyRule", "rules/enemy_linesLounge_moreactive", "ecfile");
-//loader.load("enemyRule", "rules/enemy_linesLounge_moreactive-mutA_mut", "ecfile");
+		//loader.load("enemyRule", "rules/enemy_holeshooter", "ecfile");
+		//loader.load("enemyRule", "rules/gridworld6", "ecfile");
+		//loader.load("enemyRule", "rules/enemy_quaderwelt_moreactive", "ecfile");
+		//loader.load("enemyRule", "rules/enemy_d29", "ecfile");
+		//loader.load("enemyRule", "rules/enemy_linesLounge_moreactive", "ecfile");
+		//loader.load("enemyRule", "rules/enemy_linesLounge_moreactive-mutA_mut", "ecfile");
 		
-
-
-
-
 
 		loader.load("enemy2Rule", resPath + "rules/enemy_linebuilder", "ecfile");
 		loader.load("weaponRule", resPath + "rules/ship_avg4_nice", "ecfile");
