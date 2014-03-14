@@ -85,12 +85,12 @@ require([
 	var zoom = 3;
 
 	var screenW = 1024;
-	var screenH = 600;
+	var screenH = 1024;
 
 	var zoomF = 1;
 	var gridOffsetX=0, gridOffsetY=0;
 	var zoomFX = 1, zoomFY = 1;
-	var pixel = 4;
+	var pixel = 1.5;
 	var pixX = 0;
 	var rot = 0.0;
 
