@@ -1,7 +1,82 @@
-
-
 body {
 	font-family:sans-serif;
 	background:rgba(10,10,10,1);
 }
+
+
+.buttons {
+	color: white;
+}
+
+.buttons:hover{
+	text-shadow: 0 0 1.0em yellow
+}
+
+.buttons:active{
+	color: black;
+}
+
+.storyElement { 
+   kjkjjposition: relative; 
+	display: none;
+	color: white;
+}
+
+.xxxstoryElement h2 { 
+	padding: 5px 5px 5px 5px;
+   position: absolute; 
+   bottom: 30px; 
+   right: 200px; 
+   width: 400px; 
+	color: white;
+	background:rgba(0,0,0,0.7);
+
+	display: inline;
+    float: none;
+}
+
+.storyElement img {
+	height: 75%;
+}
+
+#toolsMenu { 
+	padding: 0px 0x 0px 0px;
+	border:0px solid #AAAAAA; 
+position: fixed; bottom: 0px;right: 0px; z-index:2; 
+color: white; width: 360px;
+background:rgba(255,255,255,0.9);
+}
+
+#toolsMenu a {
+
+}
+
+.toolMenuHeader {
+	background:rgba(0,0,0,0.8);
+	margin: 5px;
+	padding: 5px;
+	cursor:pointer;
+}
+.toolMenuContent {
+	background:rgba(0,0,0,0.8);
+	margin: 5px;
+	padding: 5px;
+}
+
+
+select {
+    font-size:9pt;
+    letter-spacing:0.07em;
+    color: white;
+    background:transparent;
+    border: solid 1px #808080;
+    padding:3px;
+    cursor:pointer;
+}
+select option:checked {
+}
+select option:nth-child(even) {  }
+
+
+
 

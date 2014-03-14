@@ -287,7 +287,9 @@ require([
 	}
 	var setupGui = function() {
 		document.getElementById("stepLink").addEventListener('click', function(evt) {
+			renderLoop.stop();
 			renderLoop.step();
+			updateButtons();
 		}, false);
 
 		document.getElementById("playPause").addEventListener('click', function(evt) {
@@ -682,9 +684,13 @@ require([
 			viewMatrix = new THREE.Matrix4();
 			var quaternion = new THREE.Quaternion();
 			quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0.5, 1 ).normalize(), rot );
-			viewMatrix.compose(new THREE.Vector3(0, 0, -1), quaternion, 
+			viewMatrix.compose(new THREE.Vector3(
+					2*-(shipX-enemyDish.width/2)/enemyDish.width,
+					2*-(shipY-enemyDish.height/2)/enemyDish.height,
+					-1 * pixel), 
+				quaternion, 
 				new THREE.Vector3(1,1,1)
-				//new THREE.Vector3(1/enemyDish.width,1/enemyDish.height,1)
+				//new THREE.Vector3(shipX/enemyDish.width,shipY/enemyDish.height,1)
 			);
 
 			reactor.paintDish(scrollingRenderShader, renderDish, function(gl, shader) {
