@@ -98,33 +98,6 @@ require([
 	var viewMatrix = new THREE.Matrix4();
 	var projectionMatrix = new THREE.Matrix4();
 
-
-///*
-	/*	var shotD = 3;
-		var wellen = 20;
-		var prim = 7;
-
-
-		var PK = Math.sqrt(gameW*gameW/4 + gameH*gameH/4) * 2*Math.PI;
-		var SK = PK/shotD;
-		var VK = Math.PI*2/SK;
-		shotN = SK/wellen;
-		
-		var bADelta = prim*VK;
-
-*/
-//*/
-///*
-	var SN = 101; //(coverLen / 5);
-	var W = 11;
-	var minA = 2*Math.PI/SN;
-	var bADelta = minA * W;
-	bADelta = 3*Math.E/Math.PI;
-	var wellen = 100;
-//*/
-	
-	var wk = wellen;
-
 	var shipX, shipY;
 	var shotSpeed = 2.3;
 
@@ -200,8 +173,7 @@ require([
 	var lastMouseNDC = new THREE.Vector2();
 	var autoFireCounter = 0;
 	var autoFireOn = 0;
-	var pollAutoFire = function() {
-		
+	var pollAutoFire = function() {		
 		if (autoFireOn) {
 			if (autoFireCounter == 0) {
 				var clickedPoint = intersectClick(lastMouseNDC);
@@ -215,7 +187,7 @@ require([
 		}
 	}
 
-	// TODO: should get normaliyed coords!
+	// TODO: should get and return NDCs!
 	var intersectClick = function(clickedNDC) {
 
 		var x = clickedNDC.x*screenW;
@@ -273,8 +245,7 @@ require([
 		playSound(snd);
 	}
 
-
-
+	// TODO: could be done in backbone via a conceptual model ;)
 	var updateButtons = function() {
 		if (renderLoop.pauseRequested) {
 			document.getElementById("playPause").children[0].className = "fa fa-play fa-2x";
@@ -283,6 +254,8 @@ require([
 			document.getElementById("playPause").children[0].className = "fa fa-pause fa-2x";
 		}
 	}
+
+
 	var setupGui = function() {
 		document.getElementById("stepLink").addEventListener('click', function(evt) {
 			renderLoop.stop();
@@ -318,7 +291,6 @@ require([
 		}, false);
 
 		//$( "#toolsMenu" ).hide();
-
 		$( "#toolsMenu" ).accordion({
 		collapsible: true,
 		heightStyle: "content",
@@ -608,12 +580,8 @@ require([
 			reactor.mixDish(mixShader, renderDish, {texNew: shipDish, texPalette: shipColors.getTexture()});
 			reactor.mixDish(mixShader, renderDish, {texNew: weaponDish, texPalette: weaponColors.getTexture()});
 			reactor.mixDish(mixShader, renderDish, {texNew: weaponExplosionDish, texPalette: shipExplosionColors.getTexture()});
-			reactor.mixDish(mixShader, renderDish, {texNew: shipExplosionDish, texPalette: shipExplosionColors.getTexture()});
-			
+			reactor.mixDish(mixShader, renderDish, {texNew: shipExplosionDish, texPalette: shipExplosionColors.getTexture()});			
 			//reactor.mixDish(mixShader, renderDish, {texNew: copyDish, texPalette: copyColors.getTexture()});		
-
-			//var pixel = 2 + Math.sin(0.05*shipX);
-			
 
 
 			if (keyboard.isPressed("O".charCodeAt()))
@@ -703,15 +671,9 @@ require([
 				if (shotN <= 0) shotN = 1;
 			}
 
-			if (keyboard.isPressed(65+1)) {
-				if (!game.bombFired && wk) {
-					//game.bombFired = 1;
-
-					//wk--;
-
-					
-					//bAngle = 0;
-					
+			if (keyboard.isPressed("B".charCodeAt())) {
+				if (!game.bombFired) {
+					//game.bombFired = 1; // allow permanent fire for now
 					for (var i = 0; i < shotN; i++)
 					{
 						bAngle += Math.PI * 2 / 1.61803398875;
@@ -719,34 +681,10 @@ require([
 					}
 
 					playSound(sndBomb);
-
-					
-//					bAngle += game.bAD || Math.E/Math.PI; ///*-0.76599; */ 0.44301;
 				}
 			}
 			else {
-				wk = wellen;
 				game.bombFired = 0;
-			}
-
-			if (keyboard.isPressed("T".charCodeAt())) {
-				if (game.bAD) 
-					game.bAD += 0.001;
-				else
-					game.bAD = 0.00001;
-				//document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD;
-			}
-
-			if (keyboard.isPressed("R".charCodeAt())) {
-				if (game.bAD) 
-					game.bAD -= 0.001;
-				else
-					game.bAD = 0.00001;
-				//document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD;
-			}
-
-			if (keyboard.isPressed("T".charCodeAt()) || keyboard.isPressed("R".charCodeAt())) {
-				//document.getElementById("bAngleMonitor").innerHTML = "" + game.bAD + " " + ((2*Math.PI)/game.bAD) + ":" + Math.E/Math.PI;
 			}
 
 			if (keyboard.isPressed("1".charCodeAt()))
