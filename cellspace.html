@@ -2,9 +2,10 @@
 <html lang="en-us">
 <head>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
 	<!-- link type="text/css" rel="stylesheet" href="../res_evocell/css/jquery-ui-1.10.4.custom.css" / -->
 	<!-- link href="../res_evocell/css/font-awesome.css" rel="stylesheet" -->
-  	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
 	<script data-main="src/CellSpace" src="src/libs/require.js"></script>
 
@@ -89,14 +90,10 @@ height: <input id="height" type="number" min="1" max="1000" data-bind="value: dr
 		</audio -->
 	</div>
 </div>
-
-	<!---<div id="storyContainer" style="border:0px solid black; position: fixed; top: 0px; left: 0px; z-index:1000;  background:rgba(255,255,255,1); width:100%; height:100%; text-align:center;" >
--->
-		<div id="container" stylea="background:rgba(255,255,255,0.2);z-index:1001;" style="z-index:1001; border:1px solid black;  width:100%; border:0px solid black; position: fixed; top: 0px; left: 0px; z-index:1000;  background:rgba(0,0,0,0.8); width:100%; height:100%; text-align:center; display:none;" ></div>
-	<!--</div>-->
+	<div id="container" stylea="background:rgba(255,255,255,0.2);z-index:1001;" style="z-index:1001; border:1px solid black;  width:100%; border:0px solid black; position: fixed; top: 0px; left: 0px; z-index:1000;  background:rgba(0,0,0,0.8); width:100%; height:100%; text-align:center; display:none;" ></div>
 
 	<canvas id="c" width="100" height="100" style="border:0px solid black; position: fixed; top: 0px;left: 0px; z-index:0; cursor:crosshair" ></canvas>
-	<br>
+	
 	<div style="border:0px solid black; position: fixed; top: 0px;right: 0px; z-index:10000; color:#DDDDDD; font-family:monospace;">
 		fps: <span id="fpsMonitor">n/a</span><br>
 	</div>
@@ -105,7 +102,6 @@ height: <input id="height" type="number" min="1" max="1000" data-bind="value: dr
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
   ga('create', 'UA-48124421-1', 'wizard23.github.io');
   ga('send', 'pageview');
 </script>
