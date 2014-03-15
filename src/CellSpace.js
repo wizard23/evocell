@@ -606,8 +606,7 @@ require([
 
 			//viewMatrix = new THREE.Matrix4();
 			var quaternion = new THREE.Quaternion();
-			quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0, 1 ).normalize(), -rot );
-
+			quaternion.setFromAxisAngle( new THREE.Vector3( 1, 0, 1 ).normalize(), rot );
 
 			var shipClipX = 2*(shipX-enemyDish.width/2)/enemyDish.width;
 			var shipClipY = 2*(shipY-enemyDish.height/2)/enemyDish.height;
@@ -617,19 +616,29 @@ require([
 			refreshGUI();
 
 			var transMatrix = new THREE.Matrix4().compose(new THREE.Vector3(
-					-shipClipX, -shipClipY, 
-					-pixel), 
+					-shipClipX, -shipClipY, 0), 
 				new THREE.Quaternion(), 
 				new THREE.Vector3(1,1,1)
 			);
-
 			var rotMatrix = new THREE.Matrix4().compose(new THREE.Vector3(0,0,0), 
 				quaternion, 
 				new THREE.Vector3(1,1,1)
 			);
-
-			//var viewMatrix = new THREE.Matrix4().multiplyMatrices(transMatrix, rotMatrix);
+			//viewMatrix = new THREE.Matrix4().multiplyMatrices(transMatrix, rotMatrix);
 			viewMatrix = new THREE.Matrix4().multiplyMatrices(rotMatrix, transMatrix);
+
+
+			// subtract mapped ship position to center player shi
+			var posPlayer = new THREE.Vector4(shipClipX, shipClipY, 0, 1);
+			posPlayer.applyMatrix4(viewMatrix);
+			posPlayer.multiplyScalar(-1);
+			posPlayer.add(new THREE.Vector3(0,0, -pixel))
+			//posPlayer = new THREE.Vector3(0,0, -pixel);
+			var shipCenterMatrix = new THREE.Matrix4().compose(posPlayer, 
+				new THREE.Quaternion(), 
+				new THREE.Vector3(1,1,1)
+			);
+			viewMatrix = new THREE.Matrix4().multiplyMatrices(shipCenterMatrix, viewMatrix);
 
 
 /*
@@ -638,6 +647,7 @@ require([
 				new THREE.Vector3(1,1,1)
 			);
 */
+/*
 
 			var posPlayer = new THREE.Vector3(shipX/enemyDish.width, shipY/enemyDish.height, 0);
 			posPlayer.applyMatrix4(viewMatrix);
@@ -646,6 +656,10 @@ require([
 
 			var nextMatrix = new THREE.Matrix4();
 			nextMatrix.compose(posPlayer, new THREE.Quaternion(), new THREE.Vector3(1,1,1));
+			viewMatrix = new THREE.Matrix4().multiplyMatrices(rotMatrix, transMatrix);
+*/
+
+
 
 			//viewMatrix.multiply(nextMatrix);
 
