@@ -600,7 +600,7 @@ require([
 
 
 			var camera = new THREE.PerspectiveCamera( 180*cameraAngle/Math.PI, 1, 0.01, 1000 );
-			//camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
+			camera.lookAt(new THREE.Vector3( 0, 0, -1 ));
 			projectionMatrix = camera.projectionMatrix;
 
 			//viewMatrix = new THREE.Matrix4();

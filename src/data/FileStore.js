@@ -42,7 +42,7 @@ request.onsuccess = function(event) {
 
 };
 request.onupgradeneeded = function(event) { 
-  alert("upgrade from: " + event.oldVersion + " to: " + event.newVersion)
+  //alert("upgrade from: " + event.oldVersion + " to: " + event.newVersion);
   var db = event.target.result;
 
   if(db.objectStoreNames.contains(ruleStoreName)) {
