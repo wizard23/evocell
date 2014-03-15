@@ -1,4 +1,3 @@
-
 // Example: local resources in the same directory
 // var resPath = "./"; 
 
@@ -223,9 +222,7 @@ require([
 		gameModel.civZ = deltaPoint.z;
 		gameModel.civW = deltaPoint.w;
 
-		for (var i in gui.__controllers) {
-			gui.__controllers[i].updateDisplay();
-		}
+		refreshGUI();
 
 		return deltaPoint;
 	}
@@ -245,7 +242,6 @@ require([
 
 		playSound(snd);
 	}
-
 	// TODO: could be done in backbone via a conceptual model ;)
 	var updateButtons = function() {
 		if (renderLoop.pauseRequested) {
@@ -253,6 +249,11 @@ require([
 		}
 		else {
 			document.getElementById("playPause").children[0].className = "fa fa-pause fa-2x";
+		}
+	}
+	var refreshGUI = function() {
+		for (var i in gui.__controllers) {
+			gui.__controllers[i].updateDisplay();
 		}
 	}
 
@@ -608,22 +609,15 @@ require([
 			quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0, 1 ).normalize(), -rot );
 
 
-			var shipClipX = -2*(shipX-enemyDish.width/2)/enemyDish.width;
-			var shipClipY = -2*(shipY-enemyDish.height/2)/enemyDish.height;
-
+			var shipClipX = 2*(shipX-enemyDish.width/2)/enemyDish.width;
+			var shipClipY = 2*(shipY-enemyDish.height/2)/enemyDish.height;
 
 			gameModel.clipX = shipClipX;
 			gameModel.clipY = shipClipY;
-
-			var refreshGUI = function() {
-				for (var i in gui.__controllers) {
-					gui.__controllers[i].updateDisplay();
-				}
-			}
 			refreshGUI();
 
 			var transMatrix = new THREE.Matrix4().compose(new THREE.Vector3(
-					shipClipX, shipClipY, 
+					-shipClipX, -shipClipY, 
 					-pixel), 
 				new THREE.Quaternion(), 
 				new THREE.Vector3(1,1,1)
