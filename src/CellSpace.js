@@ -61,13 +61,17 @@ require([
 	"backbone", "knockback", "knockout", "data/FileStore", "three", "datgui"], 
 	function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) {
 
+	var game = {
+		bombFired: 0,
+	};
+
 	var canvas;
 	var reactor;
 	var gl;		
 
 	var renderLoop;
 
-	var enemyDish, enemy2Dish, shipDish, shipExplosionDish, copyDish, bufferDish, renderDish
+	var enemyDish, enemy2Dish, shipDish, shipExplosionDish, copyDish, bufferDish, renderDish, weaponExplosionDish;
 	var shots;
 	var drawPointsShader, clearShader, scrollingRenderShader, drawRectShader, drawCircleShader, mixShader, intersectSpawnShader, copyShader;
 	var enemyRule, enemy2Rule, shipRule, weaponRule, shipExplosionRule;
@@ -96,7 +100,6 @@ require([
 	var cnt = 0; // used for executing enemyDish only every nth tep
 	var bAngle = 0; // direction of bomb fire
 
-	var game = {};
 		// guistate
 	var uiDrawShape = "rectangle";
 	var selectedState = 3;
@@ -110,7 +113,6 @@ require([
 	var sndHit2 = new Audio(resPath + "sound/Digital_SFX_Set/laser9.mp3");
 
 	var gameModel = {
-		message: "hello",
 		speed: 0,
 		civX: 0.1,
 		civY: 0.1,
@@ -121,10 +123,7 @@ require([
 		clipY: 0.1,
 	};
 
-
  	var gui = new dat.GUI();
-
-	var messageCtrl =  gui.add(gameModel, 'message');
 	gui.add(gameModel, 'civX');
 	gui.add(gameModel, 'civY');
 	gui.add(gameModel, 'civZ');
@@ -132,7 +131,6 @@ require([
 
 	gui.add(gameModel, 'clipX');
 	gui.add(gameModel, 'clipY');
-
 
 	var drawModel = new Backbone.Model({
 		availableLayers: ["enemy", "enemy2", "ship", "shipExplosion"],
@@ -148,7 +146,6 @@ require([
 	var view_model = kb.viewModel(drawModel);
 	//view_model.full_name = ko.computed((->return "#{@first_name()} #{@last_name()}"), view_model)
 	ko.applyBindings(view_model, document.getElementById("drawTool"));
-
 
 	///////
 
@@ -181,12 +178,10 @@ require([
 		}
 	}
 
-	// TODO: should get and return NDCs!
+	// gets NDC (0 to 1) of clicked postion
+	// itersects line form eye (0, 0, 0) to cliked position of a viewMatrix transformed plane in x/y plane
+	// returns computed object coordinates (-1 to 1 for x and y, 0 for z)
 	var intersectClick = function(clickedNDC) {
-
-		var x = clickedNDC.x*screenW;
-		var y = clickedNDC.y*screenH;
-
 		var invP = new THREE.Matrix4();
 		invP.getInverse(projectionMatrix);
 
@@ -197,7 +192,7 @@ require([
 		var planePoint = new THREE.Vector4(0, 0, 0, 1);
 
 		var sf = Math.sin(cameraAngle/2)/Math.cos(cameraAngle/2);
-		var lineDir = new THREE.Vector4(sf*(2*x/screenW - 1), sf*(2*y/screenH - 1), -1, 0);
+		var lineDir = new THREE.Vector4(sf*(2*clickedNDC.x - 1), sf*(2*clickedNDC.y - 1), -1, 0);
 		var linePoint = new THREE.Vector4();
 
 		planeNormal.applyMatrix4(viewMatrix);
@@ -598,7 +593,7 @@ require([
 
 			//viewMatrix = new THREE.Matrix4();
 			var quaternion = new THREE.Quaternion();
-			quaternion.setFromAxisAngle( new THREE.Vector3( 1, 0, 1 ).normalize(), rot );
+			quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0.7, 1 ).normalize(), rot );
 
 			var shipClipX = 2*(shipX-enemyDish.width/2)/enemyDish.width;
 			var shipClipY = 2*(shipY-enemyDish.height/2)/enemyDish.height;
@@ -736,7 +731,7 @@ require([
 				{
 					shotDelay = 10;
 					var px = (shipX/gameW)*2. - 1.;
-					var py = (shipY/gameH)*2. - 1.
+					var py = (shipY/gameH)*2. - 1.;
 					var sX = sDX * shotSpeed;
 					var sY = sDY*shotSpeed; 
 
