@@ -123,6 +123,9 @@ require([
 		civZ: 0.1,
 		civW: 0.1,
 
+		clipX: 0.1,
+		clipY: 0.1,
+
 	};
 
 
@@ -133,6 +136,9 @@ require([
 	gui.add(gameModel, 'civY');
 	gui.add(gameModel, 'civZ');
 	gui.add(gameModel, 'civW');
+
+	gui.add(gameModel, 'clipX');
+	gui.add(gameModel, 'clipY');
 
 
 	var drawModel = new Backbone.Model({
@@ -539,7 +545,7 @@ require([
 				} catch(ex) {}
 			}
 
-			shots.collide(enemyDish, cb);
+			//shots.collide(enemyDish, cb);
 			shots.step();
 			shots.collide(enemyDish, cb);
 			shots.draw(drawPointsShader, weaponDish);
@@ -565,8 +571,8 @@ require([
 			reactor.applyShaderOnDish(clearShader, renderDish);
 			reactor.mixDish(mixShader, renderDish, {texNew: enemy2Dish, texPalette: enemy2Colors.getTexture()});
 			reactor.mixDish(mixShader, renderDish, {texNew: enemyDish, texPalette: enemyColors.getTexture()});
-			reactor.mixDish(mixShader, renderDish, {texNew: shipDish, texPalette: shipColors.getTexture()});
 			reactor.mixDish(mixShader, renderDish, {texNew: weaponDish, texPalette: weaponColors.getTexture()});
+			reactor.mixDish(mixShader, renderDish, {texNew: shipDish, texPalette: shipColors.getTexture()});
 			reactor.mixDish(mixShader, renderDish, {texNew: weaponExplosionDish, texPalette: shipExplosionColors.getTexture()});
 			reactor.mixDish(mixShader, renderDish, {texNew: shipExplosionDish, texPalette: shipExplosionColors.getTexture()});			
 			//reactor.mixDish(mixShader, renderDish, {texNew: copyDish, texPalette: copyColors.getTexture()});		
@@ -574,12 +580,12 @@ require([
 
 			if (keyboard.isPressed("O".charCodeAt()))
 			{
-				pixel -= 0.1;
+				pixel -= 0.03;
 			}
 
 			if (keyboard.isPressed("L".charCodeAt()))
 			{
-				pixel += 0.1;
+				pixel += 0.03;
 			}
 
 			if (keyboard.isPressed("N".charCodeAt()))
@@ -594,19 +600,64 @@ require([
 
 
 			var camera = new THREE.PerspectiveCamera( 180*cameraAngle/Math.PI, 1, 0.01, 1000 );
-			camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
+			//camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
 			projectionMatrix = camera.projectionMatrix;
 
-			viewMatrix = new THREE.Matrix4();
+			//viewMatrix = new THREE.Matrix4();
 			var quaternion = new THREE.Quaternion();
-			quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0.5, 1 ).normalize(), rot );
-			viewMatrix.compose(new THREE.Vector3(
-					2*-(shipX-enemyDish.width/2)/enemyDish.width,
-					2*-(shipY-enemyDish.height/2)/enemyDish.height,
-					-1 / pixel), 
+			quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0, 1 ).normalize(), -rot );
+
+
+			var shipClipX = -2*(shipX-enemyDish.width/2)/enemyDish.width;
+			var shipClipY = -2*(shipY-enemyDish.height/2)/enemyDish.height;
+
+
+			gameModel.clipX = shipClipX;
+			gameModel.clipY = shipClipY;
+
+			var refreshGUI = function() {
+				for (var i in gui.__controllers) {
+					gui.__controllers[i].updateDisplay();
+				}
+			}
+			refreshGUI();
+
+			var transMatrix = new THREE.Matrix4().compose(new THREE.Vector3(
+					shipClipX, shipClipY, 
+					-pixel), 
+				new THREE.Quaternion(), 
+				new THREE.Vector3(1,1,1)
+			);
+
+			var rotMatrix = new THREE.Matrix4().compose(new THREE.Vector3(0,0,0), 
 				quaternion, 
 				new THREE.Vector3(1,1,1)
 			);
+
+			//var viewMatrix = new THREE.Matrix4().multiplyMatrices(transMatrix, rotMatrix);
+			viewMatrix = new THREE.Matrix4().multiplyMatrices(rotMatrix, transMatrix);
+
+
+/*
+			var viewMatrix = new THREE.Matrix4().compose(new THREE.Vector3(0,0,-1), 
+				quaternion, 
+				new THREE.Vector3(1,1,1)
+			);
+*/
+
+			var posPlayer = new THREE.Vector3(shipX/enemyDish.width, shipY/enemyDish.height, 0);
+			posPlayer.applyMatrix4(viewMatrix);
+
+			posPlayer.add(new THREE.Vector3(0,0,-pixel))
+
+			var nextMatrix = new THREE.Matrix4();
+			nextMatrix.compose(posPlayer, new THREE.Quaternion(), new THREE.Vector3(1,1,1));
+
+			//viewMatrix.multiply(nextMatrix);
+
+			//nextMatrix.multiply(viewMatrix);
+			//viewMatrix = nextMatrix;
+
 
 			reactor.paintDish(scrollingRenderShader, renderDish, function(gl, shader) {
 				gl.uniform2f(gl.getUniformLocation(shader, "resolution"), gameW, gameH);
