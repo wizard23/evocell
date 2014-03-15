@@ -79,11 +79,7 @@ require([
 	var screenW = 1024;
 	var screenH = 1024;
 
-	var zoomF = 1;
-	var gridOffsetX=0, gridOffsetY=0;
-	var zoomFX = 1, zoomFY = 1;
 	var pixel = 1.5;
-	var pixX = 0;
 	var rot = 0.0;
 
 	var shotN = 8;
@@ -98,8 +94,7 @@ require([
 	var maxParticles = 2800;
 	var mouseMode = "shoot";	
 	var cnt = 0; // used for executing enemyDish only every nth tep
-	// TODO what laws govern bangle and resulting bombingfield density. define density of bomb array
-	var bAngle = 0.44301; // experimentally found out to cover sphere most randomally (look at bomb swarms as bAngle changes, the cover density is how many different its you get on the circle before you get ...)
+	var bAngle = 0; // direction of bomb fire
 
 	var game = {};
 		// guistate
@@ -124,7 +119,6 @@ require([
 
 		clipX: 0.1,
 		clipY: 0.1,
-
 	};
 
 
@@ -578,7 +572,6 @@ require([
 			reactor.mixDish(mixShader, renderDish, {texNew: shipExplosionDish, texPalette: shipExplosionColors.getTexture()});			
 			//reactor.mixDish(mixShader, renderDish, {texNew: copyDish, texPalette: copyColors.getTexture()});		
 
-
 			if (keyboard.isPressed("O".charCodeAt()))
 			{
 				pixel -= 0.03;
@@ -599,9 +592,8 @@ require([
 				rot -= 0.05;
 			}
 
-
 			var camera = new THREE.PerspectiveCamera( 180*cameraAngle/Math.PI, 1, 0.01, 1000 );
-			camera.lookAt(new THREE.Vector3( 0, 0, -1 ));
+			//camera.lookAt(new THREE.Vector3( 0, 0, -1 )); // what does it do?
 			projectionMatrix = camera.projectionMatrix;
 
 			//viewMatrix = new THREE.Matrix4();
@@ -624,48 +616,23 @@ require([
 				quaternion, 
 				new THREE.Vector3(1,1,1)
 			);
-			//viewMatrix = new THREE.Matrix4().multiplyMatrices(transMatrix, rotMatrix);
+
+			// correct order is firts translate then rotate
+			//viewMatrix = new THREE.Matrix4().multiplyMatrices(transMatrix, rotMatrix); // wrong order
 			viewMatrix = new THREE.Matrix4().multiplyMatrices(rotMatrix, transMatrix);
 
-
 			// subtract mapped ship position to center player shi
-			var posPlayer = new THREE.Vector4(shipClipX, shipClipY, 0, 1);
-			posPlayer.applyMatrix4(viewMatrix);
-			posPlayer.multiplyScalar(-1);
-			posPlayer.add(new THREE.Vector3(0,0, -pixel))
-			//posPlayer = new THREE.Vector3(0,0, -pixel);
-			var shipCenterMatrix = new THREE.Matrix4().compose(posPlayer, 
+			var shipPos = new THREE.Vector4(shipClipX, shipClipY, 0, 1);
+			shipPos.applyMatrix4(viewMatrix);
+			shipPos.multiplyScalar(-1);
+			shipPos.add(new THREE.Vector3(0,0, -pixel)) // move to negative x
+			//posPlayer = new THREE.Vector3(0,0, -pixel); // do this to not track ship
+			var shipCenterMatrix = new THREE.Matrix4().compose(shipPos, 
 				new THREE.Quaternion(), 
 				new THREE.Vector3(1,1,1)
 			);
+			// now Subtract mapped shipPos
 			viewMatrix = new THREE.Matrix4().multiplyMatrices(shipCenterMatrix, viewMatrix);
-
-
-/*
-			var viewMatrix = new THREE.Matrix4().compose(new THREE.Vector3(0,0,-1), 
-				quaternion, 
-				new THREE.Vector3(1,1,1)
-			);
-*/
-/*
-
-			var posPlayer = new THREE.Vector3(shipX/enemyDish.width, shipY/enemyDish.height, 0);
-			posPlayer.applyMatrix4(viewMatrix);
-
-			posPlayer.add(new THREE.Vector3(0,0,-pixel))
-
-			var nextMatrix = new THREE.Matrix4();
-			nextMatrix.compose(posPlayer, new THREE.Quaternion(), new THREE.Vector3(1,1,1));
-			viewMatrix = new THREE.Matrix4().multiplyMatrices(rotMatrix, transMatrix);
-*/
-
-
-
-			//viewMatrix.multiply(nextMatrix);
-
-			//nextMatrix.multiply(viewMatrix);
-			//viewMatrix = nextMatrix;
-
 
 			reactor.paintDish(scrollingRenderShader, renderDish, function(gl, shader) {
 				gl.uniform2f(gl.getUniformLocation(shader, "resolution"), gameW, gameH);
@@ -785,6 +752,8 @@ require([
 	// game must be less than 20 LOC :
 	// MAIN GAME LOOP
 
+	// TODO: should we not put this in backbone ready function?
+	// is jquery redy better?
 	//$(window).load(function(e) { 
 		var canvas = document.getElementById('c');
 
