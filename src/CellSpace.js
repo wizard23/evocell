@@ -1,3 +1,5 @@
+"use strict";
+
 // Example: local resources in the same directory
 // var resPath = "./"; 
 
@@ -72,11 +74,11 @@ require([
 		bombFired: 0,
 	};	
 
-	var enemyDish, enemy2Dish, shipDish, shipExplosionDish, copyDish, bufferDish, renderDish, weaponExplosionDish;
+	var enemyDish, enemy2Dish, shipDish, shipExplosionDish, copyDish, bufferDish, renderDish, weaponDish, weaponExplosionDish;
 	var shots;
 	var drawPointsShader, clearShader, scrollingRenderShader, drawRectShader, drawCircleShader, mixShader, intersectSpawnShader, copyShader;
-	var enemyRule, enemy2Rule, shipRule, weaponRule, shipExplosionRule;
-	var enemyColors, enemy2Colors, shipColors, shipExplosionColors, copyColors;
+	var enemyRule, enemy2Rule, shipRule, shipExplosionRule, weaponRule, weaponExplosionRule;
+	var enemyColors, enemy2Colors, shipColors, shipExplosionColors, weaponColors, weaponExplosionColors, copyColors;
 
 	var keyboard = utils.keyboard;
 	var gameW = 300, gameH = 300;
@@ -418,7 +420,6 @@ require([
 		appState.canvas = canvas;
 
 		reactor.setRenderSize(screenW, screenH);
-		gl = reactor.gl;		
 
 		enemyDish = reactor.compileDish();
 		enemy2Dish = reactor.compileDish();
@@ -738,9 +739,9 @@ require([
 				sDY = -1;
 			}
 			if (sDX || sDY) {
-				if (!shotDelay)
+				if (!gameState.shotDelay)
 				{
-					shotDelay = 10;
+					gameState.shotDelay = 10;
 					var px = (shipX/gameW)*2. - 1.;
 					var py = (shipY/gameH)*2. - 1.;
 					var sX = sDX * shotSpeed;
@@ -749,10 +750,10 @@ require([
 					shots.allocateParticle(shipX, shipY, sX, sY);
 				}
 				else 
-					shotDelay--;
+					gameState.shotDelay--;
 			}
 			else
-				shotDelay = 0;
+				gameState.shotDelay = 0;
 		};
 
 	// game must be less than 20 LOC :
