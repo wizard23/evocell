@@ -61,15 +61,16 @@ require([
 	"backbone", "knockback", "knockout", "data/FileStore", "three", "datgui"], 
 	function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) {
 
-	var game = {
-		bombFired: 0,
+	var appState = {
+		canvas: null,
+		reactor: null,
+		gl: null,
+		renderLoop: null,
 	};
 
-	var canvas;
-	var reactor;
-	var gl;		
-
-	var renderLoop;
+	var gameState = {
+		bombFired: 0,
+	};	
 
 	var enemyDish, enemy2Dish, shipDish, shipExplosionDish, copyDish, bufferDish, renderDish, weaponExplosionDish;
 	var shots;
@@ -121,6 +122,10 @@ require([
 
 		clipX: 0.1,
 		clipY: 0.1,
+
+		ljlkjl: null,
+		lhkjhkjh: null, 
+		hlkjhjkh: null,
 	};
 
  	var gui = new dat.GUI();
@@ -233,7 +238,7 @@ require([
 	}
 	// TODO: could be done in backbone via a conceptual model ;)
 	var updateButtons = function() {
-		if (renderLoop.pauseRequested) {
+		if (appState.renderLoop.pauseRequested) {
 			document.getElementById("playPause").children[0].className = "fa fa-play fa-2x";
 		}
 		else {
@@ -249,13 +254,13 @@ require([
 
 	var setupGui = function() {
 		document.getElementById("stepLink").addEventListener('click', function(evt) {
-			renderLoop.stop();
-			renderLoop.step();
+			appState.renderLoop.stop();
+			appState.renderLoop.step();
 			updateButtons();
 		}, false);
 
 		document.getElementById("playPause").addEventListener('click', function(evt) {
-			renderLoop.toggle();
+			appState.renderLoop.toggle();
 			updateButtons();
 		}, false);
 
@@ -277,7 +282,7 @@ require([
 			fileStore.loadAllRules(function(rulesModelData) {
 					idxxxx++;
 					idxxxx %= rulesModelData.length;
-					enemyRule = reactor.compileRule(rulesModelData[idxxxx].ruleData, enemyDish);
+					enemyRule = appState.reactor.compileRule(rulesModelData[idxxxx].ruleData, enemyDish);
 				})
 		}, false);
 
@@ -295,13 +300,13 @@ require([
 		fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
 		function handleCanvasMouseDown(evt) {
-			var coords = canvas.relMouseCoords(evt);
+			var coords = appState.canvas.relMouseCoords(evt);
 			var x = coords.x;
 			var y = screenH - coords.y;
 
 			var activeTool = $( "#toolsMenu" ).accordion( "option", "active" );
 
-			var clickedNDC = getNDCFromMouseEvent(canvas, evt);	
+			var clickedNDC = getNDCFromMouseEvent(appState.canvas, evt);	
 			var clickedPoint = intersectClick(clickedNDC);
 
 			if (activeTool == 1) {
@@ -317,29 +322,29 @@ require([
 
 					if (dish) {
 						if (drawModel.attributes.selectedDrawShape == "circle") {
-							reactor.mixDish(drawCircleShader, dish, {center: [gameW*(clickedPoint.x+1)/2, gameH*(clickedPoint.y+1)/2], radius: drawModel.attributes.drawSizeX/2, state: state/255.});
+							appState.reactor.mixDish(drawCircleShader, dish, {center: [gameW*(clickedPoint.x+1)/2, gameH*(clickedPoint.y+1)/2], radius: drawModel.attributes.drawSizeX/2, state: state/255.});
 						}
 						else {
-							reactor.mixDish(drawRectShader, dish, {rectPos: [gameW*(clickedPoint.x+1)/2, gameH*(clickedPoint.y+1)/2], rectSize: [drawModel.attributes.drawSizeX, drawModel.attributes.drawSizeY], state: state/255.});
+							appState.reactor.mixDish(drawRectShader, dish, {rectPos: [gameW*(clickedPoint.x+1)/2, gameH*(clickedPoint.y+1)/2], rectSize: [drawModel.attributes.drawSizeX, drawModel.attributes.drawSizeY], state: state/255.});
 						}
 					}
 				
 			}
 			else if (activeTool != 1) { // || mouseMode == "shoot") {
-				var clickedNDC = getNDCFromMouseEvent(canvas, evt);	
+				var clickedNDC = getNDCFromMouseEvent(appState.canvas, evt);	
 				var clickedPoint = intersectClick(clickedNDC);
 				fireShotAt(gameW*(clickedPoint.x+1)/2, gameH*(clickedPoint.y+1)/2);	
 
 				autoFireOn = 1- autoFireOn;	
 			}	
 			else if (mouseMode == "copy") {
-				reactor.mixDish(copyShader, bufferDish, {
+				appState.reactor.mixDish(copyShader, bufferDish, {
 					destinationPos: [0, 0], destinationSize: [bufferDish.width, bufferDish.height],
 					texSource: enemyDish, sourcePos: [x-bufferDish.width/2, y-bufferDish.height/2], sourceRes: [gameW, gameH], 	
 					}); 
 			}		
 			else if (mouseMode == "paste") {
-				reactor.mixDish(copyShader, enemyDish, {
+				appState.reactor.mixDish(copyShader, enemyDish, {
 						destinationPos: [x-bufferDish.width/2, y-bufferDish.height/2], destinationSize: [bufferDish.width, bufferDish.height],
 						texSource: bufferDish, sourcePos: [0, 0], sourceRes: [bufferDish.width, bufferDish.height], 	
 						}); 
@@ -348,13 +353,13 @@ require([
 			evt.preventDefault();
 			evt.stopPropagation();
 		}
-		canvas.addEventListener('mousedown', handleCanvasMouseDown, false);
+		appState.canvas.addEventListener('mousedown', handleCanvasMouseDown, false);
 
 		var handleCanvasMouseMove = function(evt)
 		{
-			lastMouseNDC = getNDCFromMouseEvent(canvas, evt);	
+			lastMouseNDC = getNDCFromMouseEvent(appState.canvas, evt);	
 		}
-		canvas.addEventListener('mousemove', handleCanvasMouseMove, false);
+		appState.canvas.addEventListener('mousemove', handleCanvasMouseMove, false);
 
 	}
 
@@ -407,7 +412,11 @@ require([
 	var setupGame = function (data, canvas) { 
 		// Setup core 	
 		
-		reactor = new  EC.Reactor(canvas, gameW, gameH);
+		var reactor = new  EC.Reactor(canvas, gameW, gameH);
+		appState.reactor = reactor;
+		appState.gl = reactor.gl;
+		appState.canvas = canvas;
+
 		reactor.setRenderSize(screenW, screenH);
 		gl = reactor.gl;		
 
@@ -511,6 +520,8 @@ require([
 	}
 
 	var gameLoop = function() {
+		var reactor = appState.reactor;
+
 			// ENEMIES //////////////////////////////////////
 			if (cnt % 2 == 0)
 				reactor.step(enemyRule, enemyDish);
@@ -681,8 +692,8 @@ require([
 			}
 
 			if (keyboard.isPressed("B".charCodeAt())) {
-				if (!game.bombFired) {
-					//game.bombFired = 1; // allow permanent fire for now
+				if (!gameState.bombFired) {
+					//gameState.bombFired = 1; // allow permanent fire for now
 					for (var i = 0; i < shotN; i++)
 					{
 						bAngle += Math.PI * 2 / 1.61803398875;
@@ -693,7 +704,7 @@ require([
 				}
 			}
 			else {
-				game.bombFired = 0;
+				gameState.bombFired = 0;
 			}
 
 			if (keyboard.isPressed("1".charCodeAt()))
@@ -755,11 +766,11 @@ require([
 		loadResources(function (data) {
 			setupGame(data, canvas);
 			setupGui();
-			renderLoop = new utils.AnimationLoop(function() {
+			appState.renderLoop = new utils.AnimationLoop(function() {
 				userInteraction();
 				gameLoop();
 			});
-			renderLoop.start();
+			appState.renderLoop.start();
 		});
 	//});
 });
