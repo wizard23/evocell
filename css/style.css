@@ -96,5 +96,25 @@ select option:checked {
 select option:nth-child(even) {  }
 
 
+#centeredContainer {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    margin-top: -10px;
+    line-height: 20px;
+    text-align: center;
+    vertical-align: center;
+   	z-index: 110; 
+   	background:rgba(255,255,255, 0);
+   	display: none;
+}
+
+#centeredMessage {
+   width:600px; 
+   background:rgba(255,0, 0, 0.9); 
+   display: inline-block;
+}
+
 
 

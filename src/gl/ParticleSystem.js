@@ -81,12 +81,14 @@ define([], function() {
 				}
 			}
 		}
-	} 
+
+		return this.pixelValues;
+	};
 
 	var allocIdx = 0;
 	ParticleSystem.prototype.allocateParticle = function(x, y, xs, ys) {
-		var xScale = 2./this.width;
-		var yScale = 2./this.height;
+		var xScale = 2/this.width;
+		var yScale = 2/this.height;
 
 		x = xScale * x - 1;
 		y = yScale * y - 1;

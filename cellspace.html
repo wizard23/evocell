@@ -17,8 +17,21 @@
     </div>
   	</script>
 
+  	<script type="text/template" id="death-template">
+    <div class="storyElement" id="<%=id%>" style="cursor:pointer;border:0px solid black; position: fixed; top: 0px; left: 0px; z-index:1000;  background:rgba(0,0,0,0); width:100%; height:100%; text-align:center;">
+		<h2><%= text %></h2>
+      <img src="<%= image %>" alt="<%= text %>"> </img>
+		<p>(click to continue...)</p>
+    </div>
+  	</script>
+
 </head>
 <body>
+<div id="centeredContainer">
+	<div id="centeredMessage">
+	sdafdsgasd asgdjdsa lkgjdsajglkjdsalkgjdsalkg <br>jsalkd jglksad jglkdsajglkdsajg lkjsadglkjsadlg<br> kjsalkg jlksalksagj lkjlkj lkj jlk jlk jlkjsa hg
+	</div>
+</div>
 <div id="introElement" stye="overflow:hidden;">
 	<div style="width:300px; overflow:hidden;">
   		<h3 class="toolMenuHeader">About</h3>
@@ -54,8 +67,8 @@
 <label><input type="radio" value="circle" data-bind="checked: selectedDrawShape" />Circle</label>
 <label><input type="radio" value="rectangle" data-bind="checked: selectedDrawShape" />Recangle</label><br/>
 
-<select multiple="multiple"  style="width: 100%" data-bind="options: availableLayers, selectedOptions: selectedLayers"></select><br/>
-<select multiple="multiple"  style="width: 100%" data-bind="options: availableStates, selectedOptions: selectedStates"></select><br/>
+<select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableLayers, selectedOptions: selectedLayers"></select><br/>
+<select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableStates, selectedOptions: selectedStates"></select><br/>
 width: <input id="width" type="number" min="1" max="1000" data-bind="value: drawSizeX, valueUpdate: 'keyup'"><br/>
 height: <input id="height" type="number" min="1" max="1000" data-bind="value: drawSizeY, valueUpdate: 'keyup'"><br/>
 <label><input type="checkbox" id="fixedRatio">fixedRatio</label><br/>

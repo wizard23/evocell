@@ -224,10 +224,24 @@ define([
 			})(i, callMe);
 		}
 
-		return callMe;	
-	}
+		callMe();	
+	};
+
+	var RunDeath = function() {
+		//alert("You died!");
+		//RunIntro();
+		MessageBox("You died! Avoid the enemy cells!", "rgb(255, 0, 0)", 2000)
+	};
+
+	var MessageBox = function(html, color, delay) {
+		$("#centeredMessage").html(html);
+		$("#centeredContainer").fadeIn(300, function() {
+			$("#centeredContainer").fadeOut(delay);
+		});
+	};
 
 	return {
-		GetIntro: RunIntro,
+		RunIntro: RunIntro,
+		RunDeath: RunDeath
 	}
 });

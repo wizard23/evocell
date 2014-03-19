@@ -102,6 +102,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		projectionMatrix: new THREE.Matrix4(),
 
 		shipX: 0, shipY: 0,
+		playerEnergy: 100,
 		stepSize: 1.5, 
 		
 		mouseMode: "shoot",	
@@ -113,20 +114,14 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		sndHit: new Audio(resPath + "sound/Digital_SFX_Set/laser9.mp3"), 
 		sndHit2: new Audio(resPath + "sound/Digital_SFX_Set/laser9.mp3"),
 
-		gameModel: {
-			speed: 0,
-			civX: 0.1,
-			civY: 0.1,
-			civZ: 0.1,
-			civW: 0.1,
+		// game model
+		civX: 0.1,
+		civY: 0.1,
+		civZ: 0.1,
+		civW: 0.1,
 
-			clipX: 0.1,
-			clipY: 0.1,
-
-			ljlkjl: null,
-			lhkjhkjh: null, 
-			hlkjhjkh: null,
-		},
+		clipX: 0.1,
+		clipY: 0.1,
 
 		drawModel: new Backbone.Model({
 			availableLayers: ["enemy", "enemy2", "ship", "shipExplosion", "weapon", "weaponExplosion"],
@@ -199,10 +194,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		var point = new THREE.Vector4().addVectors(linePoint, lineDir.clone().multiplyScalar(pointPos));
 		var deltaPoint = point.clone().applyMatrix4(invMV);
 
-		gameState.gameModel.civX = deltaPoint.x;
-		gameState.gameModel.civY = deltaPoint.y;
-		gameState.gameModel.civZ = deltaPoint.z;
-		gameState.gameModel.civW = deltaPoint.w;
+		gameState.civX = deltaPoint.x;
+		gameState.civY = deltaPoint.y;
+		gameState.civZ = deltaPoint.z;
+		gameState.civW = deltaPoint.w;
 
 		refreshGUI();
 
@@ -243,6 +238,18 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		}
 	};
 
+	var resetGame = function() {
+		gameState.cnt = 0;
+		gameState.enemyDish.randomize(gameState.enemyRule.nrStates, 0.02);
+		gameState.enemy2Dish.randomize(gameState.enemyRule.nrStates, 0.01);
+		if (gameState.shipX < 0 || gameState.shipX > gameState.gameW || 
+			gameState.shipY < 0 || gameState.shipY > gameState.gameH) {
+			gameState.shipX = gameState.gameW/2;
+			gameState.shipY = gameState.gameH/2;
+		}
+		playSound(gameState.sndInit);
+	};
+
 	var setupGui = function() {
 		document.getElementById("stepLink").addEventListener('click', function(evt) {
 			gameState.renderLoop.stop();
@@ -265,7 +272,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 
 
 		document.getElementById("showIntroLink").addEventListener('click', function(evt) {
-			storyTeller.GetIntro()();
+			storyTeller.RunIntro();
 		}, false);
 
 		var idxxxx = -1;
@@ -278,13 +285,13 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 				});
 		}, false);
 
-		gameState.gui.add(gameState.gameModel, 'civX');
-		gameState.gui.add(gameState.gameModel, 'civY');
-		gameState.gui.add(gameState.gameModel, 'civZ');
-		gameState.gui.add(gameState.gameModel, 'civW');
-
-		gameState.gui.add(gameState.gameModel, 'clipX');
-		gameState.gui.add(gameState.gameModel, 'clipY');
+		gameState.gui.add(gameState, 'playerEnergy');
+		gameState.gui.add(gameState, 'civX');
+		gameState.gui.add(gameState, 'civY');
+		gameState.gui.add(gameState, 'civZ');
+		gameState.gui.add(gameState, 'civW');
+		gameState.gui.add(gameState, 'clipX');
+		gameState.gui.add(gameState, 'clipY');
 
 		var view_model = kb.viewModel(gameState.drawModel);
 		//view_model.full_name = ko.computed((->return "#{@first_name()} #{@last_name()}"), view_model)
@@ -565,10 +572,51 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			} catch(ex) {}
 		};
 
+		// too costly
 		//gameState.shots.collide(gameState.enemyDish, cb);
 		gameState.shots.step();
-		gameState.shots.collide(gameState.enemyDish, cb);
+		var enemyPixel = gameState.shots.collide(gameState.enemyDish, cb);
 		gameState.shots.draw(gameState.drawPointsShader, gameState.weaponDish);
+
+
+
+		// collide ship
+		if (gameState.cnt > 40) {
+			var shipR = 3;
+			var pX, pY;
+
+			var oldEnergy = gameState.playerEnergy;
+
+			for (pX = -shipR; pX <= shipR; pX++) {
+				for (pY = -shipR; pY <= shipR; pY++) {
+
+					var xxx = Math.round(gameState.shipX + pX);
+					var yyy = Math.round(gameState.shipY + pY);
+
+					if (enemyPixel[(xxx+yyy*gameState.gameW)*4 + 3] !== 0) {
+						gameState.playerEnergy -= 1;
+
+		//				reactor.mixDish(gameState.drawCircleShader, gameState.weaponDish, 
+		//	{center: [gameState.shipX + pX, gameState.shipY + pY], radius: 1.5, state: (gameState.shipRule.nrStates-1)/255});
+
+					}
+				}
+			}
+
+			if (oldEnergy !== gameState.playerEnergy) {
+				refreshGUI();
+				//storyTeller.RunDeath();
+			}
+
+			// did we just die?
+			if (gameState.playerEnergy < 0) {
+				//gameState.renderLoop.stop();
+				gameState.playerEnergy = 100;
+				storyTeller.RunDeath();
+				resetGame();
+				//gameState.renderLoop.start();
+			}
+		}
 		
 
 		// Dish INTERACTION ///////////////////////////////////
@@ -585,15 +633,21 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			{tex1: gameState.weaponDish, tex2: gameState.weaponExplosionDish, state: 3/255});	
 
 
+		// ship to enemy colissions spawn shipExplosions
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.shipExplosionDish, 
 			{tex1: gameState.shipDish, tex2: gameState.enemyDish, state: (gameState.shipExplosionRule.nrStates-1)/255});
+		
+		// shipExplosions reinforced by enemys
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.shipExplosionDish, 
 			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: 3/255});
 	
+		// enemyDish gets killed by shipExplosions
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.enemyDish, 
-			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: 0/255});
+			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: 1/255});
+
+		// ship gets killed by shipExplosions
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.shipDish, 
-			{tex1: gameState.shipDish, tex2: gameState.shipExplosionDish, state: 3/255});	
+			{tex1: gameState.shipDish, tex2: gameState.shipExplosionDish, state: 0/255});	
 
 		// COMPOSE ////////////////////////////////////////////
 		reactor.applyShaderOnDish(gameState.clearShader, gameState.renderDish);
@@ -625,8 +679,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		var shipClipX = 2*(gameState.shipX-gameState.enemyDish.width/2)/gameState.enemyDish.width;
 		var shipClipY = 2*(gameState.shipY-gameState.enemyDish.height/2)/gameState.enemyDish.height;
 
-		gameState.gameModel.clipX = shipClipX;
-		gameState.gameModel.clipY = shipClipY;
+		gameState.clipX = shipClipX;
+		gameState.clipY = shipClipY;
 		refreshGUI();
 
 		var transMatrix = new THREE.Matrix4().compose(new THREE.Vector3(
@@ -701,15 +755,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 
 		// space
 		if (keyboard.isPressed(32)) {
-			gameState.enemyDish.randomize(gameState.enemyRule.nrStates, 0.02);
-			gameState.enemy2Dish.randomize(gameState.enemyRule.nrStates, 0.01);
-			if (gameState.shipX < 0 || gameState.shipX > gameState.gameW || 
-				gameState.shipY < 0 || gameState.shipY > gameState.gameH) {
-				gameState.shipX = gameState.gameW/2;
-				gameState.shipY = gameState.gameH/2;
-			}
-			playSound(gameState.sndInit);
-			
+			resetGame();
 		}
 
 		// escape
