@@ -1,5 +1,3 @@
-"use strict";
-
 // Example: local resources in the same directory
 // var resPath = "./"; 
 
@@ -70,7 +68,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		reactor: null,
 		gl: null,
 		renderLoop: null,
- 		gui: new dat.GUI(),
+		gui: new dat.GUI(),
 		//fpsMonotor: null,
 		keyboard: utils.keyboard,
 		
@@ -108,11 +106,6 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		
 		mouseMode: "shoot",	
 		cnt: 0, // used for executing enemyDish only every nth tep
-		
-
-		// guistate
-		uiDrawShape: "rectangle",
-
 
 		sndInit: new Audio(resPath + "sound/Digital_SFX_Set/laser3.mp3"), 
 		snd: new Audio(resPath + "sound/Digital_SFX_Set/laser6.mp3"), 
@@ -155,18 +148,18 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			snd.currentTime=0;
 			snd.play();
 		} catch(ex) {}
-	} 
+	};
 
 	// access to gamestate
 	var getNDCFromMouseEvent = function(canvas, evt) {
 		var coords = canvas.relMouseCoords(evt);
 		return new THREE.Vector2(coords.x/gameState.screenW, (gameState.screenH - coords.y)/gameState.screenH);
-	}
+	};
 
 	// access to gamestate
 	var pollAutoFire = function() {		
 		if (gameState.autoFireOn) {
-			if (gameState.autoFireCounter == 0) {
+			if (gameState.autoFireCounter === 0) {
 				var clickedPoint = intersectClick(gameState.lastMouseNDC);
 				fireShotAt(gameState.gameW*(clickedPoint.x+1)/2, gameState.gameH*(clickedPoint.y+1)/2);	
 
@@ -176,7 +169,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 				gameState.autoFireCounter--;
 			}
 		}
-	}
+	};
 
 	// TODO: gamestate access
 	// gets NDC (0 to 1) of clicked postion
@@ -190,8 +183,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		var planePoint = new THREE.Vector4(0, 0, 0, 1);
 
 		// here the projection matrix is used or at least the cameraAngle
-		var a = gameState.cameraAngle/2
-		var sf = Math.sin(a)/Math.cos(a);
+		var camAH = gameState.cameraAngle/2;
+		var sf = Math.sin(camAH)/Math.cos(camAH);
 		var lineDir = new THREE.Vector4(sf*(2*clickedNDC.x - 1), sf*(2*clickedNDC.y - 1), -1, 0);
 		var linePoint = new THREE.Vector4();
 
@@ -214,7 +207,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		refreshGUI();
 
 		return deltaPoint;
-	}
+	};
 
 	// TODO: gameState access
 	var fireShotAt = function(tx, ty) {
@@ -232,7 +225,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		gameState.shots.allocateParticle(gameState.shipX, gameState.shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
 
 		playSound(gameState.snd);
-	}
+	};
+
 	// TODO: could be done in backbone via a conceptual model ;)
 	var updateButtons = function() {
 		if (gameState.renderLoop.pauseRequested) {
@@ -241,13 +235,13 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		else {
 			document.getElementById("playPause").children[0].className = "fa fa-pause fa-2x";
 		}
-	}
+	};
+
 	var refreshGUI = function() {
 		for (var i in gameState.gui.__controllers) {
 			gameState.gui.__controllers[i].updateDisplay();
 		}
-	}
-
+	};
 
 	var setupGui = function() {
 		document.getElementById("stepLink").addEventListener('click', function(evt) {
@@ -281,7 +275,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 					idxxxx %= rulesModelData.length;
 					gameState.enemyRule = gameState.reactor.compileRule(rulesModelData[idxxxx].ruleData, 
 						gameState.enemyDish);
-				})
+				});
 		}, false);
 
 		gameState.gui.add(gameState.gameModel, 'civX');
@@ -319,7 +313,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			var clickedNDC = getNDCFromMouseEvent(gameState.canvas, evt);	
 			var clickedPoint = intersectClick(clickedNDC);
 
-			if (activeTool == 1) {
+			if (activeTool === 0) {
 					var dish;
 
 					dish = gameState[gameState.drawModel.attributes.selectedLayers[0] + "Dish"];
@@ -338,22 +332,20 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 						if (gameState.drawModel.attributes.selectedDrawShape == "circle") {
 							gameState.reactor.mixDish(gameState.drawCircleShader, dish, {
 								center: [gameState.gameW*(clickedPoint.x+1)/2, gameState.gameH*(clickedPoint.y+1)/2], 
-								radius: gameState.drawModel.attributes.drawSizeX/2, state: state/255.
+								radius: gameState.drawModel.attributes.drawSizeX/2, state: state/255
 							});
 						}
 						else {
 							gameState.reactor.mixDish(gameState.drawRectShader, dish, {
 								rectPos: [gameState.gameW*(clickedPoint.x+1)/2, gameState.gameH*(clickedPoint.y+1)/2], 
 								rectSize: [gameState.drawModel.attributes.drawSizeX, gameState.drawModel.attributes.drawSizeY], 
-								state: state/255.
+								state: state/255
 							});
 						}
 					}
 				
 			}
-			else if (activeTool != 1) { // || mouseMode == "shoot") {
-				var clickedNDC = getNDCFromMouseEvent(gameState.canvas, evt);	
-				var clickedPoint = intersectClick(clickedNDC);
+			else if (activeTool !== 0) { // || mouseMode == "shoot") {
 				fireShotAt(gameState.gameW*(clickedPoint.x+1)/2, gameState.gameH*(clickedPoint.y+1)/2);	
 
 				// no autofire for now
@@ -364,7 +356,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 					destinationPos: [0, 0], destinationSize: [gameState.bufferDish.width, gameState.bufferDish.height],
 					texSource: gameState.enemyDish, 
 					sourcePos: [x-gameState.bufferDish.width/2, y-gameState.bufferDish.height/2], 
-					sourceRes: [gameState.gameW, gameState.gameH], 	
+					sourceRes: [gameState.gameW, gameState.gameH],
 				}); 
 			}		
 			else if (gameState.mouseMode == "paste") {
@@ -372,7 +364,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 					destinationPos: [x-gameState.bufferDish.width/2, y-gameState.bufferDish.height/2], 
 					destinationSize: [gameState.bufferDish.width, gameState.bufferDish.height],
 					texSource: gameState.bufferDish, sourcePos: [0, 0], 
-					sourceRes: [gameState.bufferDish.width, gameState.bufferDish.height], 	
+					sourceRes: [gameState.bufferDish.width, gameState.bufferDish.height],
 				}); 
 			}		
 			
@@ -384,10 +376,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		var handleCanvasMouseMove = function(evt)
 		{
 			gameState.lastMouseNDC = getNDCFromMouseEvent(gameState.canvas, evt);	
-		}
+		};
 		gameState.canvas.addEventListener('mousemove', handleCanvasMouseMove, false);
 
-	}
+	};
 
 	// static
 	var loadResources = function(callback) {
@@ -432,13 +424,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		loader.load("copyPaste", "src/shaders/copyPasteRect.shader", "text");
 
 		loader.start(callback);
-	}
+	};
 
 
 		
 	var setupGame = function (data, canvas) { 
-		// Setup core 	
-		
+		// Setup core
 		var reactor = new  EC.Reactor(canvas, gameState.gameW, gameState.gameH);
 		gameState.reactor = reactor;
 		gameState.gl = reactor.gl;
@@ -542,16 +533,17 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		gameState.enemyDish.randomize(gameState.enemyRule.nrStates, 0.0005);
 		gameState.enemy2Dish.randomize(gameState.enemyRule.nrStates, 0.01);
 		gameState.shipExplosionDish.randomize(gameState.shipExplosionRule.nrStates, 0.01);
-		gameState.shipX = gameState.gameW/2, gameState.shipY = gameState.gameH/2;
-	}
+		gameState.shipX = gameState.gameW/2;
+		gameState.shipY = gameState.gameH/2;
+	};
 
 	var gameLoop = function() {
 		var reactor = gameState.reactor;
 
 		// ENEMIES //////////////////////////////////////
-		if (gameState.cnt % 2 == 0)
+		if (gameState.cnt % 2 === 0)
 			reactor.step(gameState.enemyRule, gameState.enemyDish);
-		if (gameState.cnt % 6 == 0)
+		if (gameState.cnt % 6 === 0)
 			reactor.step(gameState.enemy2Rule, gameState.enemy2Dish);
 
 		// SHIP ///////////////////////////////////////////
@@ -571,7 +563,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 				gameState.sndHit.volume = 0.5;
 				playSound(gameState.sndHit);
 			} catch(ex) {}
-		}
+		};
 
 		//gameState.shots.collide(gameState.enemyDish, cb);
 		gameState.shots.step();
@@ -583,25 +575,25 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 
 		// weapon + enemy -> weaponExplosion
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.weaponExplosionDish, 
-			{tex1: gameState.weaponDish, tex2: gameState.enemyDish, state: (gameState.weaponExplosionRule.nrStates-1)/255.});
+			{tex1: gameState.weaponDish, tex2: gameState.enemyDish, state: (gameState.weaponExplosionRule.nrStates-1)/255});
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.weaponExplosionDish, 
-			{tex1: gameState.enemyDish, tex2: gameState.weaponExplosionDish, state: 3./255.});
+			{tex1: gameState.enemyDish, tex2: gameState.weaponExplosionDish, state: 3/255});
 
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.enemyDish, 
-			{tex1: gameState.enemyDish, tex2: gameState.weaponExplosionDish, state: 0./255.});
+			{tex1: gameState.enemyDish, tex2: gameState.weaponExplosionDish, state: 0/255});
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.weaponDish, 
-			{tex1: gameState.weaponDish, tex2: gameState.weaponExplosionDish, state: 3./255.});	
+			{tex1: gameState.weaponDish, tex2: gameState.weaponExplosionDish, state: 3/255});	
 
 
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.shipExplosionDish, 
-			{tex1: gameState.shipDish, tex2: gameState.enemyDish, state: (gameState.shipExplosionRule.nrStates-1)/255.});
+			{tex1: gameState.shipDish, tex2: gameState.enemyDish, state: (gameState.shipExplosionRule.nrStates-1)/255});
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.shipExplosionDish, 
-			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: 3./255.});
+			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: 3/255});
 	
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.enemyDish, 
-			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: 0./255.});
+			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: 0/255});
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.shipDish, 
-			{tex1: gameState.shipDish, tex2: gameState.shipExplosionDish, state: 3./255.});	
+			{tex1: gameState.shipDish, tex2: gameState.shipExplosionDish, state: 3/255});	
 
 		// COMPOSE ////////////////////////////////////////////
 		reactor.applyShaderOnDish(gameState.clearShader, gameState.renderDish);
@@ -654,7 +646,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		var shipPos = new THREE.Vector4(shipClipX, shipClipY, 0, 1);
 		shipPos.applyMatrix4(gameState.viewMatrix);
 		shipPos.multiplyScalar(-1);
-		shipPos.add(new THREE.Vector3(0,0, -gameState.pixel)) // move to negative x
+		shipPos.add(new THREE.Vector3(0,0, -gameState.pixel)); // move to negative x
 		//posPlayer = new THREE.Vector3(0,0, -pixel); // do this to not track ship
 		var shipCenterMatrix = new THREE.Matrix4().compose(shipPos, 
 			new THREE.Quaternion(), 
@@ -705,7 +697,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		if (keyboard.isPressed(keyboard.UP)) gameState.shipY += gameState.stepSize;
 		if (keyboard.isPressed(keyboard.DOWN)) gameState.shipY -= gameState.stepSize;
 		if (keyboard.isPressed(keyboard.LEFT)) gameState.shipX -= gameState.stepSize;
-		if (keyboard.isPressed(keyboard.RIGHT)) gameState.shipX += gameState.stepSize
+		if (keyboard.isPressed(keyboard.RIGHT)) gameState.shipX += gameState.stepSize;
 
 		// space
 		if (keyboard.isPressed(32)) {
@@ -713,7 +705,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			gameState.enemy2Dish.randomize(gameState.enemyRule.nrStates, 0.01);
 			if (gameState.shipX < 0 || gameState.shipX > gameState.gameW || 
 				gameState.shipY < 0 || gameState.shipY > gameState.gameH) {
-				gameState.shipX = gameState.gameW/2, gameState.shipY = gameState.gameH/2;
+				gameState.shipX = gameState.gameW/2;
+				gameState.shipY = gameState.gameH/2;
 			}
 			playSound(gameState.sndInit);
 			
@@ -790,8 +783,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			if (!gameState.shotDelay)
 			{
 				gameState.shotDelay = 10;
-				var px = (gameState.shipX/gameState.gameW)*2. - 1.;
-				var py = (gameState.shipY/gameState.gameH)*2. - 1.;
+				var px = (gameState.shipX/gameState.gameW)*2 - 1;
+				var py = (gameState.shipY/gameState.gameH)*2 - 1;
 				var sX = sDX * gameState.shotSpeed;
 				var sY = sDY*gameState.shotSpeed; 
 
