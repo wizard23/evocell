@@ -19,33 +19,36 @@
 
 </head>
 <body>
-	<div id="toolsMenu" style="">
+<div id="introElement" stye="overflow:hidden;">
+	<div style="width:300px; overflow:hidden;">
+  		<h3 class="toolMenuHeader">About</h3>
+		<div class="toolMenuContent">
+		    CellSpace is a HTML5/JS/WebGL space shooter game built on <a href="http://en.wikipedia.org/wiki/Cellular_automaton">cellular automata</a>. All rule lookups and most of the collission detections are calculated on the GPU :)
+			<h4>Controls</h4>
+			<ul>
+				<li>mouse click to shoot</li>
+				<li><b>cursor keys</b> for navigation</li>
+			  	<li><b>'b'</b> to fire many shots at once</li> 
+				<li><b>'space'</b> to reset the game </li>
+			</ul>
+			<a id="stepLink" class="buttons"><i class="fa fa-step-forward fa-2x"></i></a>&nbsp;
+			<a id="playPause" class="buttons"><i class="fa fa-pause fa-2x"></i></a>&nbsp;
+			<br>
+			<br>
+			<a id="showIntroLink">view background story</a><br>
+			<a id="switchLink">prebackbonemodel</a><br>
+			<a id="zoomIn">zoom in</a> | <a id="zoomOut">zoom out</a>
+			<br />
+			This is is an early beta realease please direct bug reports or ideas to the <a href="https://github.com/wizard23/evocell">EvoCell github page</a>
+			<script id='fb3wlse'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=wizard23&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fb3wlse');
+			</script>
+			<br />
+			GPL 3.0 by Philipp Tiefenbacher / wizard23 
+		</div>
+	</div>
+</div>
 
-  <h3 class="toolMenuHeader">About</h3>
-  <div class="toolMenuContent">
-    CellSpace is a HTML5/JS/WebGL space shooter game built on <a href="http://en.wikipedia.org/wiki/Cellular_automaton">cellular automata</a>. All rule lookups and most of the collission detections are calculated on the GPU :)
-	<h4>Controls</h4>
-	<ul>
-		<li>mouse click to shoot</li>
-		<li><b>cursor keys</b> for navigation</li>
-	  	<li><b>'b'</b> to fire many shots at once</li> 
-		<li><b>'space'</b> to reset the game </li>
-	</ul>
-	<a id="stepLink" class="buttons"><i class="fa fa-step-forward fa-2x"></i></a>&nbsp;
-	<a id="playPause" class="buttons"><i class="fa fa-pause fa-2x"></i></a>&nbsp;
-	<br>
-	<br>
-	<a id="showIntroLink">view background story</a><br>
-	<a id="switchLink">prebackbonemodel</a><br>
-	<a id="zoomIn">zoom in</a> | <a id="zoomOut">zoom out</a>
-	<br />
-	This is is an early beta realease please direct bug reports or ideas to the <a href="https://github.com/wizard23/evocell">EvoCell github page</a>
-	<script id='fb3wlse'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=wizard23&button=compact&url='+encodeURIComponent(document.URL);f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fb3wlse');
-	</script>
-	<br />
-	GPL 3.0 by Philipp Tiefenbacher / wizard23 
-  </div>
-
+<div id="toolsMenu" style="">
   <h3 class="toolMenuHeader">Draw</h3>  
   <div id="drawTool" class="toolMenuContent">
 <label><input type="radio" value="circle" data-bind="checked: selectedDrawShape" />Circle</label>

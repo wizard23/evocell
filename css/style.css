@@ -3,6 +3,24 @@ body {
 	background:rgba(10,10,10,1);
 }
 
+#introElement {
+	transition-property: all;
+	transition-duration: 0.4s;
+	transition-timing-function: ease;
+	transition-delay: 0s;
+
+	overflow:hidden;
+	width:300px;
+	height:100px;
+	position: fixed; top: 0px;left: 0px; z-index:10; 
+	color: white;
+	background:rgba(255,0,0,0.3);
+}
+
+#introElement:hover {
+		height:100%;
+}
+
 
 .buttons {
 	color: white;
@@ -44,7 +62,7 @@ body {
 	border:0px solid #AAAAAA; 
 position: fixed; bottom: 0px;right: 0px; z-index:2; 
 color: white; width: 360px;
-background:rgba(255,255,255,0.9);
+background:rgba(0,0,0,1);
 }
 
 #toolsMenu a {
