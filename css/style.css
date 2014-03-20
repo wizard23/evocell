@@ -114,6 +114,7 @@ select option:nth-child(even) {  }
    width:600px; 
    background:rgba(255,0, 0, 0.9); 
    display: inline-block;
+   font-size: 2em;
 }
 
 

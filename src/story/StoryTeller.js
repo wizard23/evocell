@@ -230,7 +230,7 @@ define([
 	var RunDeath = function() {
 		//alert("You died!");
 		//RunIntro();
-		MessageBox("You died! Avoid the enemy cells!", "rgb(255, 0, 0)", 2000)
+		MessageBox("You died! Avoid the enemy cells!", "rgb(255, 0, 0)", 5000)
 	};
 
 	var MessageBox = function(html, color, delay) {

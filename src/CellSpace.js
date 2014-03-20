@@ -408,7 +408,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		loader.load("enemy2Rule", resPath + "rules/enemy_linebuilder", "ecfile");
 		loader.load("weaponRule", resPath + "rules/ship_avg4_nice", "ecfile");
 		loader.load("weaponExplosionRule", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
+		
 		loader.load("shipExplosionRule", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
+		//loader.load("shipExplosionRule", resPath + "rules/ship_avg4_nice", "ecfile");
+
 		loader.load("shipRule", resPath + "rules/ship_avg4_nice", "ecfile");
 
 		// rules/ship_avg4_nice rules/ship_avg4_schweif
@@ -611,7 +614,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			// did we just die?
 			if (gameState.playerEnergy < 0) {
 				//gameState.renderLoop.stop();
-				gameState.playerEnergy = 100;
+				gameState.playerEnergy = 500;
 				storyTeller.RunDeath();
 				resetGame();
 				//gameState.renderLoop.start();
