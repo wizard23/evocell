@@ -227,16 +227,18 @@ define([
 		callMe();	
 	};
 
-	var RunDeath = function() {
+	var RunDeath = function(callback) {
 		//alert("You died!");
 		//RunIntro();
-		MessageBox("You died! Avoid the enemy cells!", "rgb(255, 0, 0)", 5000)
+		MessageBox("You died! Avoid the enemy cells!", "rgb(255, 0, 0)", 4000, callback);
 	};
 
-	var MessageBox = function(html, color, delay) {
+	var MessageBox = function(html, color, delay, callback) {
 		$("#centeredMessage").html(html);
-		$("#centeredContainer").fadeIn(300, function() {
-			$("#centeredContainer").fadeOut(delay);
+		$("#centeredContainer").fadeIn(400, function() {
+			_.delay(function() {
+				$("#centeredContainer").fadeOut(400, callback);
+			}, delay);
 		});
 	};
 

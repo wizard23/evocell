@@ -304,6 +304,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		animate: true,
 		active: 0,
 		});// .draggable();
+		$( "#toolsMenu" ).accordion("option", "active", false);
+
 
 		$('#colorpicker1').farbtastic('#color1');
 		$( "#menu" ).menu();
@@ -613,11 +615,14 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 
 			// did we just die?
 			if (gameState.playerEnergy < 0) {
-				//gameState.renderLoop.stop();
-				gameState.playerEnergy = 500;
-				storyTeller.RunDeath();
-				resetGame();
-				//gameState.renderLoop.start();
+				gameState.renderLoop.stop();
+				
+				storyTeller.RunDeath(function() {
+					gameState.playerEnergy = 200;
+					resetGame();
+					gameState.renderLoop.start();
+				});
+				
 			}
 		}
 		
