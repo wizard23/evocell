@@ -181,6 +181,7 @@ define([
 			$('#container').fadeOut()
 		};
 
+
 		for (var i = story.parts.length - 1; i >= 0; i--) {
 			callMe = (function (i, callMe) {
 				id = "sc" + i;
@@ -188,18 +189,11 @@ define([
 				//var a = audios[id];
 				var canceled = false;
 
-
-				var fired = false;
-				var next = function() {
-					if (!fired)
-					{
-						fired = true;
-						if (i != story.parts.length - 1)
-							$('#container').cycle("next");
-						_.delay(callMe, 700);	
-					}
-				}
-			
+				var next = _.once(function() {		
+					if (i != story.parts.length - 1)
+						$('#container').cycle("next");
+					_.delay(callMe, 700);	
+				});
 			
 			/*
 				a.addEventListener("ended", function() {
@@ -209,8 +203,7 @@ define([
 				}, false);
 */
 
-				return function() {
-					
+				return function() {		
 					meSpeak.speak(texts[i], {}, next);
 					//a.play();
 					cont.click(function() {
@@ -218,7 +211,7 @@ define([
 						next();
 						canceled = true;
 						//a.pause();
-					 	//next();
+					//next();
 					});
 				};
 			})(i, callMe);
@@ -230,15 +223,18 @@ define([
 	var RunDeath = function(callback) {
 		//alert("You died!");
 		//RunIntro();
-		MessageBox("You died! Avoid the enemy cells!", "rgb(255, 0, 0)", 4000, callback);
+		//MessageBox("<p>You died!</p><p>Avoid the enemy cells!</p>", "rgb(255, 0, 0)", 4000, callback);
+		MessageBox("You died!<br/>Avoid the enemy cells!", "rgb(255, 0, 0)", 4000, callback);
 	};
 
 	var MessageBox = function(html, color, delay, callback) {
 		$("#centeredMessage").html(html);
-		$("#centeredContainer").fadeIn(400, function() {
-			_.delay(function() {
-				$("#centeredContainer").fadeOut(400, callback);
-			}, delay);
+		$("#centeredContainer").fadeIn(200, function() {
+			var fadeOut = _.once(function() {
+				$("#centeredContainer").fadeOut(200, callback);
+			});
+			$("#centeredContainer").click(fadeOut);
+			_.delay(fadeOut, delay);
 		});
 	};
 

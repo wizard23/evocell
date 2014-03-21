@@ -20,11 +20,11 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 
 		this.rules = {};
 		this.dishes = {};
-		this.palettes = {}
+		this.palettes = {};
 
 		this.posBuffer = posBuffer;
 		this.texCoordOffset = texCoordOffset;
-	}
+	};
 
 	Reactor.prototype.setRenderSize = function(w, h)
 	{
@@ -32,11 +32,11 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		this.canvas.height = h;
 		this.renderWidth = w;
 		this.renderHeight = h;
-	} 
+	}; 
 	Reactor.prototype.setDefaultDishSize = function(w, h)
 	{
 		this.defaultDishSize = {width: w, height : h};
-	} 
+	}; 
 	
 	Reactor.prototype.paintDish = function(paintShader, dish, callback)
 	{
@@ -49,10 +49,10 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 
 			if (callback)
 				callback(gl, progCA);
-		}
+		};
 
-		this.applyShader(paintShader, null, bindCallback)
-	}
+		this.applyShader(paintShader, null, bindCallback);
+	};
 
 	Reactor.prototype.mixDish = function(mixShader, mainDish, parameters, callback)
 	{

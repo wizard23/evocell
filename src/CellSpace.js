@@ -756,11 +756,41 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			gameState.rot -= 0.05;
 		}
 
+
+		var dX = 0, dY = 0;
+		if (keyboard.isPressed(keyboard.UP)) dY +=1;
+		if (keyboard.isPressed(keyboard.DOWN)) dY -= 1;
+		if (keyboard.isPressed(keyboard.LEFT)) dX -= 1;
+		if (keyboard.isPressed(keyboard.RIGHT)) dX += 1;
+
+		if (dX !== 0 || dY !== 0)
+		{
+			var dirV = new THREE.Vector4(dX, dY, 0);
+			dirV.w=0;
+			dirV.normalize().multiplyScalar(0.1);
+			dirV.add(new THREE.Vector4(0.5, 0.5, 0));
+			dirV.w = 0;
+
+			var moveDir = intersectClick(dirV);
+			moveDir.sub(new THREE.Vector4(gameState.shipX/gameState.gameW, gameState.shipY/gameState.gameH, 0));
+			moveDir.w = 0;
+			moveDir.normalize().multiplyScalar(gameState.stepSize);
+			
+			// TODO: fix above direction Mapping
+			// TODO: Use clifford's NumJS Parer for THREE :)
+			//gameState.shipX += moveDir.x;
+			//gameState.shipY += moveDir.y;
+
+			gameState.shipX += dX;
+			gameState.shipY += dY;
+		}
+
+/*
 		if (keyboard.isPressed(keyboard.UP)) gameState.shipY += gameState.stepSize;
 		if (keyboard.isPressed(keyboard.DOWN)) gameState.shipY -= gameState.stepSize;
 		if (keyboard.isPressed(keyboard.LEFT)) gameState.shipX -= gameState.stepSize;
 		if (keyboard.isPressed(keyboard.RIGHT)) gameState.shipX += gameState.stepSize;
-
+*/
 		// space
 		if (keyboard.isPressed(32)) {
 			resetGame();

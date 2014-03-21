@@ -111,10 +111,12 @@ select option:nth-child(even) {  }
 }
 
 #centeredMessage {
+   padding: 100px;
    width:600px; 
-   background:rgba(255,0, 0, 0.9); 
+   background:rgba(255,0, 0, 0.8); 
    display: inline-block;
-   font-size: 2em;
+   font-size: 3em;
+   line-height: 1em;
 }
 
 
