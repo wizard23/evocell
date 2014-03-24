@@ -21,6 +21,7 @@ require.config({
 		"jquery-cycle": libPath + "jquery.cycle.all",
 		datgui: libPath + "dat.gui.min",
 		FileSaver: libPath + "FileSaver",
+		"three.parser": "../../three.parser.js/src/THREE.Parser",
 	},
 	shim: {
 		datgui: {
@@ -56,11 +57,21 @@ require.config({
     }
 });
 
+//require([
+//	"jquery-ui", "Utils", "EvoCell", "story/StoryTeller", "underscore", 
+// 	"backbone", "knockback", "knockout", "data/FileStore", "three", "three.parser", "datgui"], 
+//function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, parser, dat) {
+
 require([
 	"jquery-ui", "Utils", "EvoCell", "story/StoryTeller", "underscore", 
 	"backbone", "knockback", "knockout", "data/FileStore", "three", "datgui"], 
 function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) {
 	"use strict";
+
+// disable parser for now
+//	alert(parser.parse(
+//			"7*v**(A***B) - c",
+//			"a, b, c", { pow: "NumJS.POW" }));
 	
 	var gameState = {
 		// APPSTATE ///////////
