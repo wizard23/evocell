@@ -72,6 +72,9 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 //	alert(parser.parse(
 //			"7*v**(A***B) - c",
 //			"a, b, c", { pow: "NumJS.POW" }));
+
+	var OP_REPLACE = 0;
+	var OP_ADD = 1;
 	
 	var gameState = {
 		// APPSTATE ///////////
@@ -641,32 +644,38 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		// Dish INTERACTION ///////////////////////////////////
 
 		// weapon + enemy -> weaponExplosion
+		reactor.mixDish(gameState.intersectSpawnShader, gameState.weaponExplosionDish, { 
+			tex1: gameState.weaponDish, tex2: gameState.enemyDish, 
+			state: (gameState.weaponExplosionRule.nrStates-1)/255, 
+			operation: OP_REPLACE
+		});
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.weaponExplosionDish, 
-			{tex1: gameState.weaponDish, tex2: gameState.enemyDish, state: (gameState.weaponExplosionRule.nrStates-1)/255});
-		reactor.mixDish(gameState.intersectSpawnShader, gameState.weaponExplosionDish, 
-			{tex1: gameState.enemyDish, tex2: gameState.weaponExplosionDish, state: 3/255});
+			{tex1: gameState.enemyDish, tex2: gameState.weaponExplosionDish, state: 3/255, operation: OP_REPLACE});
 
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.enemyDish, 
-			{tex1: gameState.enemyDish, tex2: gameState.weaponExplosionDish, state: 0/255});
+			{tex1: gameState.enemyDish, tex2: gameState.weaponExplosionDish, state: 0/255, operation: OP_REPLACE});
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.weaponDish, 
-			{tex1: gameState.weaponDish, tex2: gameState.weaponExplosionDish, state: 3/255});	
+			{tex1: gameState.weaponDish, tex2: gameState.weaponExplosionDish, state: 3/255, operation: OP_REPLACE});	
 
 
 		// ship to enemy colissions spawn shipExplosions
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.shipExplosionDish, 
-			{tex1: gameState.shipDish, tex2: gameState.enemyDish, state: (gameState.shipExplosionRule.nrStates-1)/255});
+			{tex1: gameState.shipDish, tex2: gameState.enemyDish, 
+				state: (gameState.shipExplosionRule.nrStates-1)/255,
+			operation: OP_REPLACE});
 		
 		// shipExplosions reinforced by enemys
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.shipExplosionDish, 
-			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: 3/255});
+			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: 3/255, operation: OP_REPLACE});
 	
-		// enemyDish gets killed by shipExplosions
+		// enemyDish gets slowly killed by shipExplosions
+		if (gameState.cnt % 4 === 1)
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.enemyDish, 
-			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: 1/255});
+			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: 0/255, operation: OP_ADD});
 
 		// ship gets killed by shipExplosions
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.shipDish, 
-			{tex1: gameState.shipDish, tex2: gameState.shipExplosionDish, state: 0/255});	
+			{tex1: gameState.shipDish, tex2: gameState.shipExplosionDish, state: 0/255, operation: OP_REPLACE});	
 
 		// COMPOSE ////////////////////////////////////////////
 		reactor.applyShaderOnDish(gameState.clearShader, gameState.renderDish);
