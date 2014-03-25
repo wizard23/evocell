@@ -264,16 +264,24 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		playSound(gameState.sndInit);
 	};
 
+	var gameStep = function() {
+		gameState.renderLoop.stop();
+		gameState.renderLoop.step();
+		updateButtons();
+	};
+
+	var gamePlayPause = function() {
+		gameState.renderLoop.toggle();
+		updateButtons();
+	};
+
 	var setupGui = function() {
 		document.getElementById("stepLink").addEventListener('click', function(evt) {
-			gameState.renderLoop.stop();
-			gameState.renderLoop.step();
-			updateButtons();
+			gameStep();
 		}, false);
 
 		document.getElementById("playPause").addEventListener('click', function(evt) {
-			gameState.renderLoop.toggle();
-			updateButtons();
+			gamePlayPause();
 		}, false);
 
 		document.getElementById("zoomIn").addEventListener('click', function(evt) {
@@ -671,7 +679,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		// enemyDish gets slowly killed by shipExplosions
 		if (gameState.cnt % 4 === 1)
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.enemyDish, 
-			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: 0/255, operation: OP_ADD});
+			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: -1/255, operation: OP_ADD});
 
 		// ship gets killed by shipExplosions
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.shipDish, 
@@ -692,7 +700,15 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			{texNew: gameState.weaponExplosionDish, texPalette: gameState.shipExplosionColors.getTexture()});
 		reactor.mixDish(gameState.mixShader, gameState.renderDish, 
 			{texNew: gameState.shipExplosionDish, texPalette: gameState.shipExplosionColors.getTexture()});			
+		
+
+		//reactor.mixDish(gameState.mixShader, gameState.renderDish, 
+		//	{texNew: gameState.enemyDish, texPalette: gameState.enemyColors.getTexture()});
+
 		//reactor.mixDish(mixShader, renderDish, {texNew: copyDish, texPalette: copyColors.getTexture()});		
+
+
+
 
 
 
@@ -751,11 +767,34 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		gameState.fpsMonotor.frameIncrease();
 	};
 
+	var once = 1;
+
 	var userInteraction = function() {
 		var keyboard = gameState.keyboard;
 
 		pollAutoFire();
 // USER INPUT Poll Keyboard //////////////////////////////////////////////////
+		
+
+		// TODO: move this to animaion independed poll function
+		if (keyboard.isPressed("Z".charCodeAt()))
+		{
+			if (once) {
+				once=0;
+				gameStep();
+			}
+		}
+		else if (keyboard.isPressed("X".charCodeAt()))
+		{
+			if (once) {
+				once=0;
+				gamePlayPause();
+			}
+		}
+		else
+			once = 1;	
+
+
 		if (keyboard.isPressed("O".charCodeAt()))
 		{
 			gameState.pixel -= 0.03;

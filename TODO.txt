@@ -1,17 +1,12 @@
+
 NEW:
 ====
 
-Cleanup App by splitting CellSpace.js
+* get rid of "pixel" in gamestate
+* Cleanup App by splitting CellSpace.js
 
-
-/*
-		reactor.moveParticles(particlesMoveShader, particlesDish);
-		reactor.renderParticles(particlesRenderShader, particlesDish, state, size);
-		// reactor.collideParticles( // TODO: colission 
-*/
 
 useful git aliases (for ~/.bashrc or ~/.bash_profile):
-
 # Git shortcuts
 alias g='git'
 alias gs='git status | more'
@@ -23,14 +18,6 @@ alias gd='git diff'
 alias go='git checkout '
 alias gl='git log'
 alias gh='git log --pretty=format:"%h %ad | %s%d [%an]" --graph --date=short'
-
-
-
-
-
-
-
-
 
 
 OLD:
