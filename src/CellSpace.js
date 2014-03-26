@@ -308,12 +308,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		}, false);
 
 		gameState.gui.add(gameState, 'playerEnergy');
-		gameState.gui.add(gameState, 'civX');
-		gameState.gui.add(gameState, 'civY');
-		gameState.gui.add(gameState, 'civZ');
-		gameState.gui.add(gameState, 'civW');
-		gameState.gui.add(gameState, 'clipX');
-		gameState.gui.add(gameState, 'clipY');
+		//gameState.gui.add(gameState, 'civX');
+		//gameState.gui.add(gameState, 'civY');
+		//gameState.gui.add(gameState, 'civZ');
+		//gameState.gui.add(gameState, 'civW');
+		//gameState.gui.add(gameState, 'clipX');
+		//gameState.gui.add(gameState, 'clipY');
 
 		var view_model = kb.viewModel(gameState.drawModel);
 		//view_model.full_name = ko.computed((->return "#{@first_name()} #{@last_name()}"), view_model)
@@ -416,7 +416,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 	var loadResources = function(callback) {
 		var loader = new EC.ResLoader();
 		loader.load("enemyRule", resPath + "rules/enemy_ludwigBuildships", "ecfile");
-		//loader.load("enemyRule", resPath + "rules/moore5-coolspaceships", "ecfile");
+		//loader.load("enemyRule", resPath + "rules/enemy_evil", "ecfile");
 		//loader.load("enemyRule", resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
 		//loader.load("enemyRule", "rules/enemy_d54_awesomeships", "ecfile");
 		//loader.load("enemyRule", resPath + "rules/enemy_d52_replicator", "ecfile");
@@ -431,7 +431,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 
 		loader.load("enemy2Rule", resPath + "rules/enemy_linebuilder", "ecfile");
 		loader.load("weaponRule", resPath + "rules/ship_avg4_nice", "ecfile");
+		
 		loader.load("weaponExplosionRule", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
+		//loader.load("weaponExplosionRule", resPath + "rules/ship_avg4_nice", "ecfile");
+
 		
 		loader.load("shipExplosionRule", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
 		//loader.load("shipExplosionRule", resPath + "rules/ship_avg4_nice", "ecfile");
@@ -677,7 +680,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: 3/255, operation: OP_REPLACE});
 	
 		// enemyDish gets slowly killed by shipExplosions
-		if (gameState.cnt % 4 === 1)
+		if (gameState.cnt % 6 === 1)
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.enemyDish, 
 			{tex1: gameState.enemyDish, tex2: gameState.shipExplosionDish, state: -1/255, operation: OP_ADD});
 
