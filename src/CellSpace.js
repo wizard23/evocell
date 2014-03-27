@@ -109,7 +109,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		screenH: 900,
 
 		zoom: 1/3, // cell/pixel ratio
-		rot: 0.0,
+		rot: 0,
 
 		cameraAngle: 60 * (Math.PI/180),
 		viewMatrix: new THREE.Matrix4(),
@@ -208,13 +208,6 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		var point = new THREE.Vector4().addVectors(linePoint, lineDir.clone().multiplyScalar(pointPos));
 		var deltaPoint = point.clone().applyMatrix4(invMV);
 
-		gameState.civX = deltaPoint.x;
-		gameState.civY = deltaPoint.y;
-		gameState.civZ = deltaPoint.z;
-		gameState.civW = deltaPoint.w;
-
-		refreshGUI();
-
 		return deltaPoint;
 	};
 
@@ -249,6 +242,13 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 	var refreshGUI = function() {
 		for (var i in gameState.gui.__controllers) {
 			gameState.gui.__controllers[i].updateDisplay();
+		}
+
+		for (var fIdx in gameState.gui.__folders) {
+			var folder = gameState.gui.__folders[fIdx];
+			for (i in folder.__controllers) {
+				folder.__controllers[i].updateDisplay();
+			}
 		}
 	};
 
@@ -345,8 +345,22 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		gui.add(gameState, 'playerEnergy');
 
 		var folder = gui.addFolder('App');
-		folder.add(gameState, 'zoom');
-		folder.add(gameState, 'rot');
+		folder.add(gameState, 'zoom', 0.1, 2).step(0.05);
+
+
+		// ugly hack to make ro a two decimal nr in datgui
+		var oldRot = gameState.rot;
+		gameState.rot = 0.01;
+		// hack continues below
+
+		folder.add(gameState, 'rot', 0, Math.PI*2).step(0.01);
+
+		// hack!
+		gameState.rot = oldRot;
+		refreshGUI();
+		// end of ugly hack 
+
+
 		folder.add(gameState, 'gameW').onFinishChange(onGameSizeChanged);
 		folder.add(gameState, 'gameH').onFinishChange(onGameSizeChanged);
 
@@ -767,10 +781,6 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		var shipClipX = 2*(gameState.shipX-gameState.dishes.enemy.width/2)/gameState.dishes.enemy.width;
 		var shipClipY = 2*(gameState.shipY-gameState.dishes.enemy.height/2)/gameState.dishes.enemy.height;
 
-		gameState.clipX = shipClipX;
-		gameState.clipY = shipClipY;
-		refreshGUI();
-
 		var scaleX = gameState.gameW / gameState.screenW;
 		var scaleY = gameState.gameH / gameState.screenH;
 
@@ -845,21 +855,25 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		if (keyboard.isPressed("O".charCodeAt()))
 		{
 			gameState.zoom -= 0.03;
+			refreshGUI();
 		}
 
 		if (keyboard.isPressed("L".charCodeAt()))
 		{
 			gameState.zoom += 0.03;
+			refreshGUI();
 		}
 
 		if (keyboard.isPressed("N".charCodeAt()))
 		{
 			gameState.rot += 0.05;
+			refreshGUI();
 		}
 
 		if (keyboard.isPressed("M".charCodeAt()))
 		{
 			gameState.rot -= 0.05;
+			refreshGUI();
 		}
 
 
