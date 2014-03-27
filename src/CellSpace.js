@@ -102,10 +102,14 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		//var shots;
 		//var dishes.enemy, dishes.enemy2, dishes.ship, dishes.shipExplosion, dishes.copy, dishes.buffer, dishes.render, dishes.weapon, dishes.weaponExplosion;
 		//var drawPointsShader, clearShader, scrollingRenderShader, drawRectShader, drawCircleShader, mixShader, intersectSpawnShader, copyShader;
-		//var enemyRule, enemy2Rule, shipRule, shipExplosionRule, weaponRule, weaponExplosionRule;
-		//var enemyColors, enemy2Colors, shipColors, shipExplosionColors, weaponColors, weaponExplosionColors, copyColors;
+		//var rules.enemy, rules.enemy2, rules.ship, rules.shipExplosion, rules.weapon, rules.weaponExplosion;
+		//var colors.enemy, colors.enemy2, colors.ship, colors.shipExplosion, colors.weapon, 
+		// colors.weaponExplosion, colors.copy;
 
 		dishes: {},
+		rules: {},
+		colors: {},
+		shots: null,
 
 		gameW: 300, gameH: 300,
 		screenW: 1024,
@@ -257,8 +261,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 
 	var resetGame = function() {
 		gameState.cnt = 0;
-		gameState.dishes.enemy.randomize(gameState.enemyRule.nrStates, 0.02);
-		gameState.dishes.enemy2.randomize(gameState.enemyRule.nrStates, 0.01);
+		gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, 0.02);
+		gameState.dishes.enemy2.randomize(gameState.rules.enemy.nrStates, 0.01);
 		if (gameState.shipX < 0 || gameState.shipX > gameState.gameW || 
 			gameState.shipY < 0 || gameState.shipY > gameState.gameH) {
 			gameState.shipX = gameState.gameW/2;
@@ -305,7 +309,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			fileStore.loadAllRules(function(rulesModelData) {
 					idxxxx++;
 					idxxxx %= rulesModelData.length;
-					gameState.enemyRule = gameState.reactor.compileRule(rulesModelData[idxxxx].ruleData, 
+					gameState.rules.enemy = gameState.reactor.compileRule(rulesModelData[idxxxx].ruleData, 
 						gameState.dishes.enemy);
 				});
 		}, false);
@@ -412,31 +416,31 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 	// static
 	var loadResources = function(callback) {
 		var loader = new EC.ResLoader();
-		loader.load("enemyRule", resPath + "rules/enemy_ludwigBuildships", "ecfile");
-		//loader.load("enemyRule", resPath + "rules/enemy_evil", "ecfile");
-		//loader.load("enemyRule", resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
-		//loader.load("enemyRule", "rules/enemy_d54_awesomeships", "ecfile");
-		//loader.load("enemyRule", resPath + "rules/enemy_d52_replicator", "ecfile");
-		//loader.load("enemyRule", resPath + "rules/enemy_holeshooter", "ecfile");
-		//loader.load("enemyRule", "rules/enemy_holeshooter", "ecfile");
-		//loader.load("enemyRule", "rules/gridworld6", "ecfile");
-		//loader.load("enemyRule", "rules/enemy_quaderwelt_moreactive", "ecfile");
-		//loader.load("enemyRule", "rules/enemy_d29", "ecfile");
-		//loader.load("enemyRule", "rules/enemy_linesLounge_moreactive", "ecfile");
-		//loader.load("enemyRule", "rules/enemy_linesLounge_moreactive-mutA_mut", "ecfile");
+		loader.load("rules.enemy", resPath + "rules/enemy_ludwigBuildships", "ecfile");
+		//loader.load("rules.enemy", resPath + "rules/enemy_evil", "ecfile");
+		//loader.load("rules.enemy", resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
+		//loader.load("rules.enemy", "rules/enemy_d54_awesomeships", "ecfile");
+		//loader.load("rules.enemy", resPath + "rules/enemy_d52_replicator", "ecfile");
+		//loader.load("rules.enemy", resPath + "rules/enemy_holeshooter", "ecfile");
+		//loader.load("rules.enemy", "rules/enemy_holeshooter", "ecfile");
+		//loader.load("rules.enemy", "rules/gridworld6", "ecfile");
+		//loader.load("rules.enemy", "rules/enemy_quaderwelt_moreactive", "ecfile");
+		//loader.load("rules.enemy", "rules/enemy_d29", "ecfile");
+		//loader.load("rules.enemy", "rules/enemy_linesLounge_moreactive", "ecfile");
+		//loader.load("rules.enemy", "rules/enemy_linesLounge_moreactive-mutA_mut", "ecfile");
 		
 
-		loader.load("enemy2Rule", resPath + "rules/enemy_linebuilder", "ecfile");
-		loader.load("weaponRule", resPath + "rules/ship_avg4_nice", "ecfile");
+		loader.load("rules.enemy2", resPath + "rules/enemy_linebuilder", "ecfile");
+		loader.load("rules.weapon", resPath + "rules/ship_avg4_nice", "ecfile");
 		
-		loader.load("weaponExplosionRule", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
-		//loader.load("weaponExplosionRule", resPath + "rules/ship_avg4_nice", "ecfile");
+		loader.load("rules.weaponExplosion", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
+		//loader.load("rules.weaponExplosion", resPath + "rules/ship_avg4_nice", "ecfile");
 
 		
-		loader.load("shipExplosionRule", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
-		//loader.load("shipExplosionRule", resPath + "rules/ship_avg4_nice", "ecfile");
+		loader.load("rules.shipExplosion", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
+		//loader.load("rules.shipExplosion", resPath + "rules/ship_avg4_nice", "ecfile");
 
-		loader.load("shipRule", resPath + "rules/ship_avg4_nice", "ecfile");
+		loader.load("rules.ship", resPath + "rules/ship_avg4_nice", "ecfile");
 
 		// rules/ship_avg4_nice rules/ship_avg4_schweif
 
@@ -472,15 +476,15 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
 
 		var dishes = gameState.dishes;
-		gameState.dishes.enemy = reactor.compileDish();
-		gameState.dishes.enemy2 = reactor.compileDish();
-		gameState.dishes.ship = reactor.compileDish();
-		gameState.dishes.shipExplosion = reactor.compileDish();
-		gameState.dishes.weapon = reactor.compileDish();
-		gameState.dishes.weaponExplosion = reactor.compileDish();
-		gameState.dishes.copy = reactor.compileDish();
-		gameState.dishes.buffer = reactor.compileDish(64, 64);
-		gameState.dishes.render = reactor.compileDish();
+		dishes.enemy = reactor.compileDish();
+		dishes.enemy2 = reactor.compileDish();
+		dishes.ship = reactor.compileDish();
+		dishes.shipExplosion = reactor.compileDish();
+		dishes.weapon = reactor.compileDish();
+		dishes.weaponExplosion = reactor.compileDish();
+		dishes.copy = reactor.compileDish();
+		dishes.buffer = reactor.compileDish(64, 64);
+		dishes.render = reactor.compileDish();
 
 		gameState.shots = new EC.ParticleSystem(reactor, gameState.maxParticles, gameState.gameW, gameState.gameH);
 
@@ -496,22 +500,23 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		gameState.intersectSpawnShader = reactor.compileShader(data.intersectSpawn);
 		gameState.copyShader = reactor.compileShader(data.copyPaste);
 
-		//fileStore.storeRule(data.enemy2Rule);
+		//fileStore.storeRule(data.rules.enemy2);
 		//fileStore.loadRule("starwars", function(loadedRule) {
-		//	enemyRule = reactor.compileRule(loadedRule, dishes.enemy);
+		//	rules.enemy = reactor.compileRule(loadedRule, dishes.enemy);
 		//})
 
-		//data.enemyRule.MakeStarWarsRule()
-		//fileStore.storeRule("starwars", data.enemyRule);
+		//data.rules.enemy.MakeStarWarsRule()
+		//fileStore.storeRule("starwars", data.rules.enemy);
 
-		gameState.enemyRule = reactor.compileRule(data.enemyRule, gameState.dishes.enemy);
-		gameState.enemy2Rule = reactor.compileRule(data.enemy2Rule, gameState.dishes.enemy2);
-		gameState.shipRule = reactor.compileRule(data.shipRule, gameState.dishes.ship);
-		gameState.weaponRule = reactor.compileRule(data.weaponRule, gameState.dishes.enemy);
-		gameState.shipExplosionRule = reactor.compileRule(data.shipExplosionRule, gameState.dishes.enemy2);
-		gameState.weaponExplosionRule = reactor.compileRule(data.weaponExplosionRule, gameState.dishes.enemy2);
+		var rules = gameState.rules;
+		rules.enemy = reactor.compileRule(data["rules.enemy"], gameState.dishes.enemy);
+		rules.enemy2 = reactor.compileRule(data["rules.enemy2"], gameState.dishes.enemy2);
+		rules.ship = reactor.compileRule(data["rules.ship"], gameState.dishes.ship);
+		rules.weapon = reactor.compileRule(data["rules.weapon"], gameState.dishes.enemy);
+		rules.shipExplosion = reactor.compileRule(data["rules.shipExplosion"], gameState.dishes.enemy2);
+		rules.weaponExplosion = reactor.compileRule(data["rules.weaponExplosion"], gameState.dishes.enemy2);
 		
-		gameState.enemyColors = new EC.Palette(reactor, [
+		gameState.colors.enemy = new EC.Palette(reactor, [
 			[0, 0, 0, 255],
 			[140, 10, 140, 255],
 			[255, 255, 255, 255],
@@ -519,7 +524,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			[255, 110, 255, 255]
 		]);
 
-		gameState.weaponColors = new EC.Palette(reactor, [
+		gameState.colors.weapon = new EC.Palette(reactor, [
 			[0, 0, 0, 255],
 			[0, 120, 0, 255],
 			[0, 255, 0, 255],
@@ -527,7 +532,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			[200, 255, 0, 255],
 		]);
 
-		gameState.weaponExplosionColors = new EC.Palette(reactor, [
+		gameState.colors.weaponExplosion = new EC.Palette(reactor, [
 			[60, 60, 90, 255],
 			[23, 108, 126, 255],
 			[18, 164, 195, 255],
@@ -537,37 +542,37 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		]);
 
 		var bs = 0.12;
-		gameState.enemy2Colors = new EC.Palette(reactor, [
+		gameState.colors.enemy2 = new EC.Palette(reactor, [
 			[0, 0, 0, 255],
 			[bs*10, bs*80, bs*80, 255], 
 			[bs*20, bs*170, bs*170, 255],
 			[bs*30, bs*255, bs*255, 255]
 		]);
 
-		gameState.shipColors = new EC.Palette(reactor, [
+		gameState.colors.ship = new EC.Palette(reactor, [
 			[0, 0, 0, 255], 
 			[0, 0, 255, 255],
 			[0, 80, 255, 255],
 			[0, 190, 255, 255]
 		]);
 
-		gameState.shipExplosionColors = new EC.Palette(reactor, [
+		gameState.colors.shipExplosion = new EC.Palette(reactor, [
 			[0, 0, 0, 255],
 			[255, 0, 0, 255],
 			[255, 160, 0, 255],
 			[255, 255, 0, 255]
 		]);
 
-		gameState.copyColors = new EC.Palette(reactor, [
+		gameState.colors.copy = new EC.Palette(reactor, [
 			[0, 0, 0, 255],
 			[0, 130, 0, 255],
 			[0, 190, 0, 255],
 			[0, 255, 0, 255]
 		]);
 
-		gameState.dishes.enemy.randomize(gameState.enemyRule.nrStates, 0.0005);
-		gameState.dishes.enemy2.randomize(gameState.enemyRule.nrStates, 0.01);
-		gameState.dishes.shipExplosion.randomize(gameState.shipExplosionRule.nrStates, 0.01);
+		gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, 0.0005);
+		gameState.dishes.enemy2.randomize(gameState.rules.enemy.nrStates, 0.01);
+		gameState.dishes.shipExplosion.randomize(gameState.rules.shipExplosion.nrStates, 0.01);
 		gameState.shipX = gameState.gameW/2;
 		gameState.shipY = gameState.gameH/2;
 	};
@@ -577,19 +582,19 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 
 		// ENEMIES //////////////////////////////////////
 		if (gameState.cnt % 2 === 0)
-			reactor.step(gameState.enemyRule, gameState.dishes.enemy);
+			reactor.step(gameState.rules.enemy, gameState.dishes.enemy);
 		if (gameState.cnt % 6 === 0)
-			reactor.step(gameState.enemy2Rule, gameState.dishes.enemy2);
+			reactor.step(gameState.rules.enemy2, gameState.dishes.enemy2);
 
 		// SHIP ///////////////////////////////////////////
-		reactor.step(gameState.weaponExplosionRule, gameState.dishes.weaponExplosion);
-		reactor.step(gameState.weaponRule, gameState.dishes.weapon);
-		reactor.step(gameState.shipExplosionRule, gameState.dishes.shipExplosion);
-		reactor.step(gameState.shipRule, gameState.dishes.ship);
+		reactor.step(gameState.rules.weaponExplosion, gameState.dishes.weaponExplosion);
+		reactor.step(gameState.rules.weapon, gameState.dishes.weapon);
+		reactor.step(gameState.rules.shipExplosion, gameState.dishes.shipExplosion);
+		reactor.step(gameState.rules.ship, gameState.dishes.ship);
 
 		// "DRAW" SHIP
 		reactor.mixDish(gameState.drawCircleShader, gameState.dishes.ship, 
-			{center: [gameState.shipX, gameState.shipY], radius: 3.5, state: (gameState.shipRule.nrStates-1)/255});
+			{center: [gameState.shipX, gameState.shipY], radius: 3.5, state: (gameState.rules.ship.nrStates-1)/255});
 
 		var cb = function(pos) {
 			try
@@ -625,7 +630,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 						gameState.playerEnergy -= 1;
 
 		//				reactor.mixDish(gameState.drawCircleShader, gameState.dishes.weapon, 
-		//	{center: [gameState.shipX + pX, gameState.shipY + pY], radius: 1.5, state: (gameState.shipRule.nrStates-1)/255});
+		//	{center: [gameState.shipX + pX, gameState.shipY + pY], radius: 1.5, state: (gameState.rules.ship.nrStates-1)/255});
 
 					}
 				}
@@ -655,7 +660,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		// weapon + enemy -> weaponExplosion
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.dishes.weaponExplosion, { 
 			tex1: gameState.dishes.weapon, tex2: gameState.dishes.enemy, 
-			state: (gameState.weaponExplosionRule.nrStates-1)/255, 
+			state: (gameState.rules.weaponExplosion.nrStates-1)/255, 
 			operation: OP_REPLACE
 		});
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.dishes.weaponExplosion, 
@@ -670,7 +675,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		// ship to enemy colissions spawn shipExplosions
 		reactor.mixDish(gameState.intersectSpawnShader, gameState.dishes.shipExplosion, 
 			{tex1: gameState.dishes.ship, tex2: gameState.dishes.enemy, 
-				state: (gameState.shipExplosionRule.nrStates-1)/255,
+				state: (gameState.rules.shipExplosion.nrStates-1)/255,
 			operation: OP_REPLACE});
 		
 		// shipExplosions reinforced by enemys
@@ -690,23 +695,23 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		reactor.applyShaderOnDish(gameState.clearShader, gameState.dishes.render);
 
 		reactor.mixDish(gameState.mixShader, gameState.dishes.render, 
-			{texNew: gameState.dishes.enemy2, texPalette: gameState.enemy2Colors.getTexture()});
+			{texNew: gameState.dishes.enemy2, texPalette: gameState.colors.enemy2.getTexture()});
 		reactor.mixDish(gameState.mixShader, gameState.dishes.render, 
-			{texNew: gameState.dishes.enemy, texPalette: gameState.enemyColors.getTexture()});
+			{texNew: gameState.dishes.enemy, texPalette: gameState.colors.enemy.getTexture()});
 		reactor.mixDish(gameState.mixShader, gameState.dishes.render, 
-			{texNew: gameState.dishes.weapon, texPalette: gameState.weaponColors.getTexture()});
+			{texNew: gameState.dishes.weapon, texPalette: gameState.colors.weapon.getTexture()});
 		reactor.mixDish(gameState.mixShader, gameState.dishes.render, 
-			{texNew: gameState.dishes.ship, texPalette: gameState.shipColors.getTexture()});
+			{texNew: gameState.dishes.ship, texPalette: gameState.colors.ship.getTexture()});
 		reactor.mixDish(gameState.mixShader, gameState.dishes.render, 
-			{texNew: gameState.dishes.weaponExplosion, texPalette: gameState.shipExplosionColors.getTexture()});
+			{texNew: gameState.dishes.weaponExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});
 		reactor.mixDish(gameState.mixShader, gameState.dishes.render, 
-			{texNew: gameState.dishes.shipExplosion, texPalette: gameState.shipExplosionColors.getTexture()});			
+			{texNew: gameState.dishes.shipExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});			
 		
 
 		//reactor.mixDish(gameState.mixShader, gameState.dishes.render, 
-		//	{texNew: gameState.dishes.enemy, texPalette: gameState.enemyColors.getTexture()});
+		//	{texNew: gameState.dishes.enemy, texPalette: gameState.colors.enemy.getTexture()});
 
-		//reactor.mixDish(mixShader, dishes.render, {texNew: dishes.copy, texPalette: copyColors.getTexture()});		
+		//reactor.mixDish(mixShader, dishes.render, {texNew: dishes.copy, texPalette: colors.copy.getTexture()});		
 
 
 
@@ -860,10 +865,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		if (keyboard.isPressed(27))
 		{
 			//dishes.enemy.setAll(0);
-			//fileStore.storeRule("enemy_ludwigBuildships", enemyRule.ruleData);
+			//fileStore.storeRule("enemy_ludwigBuildships", rules.enemy.ruleData);
 
 			/*fileStore.loadRule("enemy_ludwigBuildships", function(loadedRule) {
-				enemyRule = reactor.compileRule(loadedRule.ruleData, dishes.enemy);
+				rules.enemy = reactor.compileRule(loadedRule.ruleData, dishes.enemy);
 			})
 */				
 		}
