@@ -105,10 +105,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		shots: null,
 
 		gameW: 400, gameH: 400,
-		screenW: 1024,
-		screenH: 1024,
+		screenW: 1200,
+		screenH: 900,
 
-		zoom: 1.5,
+		zoom: 1/3, // cell/pixel ratio
 		rot: 0.0,
 
 		cameraAngle: 60 * (Math.PI/180),
@@ -771,10 +771,13 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		gameState.clipY = shipClipY;
 		refreshGUI();
 
+		var scaleX = gameState.gameW / gameState.screenW;
+		var scaleY = gameState.gameH / gameState.screenH;
+
 		var transMatrix = new THREE.Matrix4().compose(new THREE.Vector3(
 				-shipClipX, -shipClipY, 0), 
 			new THREE.Quaternion(), 
-			new THREE.Vector3(1,1,1)
+			new THREE.Vector3(scaleX,scaleY,1)
 		);
 		var rotMatrix = new THREE.Matrix4().compose(new THREE.Vector3(0,0,0), 
 			quaternion, 
