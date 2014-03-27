@@ -101,11 +101,13 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 
 		//var shots;
 		//var dishes.enemy, dishes.enemy2, dishes.ship, dishes.shipExplosion, dishes.copy, dishes.buffer, dishes.render, dishes.weapon, dishes.weaponExplosion;
-		//var drawPointsShader, clearShader, scrollingRenderShader, drawRectShader, drawCircleShader, mixShader, intersectSpawnShader, copyShader;
+		//var shaders.drawPoints, shaders.clear, shaders.scrollingRender, 
+		//shaders.drawRect, shaders.drawCircle, shaders.mix, shaders.intersectSpawn, shaders.copy;
 		//var rules.enemy, rules.enemy2, rules.ship, rules.shipExplosion, rules.weapon, rules.weaponExplosion;
 		//var colors.enemy, colors.enemy2, colors.ship, colors.shipExplosion, colors.weapon, 
 		// colors.weaponExplosion, colors.copy;
 
+		shaders: {},
 		dishes: {},
 		rules: {},
 		colors: {},
@@ -362,13 +364,13 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 
 					if (dish) {
 						if (gameState.drawModel.attributes.selectedDrawShape == "circle") {
-							gameState.reactor.mixDish(gameState.drawCircleShader, dish, {
+							gameState.reactor.mixDish(gameState.shaders.drawCircle, dish, {
 								center: [gameState.gameW*(clickedPoint.x+1)/2, gameState.gameH*(clickedPoint.y+1)/2], 
 								radius: gameState.drawModel.attributes.drawSizeX/2, state: state/255
 							});
 						}
 						else {
-							gameState.reactor.mixDish(gameState.drawRectShader, dish, {
+							gameState.reactor.mixDish(gameState.shaders.drawRect, dish, {
 								rectPos: [gameState.gameW*(clickedPoint.x+1)/2, gameState.gameH*(clickedPoint.y+1)/2], 
 								rectSize: [gameState.drawModel.attributes.drawSizeX, gameState.drawModel.attributes.drawSizeY], 
 								state: state/255
@@ -384,7 +386,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 				//gameState.autoFireOn = 1 - gameState.autoFireOn;	
 			}	
 			else if (gameState.mouseMode == "copy") {
-				gameState.reactor.mixDish(copyShader, dishes.buffer, {
+				gameState.reactor.mixDish(shaders.copy, dishes.buffer, {
 					destinationPos: [0, 0], destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
 					texSource: gameState.dishes.enemy, 
 					sourcePos: [x-gameState.dishes.buffer.width/2, y-gameState.dishes.buffer.height/2], 
@@ -392,7 +394,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 				}); 
 			}		
 			else if (gameState.mouseMode == "paste") {
-				gameState.reactor.mixDish(copyShader, dishes.enemy, {
+				gameState.reactor.mixDish(shaders.copy, dishes.enemy, {
 					destinationPos: [x-gameState.dishes.buffer.width/2, y-gameState.dishes.buffer.height/2], 
 					destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
 					texSource: gameState.dishes.buffer, sourcePos: [0, 0], 
@@ -488,17 +490,17 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 
 		gameState.shots = new EC.ParticleSystem(reactor, gameState.maxParticles, gameState.gameW, gameState.gameH);
 
-		gameState.drawPointsShader = reactor.compileShader(data.vertexPoints, data.drawAll);
+		gameState.shaders.drawPoints = reactor.compileShader(data.vertexPoints, data.drawAll);
 		
-		gameState.clearShader = reactor.compileShader(data.clear);
-		gameState.scrollingRenderShader = reactor.compileShader(data.rendererVertex, data.rendererFragment);
+		gameState.shaders.clear = reactor.compileShader(data.clear);
+		gameState.shaders.scrollingRender = reactor.compileShader(data.rendererVertex, data.rendererFragment);
 
-		gameState.drawRectShader = reactor.compileShader(data.drawRect);
-		gameState.drawCircleShader = reactor.compileShader(data.drawCircle);
+		gameState.shaders.drawRect = reactor.compileShader(data.drawRect);
+		gameState.shaders.drawCircle = reactor.compileShader(data.drawCircle);
 
-		gameState.mixShader = reactor.compileShader(data.mixPalette);
-		gameState.intersectSpawnShader = reactor.compileShader(data.intersectSpawn);
-		gameState.copyShader = reactor.compileShader(data.copyPaste);
+		gameState.shaders.mix = reactor.compileShader(data.mixPalette);
+		gameState.shaders.intersectSpawn = reactor.compileShader(data.intersectSpawn);
+		gameState.shaders.copy = reactor.compileShader(data.copyPaste);
 
 		//fileStore.storeRule(data.rules.enemy2);
 		//fileStore.loadRule("starwars", function(loadedRule) {
@@ -593,7 +595,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		reactor.step(gameState.rules.ship, gameState.dishes.ship);
 
 		// "DRAW" SHIP
-		reactor.mixDish(gameState.drawCircleShader, gameState.dishes.ship, 
+		reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.ship, 
 			{center: [gameState.shipX, gameState.shipY], radius: 3.5, state: (gameState.rules.ship.nrStates-1)/255});
 
 		var cb = function(pos) {
@@ -609,7 +611,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		//gameState.shots.collide(gameState.dishes.enemy, cb);
 		gameState.shots.step();
 		var enemyPixel = gameState.shots.collide(gameState.dishes.enemy, cb);
-		gameState.shots.draw(gameState.drawPointsShader, gameState.dishes.weapon);
+		gameState.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon);
 
 
 
@@ -629,7 +631,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 					if (enemyPixel[(xxx+yyy*gameState.gameW)*4 + 3] !== 0) {
 						gameState.playerEnergy -= 1;
 
-		//				reactor.mixDish(gameState.drawCircleShader, gameState.dishes.weapon, 
+		//				reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.weapon, 
 		//	{center: [gameState.shipX + pX, gameState.shipY + pY], radius: 1.5, state: (gameState.rules.ship.nrStates-1)/255});
 
 					}
@@ -658,60 +660,60 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		// Dish INTERACTION ///////////////////////////////////
 
 		// weapon + enemy -> weaponExplosion
-		reactor.mixDish(gameState.intersectSpawnShader, gameState.dishes.weaponExplosion, { 
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, { 
 			tex1: gameState.dishes.weapon, tex2: gameState.dishes.enemy, 
 			state: (gameState.rules.weaponExplosion.nrStates-1)/255, 
 			operation: OP_REPLACE
 		});
-		reactor.mixDish(gameState.intersectSpawnShader, gameState.dishes.weaponExplosion, 
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, 
 			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.weaponExplosion, state: 3/255, operation: OP_REPLACE});
 
-		reactor.mixDish(gameState.intersectSpawnShader, gameState.dishes.enemy, 
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
 			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.weaponExplosion, state: 0/255, operation: OP_REPLACE});
-		reactor.mixDish(gameState.intersectSpawnShader, gameState.dishes.weapon, 
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weapon, 
 			{tex1: gameState.dishes.weapon, tex2: gameState.dishes.weaponExplosion, state: 3/255, operation: OP_REPLACE});	
 
 
 		// ship to enemy colissions spawn shipExplosions
-		reactor.mixDish(gameState.intersectSpawnShader, gameState.dishes.shipExplosion, 
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.shipExplosion, 
 			{tex1: gameState.dishes.ship, tex2: gameState.dishes.enemy, 
 				state: (gameState.rules.shipExplosion.nrStates-1)/255,
 			operation: OP_REPLACE});
 		
 		// shipExplosions reinforced by enemys
-		reactor.mixDish(gameState.intersectSpawnShader, gameState.dishes.shipExplosion, 
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.shipExplosion, 
 			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: 3/255, operation: OP_REPLACE});
 	
 		// dishes.enemy gets slowly killed by shipExplosions
 		if (gameState.cnt % 6 === 1)
-		reactor.mixDish(gameState.intersectSpawnShader, gameState.dishes.enemy, 
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
 			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: -1/255, operation: OP_ADD});
 
 		// ship gets killed by shipExplosions
-		reactor.mixDish(gameState.intersectSpawnShader, gameState.dishes.ship, 
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.ship, 
 			{tex1: gameState.dishes.ship, tex2: gameState.dishes.shipExplosion, state: 0/255, operation: OP_REPLACE});	
 
 		// COMPOSE ////////////////////////////////////////////
-		reactor.applyShaderOnDish(gameState.clearShader, gameState.dishes.render);
+		reactor.applyShaderOnDish(gameState.shaders.clear, gameState.dishes.render);
 
-		reactor.mixDish(gameState.mixShader, gameState.dishes.render, 
+		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.enemy2, texPalette: gameState.colors.enemy2.getTexture()});
-		reactor.mixDish(gameState.mixShader, gameState.dishes.render, 
+		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.enemy, texPalette: gameState.colors.enemy.getTexture()});
-		reactor.mixDish(gameState.mixShader, gameState.dishes.render, 
+		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.weapon, texPalette: gameState.colors.weapon.getTexture()});
-		reactor.mixDish(gameState.mixShader, gameState.dishes.render, 
+		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.ship, texPalette: gameState.colors.ship.getTexture()});
-		reactor.mixDish(gameState.mixShader, gameState.dishes.render, 
+		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.weaponExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});
-		reactor.mixDish(gameState.mixShader, gameState.dishes.render, 
+		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.shipExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});			
 		
 
-		//reactor.mixDish(gameState.mixShader, gameState.dishes.render, 
+		//reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 		//	{texNew: gameState.dishes.enemy, texPalette: gameState.colors.enemy.getTexture()});
 
-		//reactor.mixDish(mixShader, dishes.render, {texNew: dishes.copy, texPalette: colors.copy.getTexture()});		
+		//reactor.mixDish(shaders.mix, dishes.render, {texNew: dishes.copy, texPalette: colors.copy.getTexture()});		
 
 
 
@@ -761,7 +763,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 
 
 
-		reactor.paintDish(gameState.scrollingRenderShader, gameState.dishes.render, function(gl, shader) {
+		reactor.paintDish(gameState.shaders.scrollingRender, gameState.dishes.render, function(gl, shader) {
 			gl.uniform2f(gl.getUniformLocation(shader, "resolution"), gameState.gameW, gameState.gameH);
 			gl.uniformMatrix4fv(gl.getUniformLocation(shader, "projectionMatrix"), false, gameState.projectionMatrix.elements);
 			gl.uniformMatrix4fv(gl.getUniformLocation(shader, "modelViewMatrix"), false, gameState.viewMatrix.elements);
