@@ -90,6 +90,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		// shots
 		maxParticles: 2800,
 		shotSpeed: 2.3,
+		frontShots: 3,
+		frontShotAngle: 0.8,
 		shotN: 8,
 		bombFired: 0,
 		bAngle: 0, // direction of bomb fire
@@ -220,12 +222,15 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		var sX = gameState.shotSpeed * dX/dL;
 		var sY = gameState.shotSpeed * dY/dL;
 
-		var aa = 0.2;
-		gameState.shots.allocateParticle(gameState.shipX, gameState.shipY, 1.05*sX, 1.05*sY);
-		gameState.shots.allocateParticle(gameState.shipX, gameState.shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
-		aa = -aa;
-		gameState.shots.allocateParticle(gameState.shipX, gameState.shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
+		var aa = gameState.frontShots > 1 ? -gameState.frontShotAngle/2 : 0;
 
+		for (var i = 0; i < gameState.frontShots; i++) {
+			gameState.shots.allocateParticle(gameState.shipX, gameState.shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
+			
+			if (gameState.frontShots > 1)
+				aa += gameState.frontShotAngle/(gameState.frontShots-1);
+		}
+		
 		playSound(gameState.snd);
 	};
 
@@ -345,21 +350,24 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		gui.add(gameState, 'playerEnergy');
 
 		var folder = gui.addFolder('App');
-		folder.add(gameState, 'zoom', 0.1, 2).step(0.05);
-
+		folder.add(gameState, 'zoom', 0.05, 2).step(0.01);
 
 		// ugly hack to make ro a two decimal nr in datgui
 		var oldRot = gameState.rot;
 		gameState.rot = 0.01;
 		// hack continues below
 
-		folder.add(gameState, 'rot', 0, Math.PI*2).step(0.01);
+		var ctrl = folder.add(gameState, 'rot', -Math.PI*2, Math.PI*2).step(0.01);
+		//ctrl.__precision = 3;
+		//ctrl.__impliedStep = 0.001;
 
 		// hack!
 		gameState.rot = oldRot;
 		refreshGUI();
 		// end of ugly hack 
 
+		folder.add(gameState, 'frontShots', 1, 12).step(1);
+		folder.add(gameState, 'frontShotAngle', 0, 2*Math.PI);
 
 		folder.add(gameState, 'gameW').onFinishChange(onGameSizeChanged);
 		folder.add(gameState, 'gameH').onFinishChange(onGameSizeChanged);
