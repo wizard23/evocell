@@ -98,15 +98,6 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		autoFireOn: 0,
 		lastMouseNDC: new THREE.Vector2(),
 
-
-		//var shots;
-		//var dishes.enemy, dishes.enemy2, dishes.ship, dishes.shipExplosion, dishes.copy, dishes.buffer, dishes.render, dishes.weapon, dishes.weaponExplosion;
-		//var shaders.drawPoints, shaders.clear, shaders.scrollingRender, 
-		//shaders.drawRect, shaders.drawCircle, shaders.mix, shaders.intersectSpawn, shaders.copy;
-		//var rules.enemy, rules.enemy2, rules.ship, rules.shipExplosion, rules.weapon, rules.weaponExplosion;
-		//var colors.enemy, colors.enemy2, colors.ship, colors.shipExplosion, colors.weapon, 
-		// colors.weaponExplosion, colors.copy;
-
 		shaders: {},
 		dishes: {},
 		rules: {},
@@ -317,12 +308,6 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		}, false);
 
 		gameState.gui.add(gameState, 'playerEnergy');
-		//gameState.gui.add(gameState, 'civX');
-		//gameState.gui.add(gameState, 'civY');
-		//gameState.gui.add(gameState, 'civZ');
-		//gameState.gui.add(gameState, 'civW');
-		//gameState.gui.add(gameState, 'clipX');
-		//gameState.gui.add(gameState, 'clipY');
 
 		var view_model = kb.viewModel(gameState.drawModel);
 		//view_model.full_name = ko.computed((->return "#{@first_name()} #{@last_name()}"), view_model)
@@ -356,7 +341,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			if (activeTool === 0) {
 					var dish;
 
-					dish = gameState[gameState.drawModel.attributes.selectedLayers[0] + "Dish"];
+					dish = gameState.dishes[gameState.drawModel.attributes.selectedLayers[0]];
 
 					var state = 0;
 					var firstSel = gameState.drawModel.attributes.selectedStates[0];
