@@ -104,11 +104,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		colors: {},
 		shots: null,
 
-		gameW: 300, gameH: 300,
+		gameW: 400, gameH: 400,
 		screenW: 1024,
 		screenH: 1024,
 
-		pixel: 1.5,
+		zoom: 1.5,
 		rot: 0.0,
 
 		cameraAngle: 60 * (Math.PI/180),
@@ -285,11 +285,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		}, false);
 
 		document.getElementById("zoomIn").addEventListener('click', function(evt) {
-			gameState.pixel+=0.5;
+			gameState.zoom+=0.5;
 		}, false);
 
 		document.getElementById("zoomOut").addEventListener('click', function(evt) {
-			gameState.pixel-=0.5;
+			gameState.zoom-=0.5;
 		}, false);
 
 
@@ -307,7 +307,20 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 				});
 		}, false);
 
-		gameState.gui.add(gameState, 'playerEnergy');
+		var gui = gameState.gui;
+
+		gui.add(gameState, 'playerEnergy');
+
+		var folder = gui.addFolder('App');
+		folder.add(gameState, 'zoom');
+		folder.add(gameState, 'rot');
+		folder.add(gameState, 'gameW');
+		folder.add(gameState, 'gameH');
+
+		folder = gui.addFolder('Core');
+		folder.add(gameState, 'screenW');
+		folder.add(gameState, 'screenH');
+
 
 		var view_model = kb.viewModel(gameState.drawModel);
 		//view_model.full_name = ko.computed((->return "#{@first_name()} #{@last_name()}"), view_model)
@@ -737,7 +750,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		var shipPos = new THREE.Vector4(shipClipX, shipClipY, 0, 1);
 		shipPos.applyMatrix4(gameState.viewMatrix);
 		shipPos.multiplyScalar(-1);
-		shipPos.add(new THREE.Vector3(0,0, -gameState.pixel)); // move to negative x
+		shipPos.add(new THREE.Vector3(0,0, -gameState.zoom)); // move to negative x
 		//posPlayer = new THREE.Vector3(0,0, -pixel); // do this to not track ship
 		var shipCenterMatrix = new THREE.Matrix4().compose(shipPos, 
 			new THREE.Quaternion(), 
@@ -790,12 +803,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 
 		if (keyboard.isPressed("O".charCodeAt()))
 		{
-			gameState.pixel -= 0.03;
+			gameState.zoom -= 0.03;
 		}
 
 		if (keyboard.isPressed("L".charCodeAt()))
 		{
-			gameState.pixel += 0.03;
+			gameState.zoom += 0.03;
 		}
 
 		if (keyboard.isPressed("N".charCodeAt()))
