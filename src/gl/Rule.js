@@ -7,9 +7,10 @@ define(["gl/GLHelper"], function(glhelper) {
 		this.gl = reactor.gl;
 	
 		this.setRule(ruleData);
+		// candy
 		if (dish)
-			this.setCompileSize(dish.width, dish.height);
-	}
+			this.setCompileSizeDish(dish);
+	};
 
 	Rule.prototype.setRule = function(ruleData)
 	{
@@ -27,7 +28,12 @@ define(["gl/GLHelper"], function(glhelper) {
 		this.height = height;
 
 		this.invalidateProgram();
-	}
+	};
+
+	// candy
+	Rule.prototype.setCompileSizeDish = function(dish) {
+		this.setCompileSize(dish.width, dish.height);
+	};
 
 	Rule.prototype.setCompileSize = function(w, h)
 	{
@@ -35,12 +41,12 @@ define(["gl/GLHelper"], function(glhelper) {
 		this.compileHeight = h;
 
 		this.invalidateProgram();
-	}
+	};
 
 	Rule.prototype.getTexture = function()
 	{
 		return this.ruleTexture;
-	}
+	};
 
 	Rule.prototype.getProgram = function() 
 	{

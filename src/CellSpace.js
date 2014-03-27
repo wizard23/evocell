@@ -275,6 +275,39 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		updateButtons();
 	};
 
+	var onGameSizeChanged = function() {
+		var reactor = gameState.reactor;
+
+		reactor.setDefaultDishSize(gameState.gameW, gameState.gameH);
+
+		// hack reinit shots
+		gameState.shots = new EC.ParticleSystem(reactor, gameState.maxParticles, gameState.gameW, gameState.gameH);
+
+		// reinit instead of resize (we lose state but who cares?)
+		var dishes = gameState.dishes;
+		dishes.enemy = reactor.compileDish();
+		dishes.enemy2 = reactor.compileDish();
+		dishes.ship = reactor.compileDish();
+		dishes.shipExplosion = reactor.compileDish();
+		dishes.weapon = reactor.compileDish();
+		dishes.weaponExplosion = reactor.compileDish();
+		dishes.copy = reactor.compileDish();
+		dishes.buffer = reactor.compileDish(64, 64);
+		dishes.render = reactor.compileDish();
+
+		var rules = gameState.rules;
+		rules.enemy.setCompileSizeDish(gameState.dishes.enemy);
+		rules.enemy2.setCompileSizeDish(gameState.dishes.enemy2);
+		rules.ship.setCompileSizeDish(gameState.dishes.ship);
+		rules.weapon.setCompileSizeDish(gameState.dishes.enemy);
+		rules.shipExplosion.setCompileSizeDish(gameState.dishes.enemy2);
+		rules.weaponExplosion.setCompileSizeDish(gameState.dishes.enemy2);
+
+		resetGame();
+	}; 
+		
+
+
 	var setupGui = function() {
 		document.getElementById("stepLink").addEventListener('click', function(evt) {
 			gameStep();
@@ -314,12 +347,19 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		var folder = gui.addFolder('App');
 		folder.add(gameState, 'zoom');
 		folder.add(gameState, 'rot');
-		folder.add(gameState, 'gameW');
-		folder.add(gameState, 'gameH');
+		folder.add(gameState, 'gameW').onFinishChange(onGameSizeChanged);
+		folder.add(gameState, 'gameH').onFinishChange(onGameSizeChanged);
 
 		folder = gui.addFolder('Core');
-		folder.add(gameState, 'screenW');
-		folder.add(gameState, 'screenH');
+		var screenWCtrl = folder.add(gameState, 'screenW');
+		var screenHCtrl = folder.add(gameState, 'screenH');
+
+		screenWCtrl.onFinishChange(function(value) {
+		  gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
+		});
+		screenHCtrl.onFinishChange(function(value) {
+		  gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
+		});
 
 
 		var view_model = kb.viewModel(gameState.drawModel);
@@ -464,8 +504,6 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		loader.start(callback);
 	};
 
-
-		
 	var setupGame = function (data, canvas) { 
 		// Setup core
 		var reactor = new  EC.Reactor(canvas, gameState.gameW, gameState.gameH);
