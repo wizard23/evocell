@@ -124,7 +124,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		stepSize: 1.5, 
 		
 		mouseMode: "shoot",	
-		cnt: 0, // used for executing dishes.enemy only every nth tep
+		// HACK: find better init solution
+		cnt: 100, // used for executing dishes.enemy only every nth tep
 
 		sndInit: new Audio(resPath + "sound/Digital_SFX_Set/laser3.mp3"), 
 		snd: new Audio(resPath + "sound/Digital_SFX_Set/laser6.mp3"), 
@@ -792,6 +793,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			if (deltaX || deltaY) {
 				gameState.shipX  += deltaX;
 				gameState.shipY  += deltaY;
+
+				gameState.scrollX  += deltaX;
+				gameState.scrollY  += deltaY;
+
+				refreshGUI();
+
 				var dX = -deltaX/gameState.gameW;
 				var dY = -deltaY/gameState.gameH;
 				reactor.mixDish(gameState.shaders.scroll, gameState.dishes.ship, 
@@ -984,7 +991,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			if (gameState.shotN <= 0) gameState.shotN = 1;
 		}
 
-		if (keyboard.isPressed("B".charCodeAt())) {
+		if (keyboard.isPressed("B".charCodeAt()) || gameState.cnt < 12) {
 			if (!gameState.bombFired) {
 				//gameState.bombFired = 1; // allow permanent fire for now
 				for (var i = 0; i < gameState.shotN; i++)
