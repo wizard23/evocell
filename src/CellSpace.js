@@ -106,7 +106,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		colors: {},
 		shots: null,
 
-		gameW: 400, gameH: 400,
+		gameW: 350, gameH: 350,
 		screenW: 1200,
 		screenH: 900,
 
@@ -117,7 +117,9 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		viewMatrix: new THREE.Matrix4(),
 		projectionMatrix: new THREE.Matrix4(),
 
+		enableScrolling: 1,
 		shipX: 0, shipY: 0,
+		scrollX: 0, scrollY: 0,
 		playerEnergy: 100,
 		stepSize: 1.5, 
 		
@@ -230,7 +232,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 			if (gameState.frontShots > 1)
 				aa += gameState.frontShotAngle/(gameState.frontShots-1);
 		}
-		
+
 		playSound(gameState.snd);
 	};
 
@@ -369,6 +371,14 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		folder.add(gameState, 'frontShots', 1, 12).step(1);
 		folder.add(gameState, 'frontShotAngle', 0, 2*Math.PI);
 
+		folder.add(gameState, 'enableScrolling', {yes: 1, no: 0});
+
+		folder.add(gameState, 'shipX');
+		folder.add(gameState, 'shipY');
+		
+		folder.add(gameState, 'scrollX');
+		folder.add(gameState, 'scrollY');
+
 		folder.add(gameState, 'gameW').onFinishChange(onGameSizeChanged);
 		folder.add(gameState, 'gameH').onFinishChange(onGameSizeChanged);
 
@@ -376,12 +386,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		var screenWCtrl = folder.add(gameState, 'screenW');
 		var screenHCtrl = folder.add(gameState, 'screenH');
 
-		screenWCtrl.onFinishChange(function(value) {
-		  gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
-		});
-		screenHCtrl.onFinishChange(function(value) {
-		  gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
-		});
+		var onResized = function(value) {
+			gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
+		};
+		screenWCtrl.onFinishChange(onResized);
+		screenHCtrl.onFinishChange(onResized);
 
 
 		var view_model = kb.viewModel(gameState.drawModel);
@@ -515,9 +524,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		loader.load("drawRect", "src/shaders/drawRect.shader", "text");
 		loader.load("drawCircle", "src/shaders/drawCircle.shader", "text");
 
-		//loader.load("painter", "src/shaders/primitiveRenderer.shader", "text");
-		loader.load("rendererVertex", "src/shaders/scrollingRendererMatrix.vshader", "text");
-		loader.load("rendererFragment", "src/shaders/scrollingRenderer.shader", "text");
+		loader.load("scroller", "src/shaders/scroller.shader", "text");
+
+		loader.load("rendererVertex", "src/shaders/cameraRenderer.vshader", "text");
+		loader.load("rendererFragment", "src/shaders/cameraRenderer.shader", "text");
 
 		loader.load("intersectSpawn", "src/shaders/intersectSpawn.shader", "text");
 
@@ -559,6 +569,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		gameState.shaders.mix = reactor.compileShader(data.mixPalette);
 		gameState.shaders.intersectSpawn = reactor.compileShader(data.intersectSpawn);
 		gameState.shaders.copy = reactor.compileShader(data.copyPaste);
+
+		gameState.shaders.scroll = reactor.compileShader(data.scroller);
 
 		//fileStore.storeRule(data.rules.enemy2);
 		//fileStore.loadRule("starwars", function(loadedRule) {
@@ -774,7 +786,34 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		//reactor.mixDish(shaders.mix, dishes.render, {texNew: dishes.copy, texPalette: colors.copy.getTexture()});		
 
 
+		if (gameState.enableScrolling) {
+			var deltaX = Math.round(gameState.gameW/2 - gameState.shipX);
+			var deltaY = Math.round(gameState.gameH/2 - gameState.shipY);
+			if (deltaX || deltaY) {
+				gameState.shipX  += deltaX;
+				gameState.shipY  += deltaY;
+				var dX = -deltaX/gameState.gameW;
+				var dY = -deltaY/gameState.gameH;
+				reactor.mixDish(gameState.shaders.scroll, gameState.dishes.ship, 
+					{scroll: [dX, dY]});		
 
+				reactor.mixDish(gameState.shaders.scroll, gameState.dishes.shipExplosion, 
+					{scroll: [dX, dY]});
+
+				reactor.mixDish(gameState.shaders.scroll, gameState.dishes.enemy, 
+					{scroll: [dX, dY]});				
+
+				//reactor.mixDish(gameState.shaders.scroll, gameState.dishes.enemy2, 
+				//	{scroll: [dX, dY]});
+
+				reactor.mixDish(gameState.shaders.scroll, gameState.dishes.weapon, 
+					{scroll: [dX, dY]});
+
+				reactor.mixDish(gameState.shaders.scroll, gameState.dishes.weaponExplosion, 
+					{scroll: [dX, dY]});	
+			}		
+		}
+		
 
 
 
