@@ -106,7 +106,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat) 
 		colors: {},
 		shots: null,
 
-		gameW: 350, gameH: 350,
+		gameW: 256, gameH: 256,
 		screenW: 1200,
 		screenH: 900,
 
