@@ -19,6 +19,12 @@ define(["jquery", "FileSaver"], function($, saveAs) {
 	}
 	HTMLCanvasElement.prototype.relMouseCoords = relMouseCoords;
 
+	var getNDCFromMouseEvent = function(canvas, evt, screenW, screenH) {
+		var coords = canvas.relMouseCoords(evt);
+		return new THREE.Vector2(coords.x/screenW, (screenH - coords.y)/screenH);
+	};
+
+
 	// static
 	var playSound = function(snd) {
 		try {
@@ -54,12 +60,6 @@ define(["jquery", "FileSaver"], function($, saveAs) {
 		var deltaPoint = point.clone().applyMatrix4(invMV);
 
 		return deltaPoint;
-	};
-
-	// access to gamestate
-	var getNDCFromMouseEvent = function(canvas, evt, screenW, screenH) {
-		var coords = canvas.relMouseCoords(evt);
-		return new THREE.Vector2(coords.x/screenW, (screenH - coords.y)/screenH);
 	};
 
 	function getFromURL(url, responseType, cb) {

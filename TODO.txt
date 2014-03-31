@@ -2,7 +2,6 @@
 ** paint generalize
 ** load rule (from db)
 ** import/export rule from db
-* get rid of "pixel" in gamestate
 * Cleanup App by splitting CellSpace.js
 * variable initial probaility (optional param)
 
