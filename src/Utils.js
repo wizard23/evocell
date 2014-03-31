@@ -19,6 +19,49 @@ define(["jquery", "FileSaver"], function($, saveAs) {
 	}
 	HTMLCanvasElement.prototype.relMouseCoords = relMouseCoords;
 
+	// static
+	var playSound = function(snd) {
+		try {
+			snd.currentTime=0;
+			snd.play();
+		} catch(ex) {}
+	};
+
+	// TODO: gamestate access, otherwise static
+	// gets NDC (0 to 1) of clicked postion
+	// itersects line form eye (0, 0, 0) to cliked position of a viewMatrix transformed plane in x/y plane
+	// returns computed object coordinates (-1 to 1 for x and y, 0 for z)
+	var intersectClick = function(clickedNDC, viewMatrix, camAH) {
+		var invMV = new THREE.Matrix4().getInverse(viewMatrix);
+
+		var planeNormal = new THREE.Vector4(0, 0, -1, 0);
+		var planePoint = new THREE.Vector4(0, 0, 0, 1);
+
+		// here the projection matrix is used or at least the cameraAngle
+		var sf = Math.sin(camAH)/Math.cos(camAH);
+		var lineDir = new THREE.Vector4(sf*(2*clickedNDC.x - 1), sf*(2*clickedNDC.y - 1), -1, 0);
+		var linePoint = new THREE.Vector4();
+
+		planeNormal.applyMatrix4(viewMatrix);
+		planePoint.applyMatrix4(viewMatrix);
+
+		var a = new THREE.Vector4().subVectors(planePoint, linePoint).dot(planeNormal);
+		var b = lineDir.dot(planeNormal);
+
+		var pointPos = a / b;
+
+		var point = new THREE.Vector4().addVectors(linePoint, lineDir.clone().multiplyScalar(pointPos));
+		var deltaPoint = point.clone().applyMatrix4(invMV);
+
+		return deltaPoint;
+	};
+
+	// access to gamestate
+	var getNDCFromMouseEvent = function(canvas, evt, screenW, screenH) {
+		var coords = canvas.relMouseCoords(evt);
+		return new THREE.Vector2(coords.x/screenW, (screenH - coords.y)/screenH);
+	};
+
 	function getFromURL(url, responseType, cb) {
 		var r = new XMLHttpRequest();
 		r.open("GET", url, true);  
@@ -125,6 +168,10 @@ define(["jquery", "FileSaver"], function($, saveAs) {
 
 		getFromURL: getFromURL,
 		saveAs: saveAs,
+
+		playSound: playSound,
+		intersectClick: intersectClick,
+		getNDCFromMouseEvent: getNDCFromMouseEvent, 		
 
 		keyboard : Keyboard		
 	};

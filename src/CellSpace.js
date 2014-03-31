@@ -176,8 +176,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat, 
 
 			var activeTool = $( "#toolsMenu" ).accordion( "option", "active" );
 
-			var clickedNDC =csUtils.getNDCFromMouseEvent(gameState.canvas, evt);	
-			var clickedPoint = csUtils.intersectClick(clickedNDC);
+			var clickedNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);	
+			var clickedPoint = utils.intersectClick(clickedNDC, gameState.viewMatrix, gameState.cameraAngle/2);
 
 			if (activeTool === 0) {
 					var dish;
@@ -235,7 +235,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat, 
 
 		var handleCanvasMouseMove = function(evt)
 		{
-			gameState.lastMouseNDC = csUtils.getNDCFromMouseEvent(gameState.canvas, evt);	
+			gameState.lastMouseNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);
 		};
 		gameState.canvas.addEventListener('mousemove', handleCanvasMouseMove, false);
 
@@ -267,7 +267,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat, 
 			{
 				gameState.sndHit.playbackRate = 3.5;
 				gameState.sndHit.volume = 0.5;
-				csUtils.playSound(gameState.sndHit);
+				utils.playSound(gameState.sndHit);
 			} catch(ex) {}
 		};
 
@@ -538,7 +538,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat, 
 			dirV.add(new THREE.Vector4(0.5, 0.5, 0));
 			dirV.w = 0;
 
-			var moveDir = csUtils.intersectClick(dirV);
+			var moveDir = utils.intersectClick(dirV, gameState.viewMatrix, gameState.cameraAngle/2);
+
 			moveDir.sub(new THREE.Vector4(gameState.shipX/gameState.gameW, gameState.shipY/gameState.gameH, 0));
 			moveDir.w = 0;
 			moveDir.normalize().multiplyScalar(gameState.stepSize);
@@ -593,7 +594,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat, 
 					gameState.shots.allocateSphere(1, gameState.shipX, gameState.shipY, gameState.shotSpeed, gameState.bAngle);
 				}
 
-				csUtils.playSound(gameState.sndBomb);
+				utils.playSound(gameState.sndBomb);
 			}
 		}
 		else {

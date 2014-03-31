@@ -1,53 +1,7 @@
-define(["CellSpace.State", "three"], function(gameState, THREE) {
+define(["CellSpace.State", "three", "Utils"], function(gameState, THREE, utils) {
 	"use strict";
 
 /////// PUBLIC ///////////
-	
-	// static
-	var playSound = function(snd) {
-		try {
-			snd.currentTime=0;
-			snd.play();
-		} catch(ex) {}
-	};
-
-	// TODO: gamestate access, otherwise static
-	// gets NDC (0 to 1) of clicked postion
-	// itersects line form eye (0, 0, 0) to cliked position of a viewMatrix transformed plane in x/y plane
-	// returns computed object coordinates (-1 to 1 for x and y, 0 for z)
-	var intersectClick = function(clickedNDC) {
-		var invMV = new THREE.Matrix4();
-		invMV.getInverse(gameState.viewMatrix);
-
-		var planeNormal = new THREE.Vector4(0, 0, -1, 0);
-		var planePoint = new THREE.Vector4(0, 0, 0, 1);
-
-		// here the projection matrix is used or at least the cameraAngle
-		var camAH = gameState.cameraAngle/2;
-		var sf = Math.sin(camAH)/Math.cos(camAH);
-		var lineDir = new THREE.Vector4(sf*(2*clickedNDC.x - 1), sf*(2*clickedNDC.y - 1), -1, 0);
-		var linePoint = new THREE.Vector4();
-
-		planeNormal.applyMatrix4(gameState.viewMatrix);
-		planePoint.applyMatrix4(gameState.viewMatrix);
-
-		var a = new THREE.Vector4().subVectors(planePoint, linePoint).dot(planeNormal);
-		var b = lineDir.dot(planeNormal);
-
-		var pointPos = a / b;
-
-		var point = new THREE.Vector4().addVectors(linePoint, lineDir.clone().multiplyScalar(pointPos));
-		var deltaPoint = point.clone().applyMatrix4(invMV);
-
-		return deltaPoint;
-	};
-
-	// access to gamestate
-	var getNDCFromMouseEvent = function(canvas, evt) {
-		var coords = canvas.relMouseCoords(evt);
-		return new THREE.Vector2(coords.x/gameState.screenW, (gameState.screenH - coords.y)/gameState.screenH);
-	};
-
 	// access to gamestate
 	var pollAutoFire = function() {		
 		if (gameState.autoFireOn) {
@@ -81,7 +35,7 @@ define(["CellSpace.State", "three"], function(gameState, THREE) {
 				aa += gameState.frontShotAngle/(gameState.frontShots-1);
 		}
 
-		playSound(gameState.snd);
+		utils.playSound(gameState.snd);
 	};
 
 	// TODO: could be done in backbone via a conceptual model ;)
@@ -116,7 +70,7 @@ define(["CellSpace.State", "three"], function(gameState, THREE) {
 			gameState.shipX = gameState.gameW/2;
 			gameState.shipY = gameState.gameH/2;
 		}
-		playSound(gameState.sndInit);
+		utils.playSound(gameState.sndInit);
 	};
 
 	var gameStep = function() {
@@ -164,9 +118,9 @@ define(["CellSpace.State", "three"], function(gameState, THREE) {
 ////// PTIVATE //////////////
 
 	return {
-		playSound: playSound,
-		getNDCFromMouseEvent: getNDCFromMouseEvent,
-		intersectClick: intersectClick, 
+		//playSound: playSound,
+		//getNDCFromMouseEvent: getNDCFromMouseEvent,
+		//intersectClick: intersectClick, 
 	
 
 		pollAutoFire: pollAutoFire,
