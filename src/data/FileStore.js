@@ -1,13 +1,5 @@
 define(["backbone"], function(bb) {
 
-
-
-// This is what our customer data looks like.
-const customerData = [
-  { ssn: "444-44-2444", name: "Bill", age: 35, email: "bissll@company.com" },
-  { ssn: "555-55-5755", name: "Donna", age: 32, email: "donnhpa@home.org" }
-];
-
 var indexedDB = window.indexedDB;
 
 const dbName = "EvoCell";
@@ -77,9 +69,9 @@ var loadRule = function(name, callback) {
   request.onsuccess = function(event) {
     var result = event.target.result;
     //alert("I haz loaded rule" + result);
-    callback(result)
+    callback(result);
   };
-}
+};
 
 var loadAllRules = function(callback) {
   var rules = [];
@@ -95,13 +87,24 @@ var loadAllRules = function(callback) {
       callback(rules);
     }
   };
-}
+};
+
+var loadAllRuleNames = function(callback) {
+  loadAllRules(function(rulesModelData) {
+    var names = [];
+    for (var ruleIdx in rulesModelData) {
+      names.push(rulesModelData[ruleIdx].name);
+    }
+    callback(names);
+  });
+} ;
 
 
 return {
   storeRule: storeRule,
   loadRule: loadRule,
   loadAllRules: loadAllRules,
+  loadAllRuleNames: loadAllRuleNames,
 };
 
 

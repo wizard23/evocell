@@ -7,6 +7,19 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	"use strict";
 
 	var setupGui = function() {
+
+
+		document.getElementById("assignLayerRule").addEventListener('click', function(evt) {
+			var ruleName = gameState.drawModel.get("selectedRules")[0];
+			var layerName = gameState.drawModel.get("selectedLayers")[0];
+			var dish = gameState.dishes[layerName];
+
+			fileStore.loadRule(ruleName, function(loadedRule) {
+				gameState.rules[layerName] = gameState.reactor.compileRule(loadedRule.ruleData, dish);
+			});
+
+		}, false);
+
 		document.getElementById("stepLink").addEventListener('click', function(evt) {
 			csUtils.gameStep();
 		}, false);
@@ -83,7 +96,6 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		screenWCtrl.onFinishChange(onResized);
 		screenHCtrl.onFinishChange(onResized);
 
-
 		var view_model = kb.viewModel(gameState.drawModel);
 		//view_model.full_name = ko.computed((->return "#{@first_name()} #{@last_name()}"), view_model)
 		ko.applyBindings(view_model, document.getElementById("drawTool"));
@@ -114,9 +126,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			var clickedPoint = utils.intersectClick(clickedNDC, gameState.viewMatrix, gameState.cameraAngle/2);
 
 			if (activeTool === 0) {
-					var dish;
-
-					dish = gameState.dishes[gameState.drawModel.attributes.selectedLayers[0]];
+					var dish = gameState.dishes[gameState.drawModel.attributes.selectedLayers[0]];
 
 					var state = 0;
 					var firstSel = gameState.drawModel.attributes.selectedStates[0];
@@ -270,7 +280,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// escape
 		if (keyboard.isPressed(27))
 		{
-			//dishes.enemy.setAll(0);
+			var dishes = gameState.dishes;
+
+			dishes.enemy.setAll(0);
+			dishes.ship.setAll(0);
+			dishes.weapon.setAll(0);
 			//fileStore.storeRule("enemy_ludwigBuildships", rules.enemy.ruleData);
 
 			/*fileStore.loadRule("enemy_ludwigBuildships", function(loadedRule) {
@@ -288,7 +302,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			if (gameState.shotN <= 0) gameState.shotN = 1;
 		}
 
-		if (keyboard.isPressed("B".charCodeAt()) || gameState.cnt < 12) {
+		if (keyboard.isPressed("B".charCodeAt())) {
 			if (!gameState.bombFired) {
 				//gameState.bombFired = 1; // allow permanent fire for now
 				for (var i = 0; i < gameState.shotN; i++)

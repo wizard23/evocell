@@ -67,6 +67,10 @@
 <label><input type="radio" value="circle" data-bind="checked: selectedDrawShape" />Circle</label>
 <label><input type="radio" value="rectangle" data-bind="checked: selectedDrawShape" />Recangle</label><br/>
 
+
+<select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableRules, selectedOptions: selectedRules"></select><br/>
+<input type="button" id="assignLayerRule" />
+
 <select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableLayers, selectedOptions: selectedLayers"></select><br/>
 <select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableStates, selectedOptions: selectedStates"></select><br/>
 width: <input id="width" type="number" min="1" max="1000" data-bind="value: drawSizeX, valueUpdate: 'keyup'"><br/>

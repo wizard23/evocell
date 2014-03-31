@@ -69,6 +69,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 
 		drawModel: new Backbone.Model({
 			availableRules: [],
+			selectedRules: [],
 
 			availableLayers: ["enemy", "enemy2", "ship", "shipExplosion", "weapon", "weaponExplosion"],
 			availableStates: [0, 1, 2, 3, 4, 5],
