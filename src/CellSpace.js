@@ -61,7 +61,7 @@ require([
 	"backbone", "knockback", "knockout", "data/FileStore", "three", "datgui", 
 	"CellSpace/State", "CellSpace/Setup", "CellSpace/GameLoop", "CellSpace/GUI", "CellSpace/Utils"], 
 function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat, 
-	gameState, csSetup, gameLoop, csUI, csUtils) {
+	gameState, csSetup, csLoop, csUI, csUtils) {
 	"use strict";
 
 	// game must be less than 20 LOC :)
@@ -78,7 +78,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			csUI.setupGui();
 			gameState.renderLoop = new utils.AnimationLoop(function() {
 				csUI.pollUserInteraction();
-				gameLoop();
+				csLoop.step();
+				csLoop.render();
 			});
 			gameState.renderLoop.start();
 		});

@@ -8,7 +8,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	var OP_REPLACE = 0;
 	var OP_ADD = 1;
 
-	var gameLoop = function() {
+	var step = function() {
 		var reactor = gameState.reactor;
 
 		// ENEMIES //////////////////////////////////////
@@ -119,24 +119,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 		// ship gets killed by shipExplosions
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.ship, 
-			{tex1: gameState.dishes.ship, tex2: gameState.dishes.shipExplosion, state: 0/255, operation: OP_REPLACE});	
-
-		// COMPOSE ////////////////////////////////////////////
-		reactor.applyShaderOnDish(gameState.shaders.clear, gameState.dishes.render);
-
-		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
-			{texNew: gameState.dishes.enemy2, texPalette: gameState.colors.enemy2.getTexture()});
-		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
-			{texNew: gameState.dishes.enemy, texPalette: gameState.colors.enemy.getTexture()});
-		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
-			{texNew: gameState.dishes.weapon, texPalette: gameState.colors.weapon.getTexture()});
-		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
-			{texNew: gameState.dishes.ship, texPalette: gameState.colors.ship.getTexture()});
-		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
-			{texNew: gameState.dishes.weaponExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});
-		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
-			{texNew: gameState.dishes.shipExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});			
-		
+			{tex1: gameState.dishes.ship, tex2: gameState.dishes.shipExplosion, state: 0/255, operation: OP_REPLACE});			
 
 		//reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 		//	{texNew: gameState.dishes.enemy, texPalette: gameState.colors.enemy.getTexture()});
@@ -177,9 +160,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 					{scroll: [dX, dY]});	
 			}		
 		}
-		
+	
+		gameState.cnt++;
+	};
 
-
+	var render = function() {
+		var reactor = gameState.reactor;
 
 		var camera = new THREE.PerspectiveCamera( 180*gameState.cameraAngle/Math.PI, 1, 0.01, 1000 );
 		//camera.lookAt(new THREE.Vector3( 0, 0, -1 )); // what does it do?
@@ -221,7 +207,21 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// now Subtract mapped shipPos
 		gameState.viewMatrix = new THREE.Matrix4().multiplyMatrices(shipCenterMatrix, gameState.viewMatrix);
 
+				// COMPOSE ////////////////////////////////////////////
+		reactor.applyShaderOnDish(gameState.shaders.clear, gameState.dishes.render);
 
+		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
+			{texNew: gameState.dishes.enemy2, texPalette: gameState.colors.enemy2.getTexture()});
+		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
+			{texNew: gameState.dishes.enemy, texPalette: gameState.colors.enemy.getTexture()});
+		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
+			{texNew: gameState.dishes.weapon, texPalette: gameState.colors.weapon.getTexture()});
+		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
+			{texNew: gameState.dishes.ship, texPalette: gameState.colors.ship.getTexture()});
+		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
+			{texNew: gameState.dishes.weaponExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});
+		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
+			{texNew: gameState.dishes.shipExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});			
 
 		reactor.paintDish(gameState.shaders.scrollingRender, gameState.dishes.render, function(gl, shader) {
 			gl.uniform2f(gl.getUniformLocation(shader, "resolution"), gameState.gameW, gameState.gameH);
@@ -229,9 +229,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			gl.uniformMatrix4fv(gl.getUniformLocation(shader, "modelViewMatrix"), false, gameState.viewMatrix.elements);
 		});
 
-		gameState.cnt++;
 		gameState.fpsMonotor.frameIncrease();
+
 	};
 
-	return gameLoop;
+	return {
+		step: step,
+		render: render,
+	};
 });
