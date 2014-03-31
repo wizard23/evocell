@@ -1,4 +1,4 @@
-define(["Utils", "EvoCell", "CellSpace.State"], function(utils, EC, gameState) {
+define(["Utils", "EvoCell", "CellSpace/State"], function(utils, EC, gameState) {
 	// static
 	var setup = function(canvas, callback) {
 		var loader = new EC.ResLoader();

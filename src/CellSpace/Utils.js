@@ -1,4 +1,4 @@
-define(["CellSpace.State", "three", "Utils"], function(gameState, THREE, utils) {
+define(["CellSpace/State", "three", "Utils"], function(gameState, THREE, utils) {
 	"use strict";
 
 /////// PUBLIC ///////////
