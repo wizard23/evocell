@@ -76,7 +76,15 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 		csSetup.setup(canvas, function () {
 			csUI.setupGui();
-			gameState.renderLoop = new utils.AnimationLoop(function() {
+
+
+			gameState.gameLoop = new utils.AnimationLoop(1000/1000, function() {
+				csUI.pollUserInteraction();
+				csLoop.step();
+			});
+			//gameState.gameLoop.start();
+
+			gameState.renderLoop = new utils.AnimationLoop(0, function() {
 				csUI.pollUserInteraction();
 				csLoop.step();
 				csLoop.render();

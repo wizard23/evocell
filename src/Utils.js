@@ -69,17 +69,19 @@ define(["jquery", "FileSaver"], function($, saveAs) {
 		r.responseType = responseType;
 		r.onload = function() {   // XHR2
 			if (cb) cb(r.response); // XHR2
-		}      
+		};    
 		r.send();            
 	}
 
-	requestAnimFrame = (function(){
+	var requestAnimFrame = (function(){
 		return  window.webkitRequestAnimationFrame ||
 		window.mozRequestAnimationFrame ||
-		function(callback, element){ setTimeout(callback, 1000 / 60); }
+		function(callback, element){ setTimeout(callback, 1000 / 60); };
 	})();
 
-	var AnimationLoop = function(callback) {
+	// if ms == 0 use AbimationLoop otherwise fixed timing
+	var AnimationLoop = function(ms, callback) {
+		this.ms = ms;
 		this.callback = callback;
 		this.pauseRequested = true;
 	};
@@ -90,11 +92,14 @@ define(["jquery", "FileSaver"], function($, saveAs) {
 		var myFn = function() {
 			if (!loopContext.pauseRequested) {
 				loopContext.callback();
-				requestAnimFrame(myFn);
+				if (loopContext.ms)
+					setTimeout(myFn, loopContext.ms);
+				else
+					requestAnimFrame(myFn);
 			}
-		}
+		};
 		myFn();
-	}
+	};
 
 	AnimationLoop.prototype.step = function() {
 		this.callback();
