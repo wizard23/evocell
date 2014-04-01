@@ -1,4 +1,4 @@
-define(["CellSpace/State", "three", "Utils"], function(gameState, THREE, utils) {
+define(["CellSpace/State", "data/FileStore", "three", "Utils"], function(gameState, fileStore, THREE, utils) {
 	"use strict";
 
 /////// PUBLIC ///////////
@@ -115,14 +115,15 @@ define(["CellSpace/State", "three", "Utils"], function(gameState, THREE, utils) 
 		resetGame();
 	}; 
 
+	var refreshAvailableRules = function() {
+		fileStore.loadAllRuleNames(function(names) {
+			gameState.drawModel.set("availableRules", names);
+        });
+	};
+
 ////// PTIVATE //////////////
 
 	return {
-		//playSound: playSound,
-		//getNDCFromMouseEvent: getNDCFromMouseEvent,
-		//intersectClick: intersectClick, 
-	
-
 		pollAutoFire: pollAutoFire,
 		fireShotAt: fireShotAt,
 		updateButtons: updateButtons,
@@ -131,5 +132,6 @@ define(["CellSpace/State", "three", "Utils"], function(gameState, THREE, utils) 
 		gameStep: gameStep,
 		gamePlayPause: gamePlayPause,
 		onGameSizeChanged: onGameSizeChanged,
+		refreshAvailableRules: refreshAvailableRules,
 	};
 });

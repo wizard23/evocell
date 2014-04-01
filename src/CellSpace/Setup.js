@@ -1,4 +1,7 @@
-define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State"], function(utils, fileStore, EC, gameState) {
+define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Utils"], 
+	function(utils, fileStore, EC, gameState, csUtils) {
+	"use strict";
+
 	// static
 	var setup = function(canvas, callback) {
 		var loader = new EC.ResLoader();
@@ -84,10 +87,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State"], function(utils
 
 			gameState.shaders.scroll = reactor.compileShader(data.scroller);
 
-			fileStore.loadAllRuleNames(function(names) {
-				gameState.drawModel.set("availableRules", names);
-			});
-
+			csUtils.refreshAvailableRules();
 
 			//fileStore.storeRule(data.rules.enemy2);
 			//fileStore.loadRule("starwars", function(loadedRule) {

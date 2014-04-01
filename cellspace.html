@@ -69,7 +69,11 @@
 
 
 <select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableRules, selectedOptions: selectedRules"></select><br/>
-<input type="button" id="assignLayerRule" />
+
+<input type="button" id="assignLayerRule" value="assign" />
+<input type="file" value="import..." id="importRule" />
+<input type="button" id="saveRule" value="export.." />
+<input type="button" id="deleteRule" value="delete" />
 
 <select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableLayers, selectedOptions: selectedLayers"></select><br/>
 <select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableStates, selectedOptions: selectedStates"></select><br/>

@@ -49,7 +49,7 @@ request.onupgradeneeded = function(event) {
 };
 
 
-var storeRule = function(name, ruleData) {
+var storeRule = function(name, ruleData, callback) {
   var objectStore = db.transaction([ruleStoreName], "readwrite").objectStore(ruleStoreName);
   var request = objectStore.add({name:name, ruleData:ruleData});
   request.onerror = function(event) {
@@ -57,6 +57,7 @@ var storeRule = function(name, ruleData) {
   };
   request.onsuccess = function(event) {
     //alert("I haz saved rule" + ruleData);
+    if (callback) callback();
   };
 };
 

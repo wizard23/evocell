@@ -20,6 +20,22 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 		}, false);
 
+
+		$('#importRule').change(function(evt) {
+			var file = evt.target.files[0]; // FileList object
+			var reader = new FileReader();
+			reader.onload = function(evt) {	
+				var arrayBufferData = evt.target.result;
+				var evoCellData = new EC.ECFile(arrayBufferData);
+				//alert(evoCellData);
+				//alert(file.name);
+				fileStore.storeRule(file.name, evoCellData, function() {
+					csUtils.refreshAvailableRules();
+				});
+			};
+			reader.readAsArrayBuffer(file); // start async operation
+		});
+
 		document.getElementById("stepLink").addEventListener('click', function(evt) {
 			csUtils.gameStep();
 		}, false);
