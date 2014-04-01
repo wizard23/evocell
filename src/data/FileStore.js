@@ -61,6 +61,19 @@ var storeRule = function(name, ruleData, callback) {
   };
 };
 
+var deleteRule = function(name, callback) {
+  var request = db.transaction([ruleStoreName], "readwrite")
+                .objectStore(ruleStoreName)
+                .delete(name);
+  request.onerror = function(event) {
+    alert("me so sorry, could not delte rule named:" + name);
+  };
+  request.onsuccess = function(event) {
+    // It's gone!
+    if (callback) callback();
+  };
+};
+
 var loadRule = function(name, callback) {
   var objectStore = db.transaction([ruleStoreName]).objectStore(ruleStoreName);
   var request = objectStore.get(name);
@@ -103,6 +116,7 @@ var loadAllRuleNames = function(callback) {
 
 return {
   storeRule: storeRule,
+  deleteRule: deleteRule,
   loadRule: loadRule,
   loadAllRules: loadAllRules,
   loadAllRuleNames: loadAllRuleNames,

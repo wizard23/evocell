@@ -2,6 +2,8 @@
 <html lang="en-us">
 <head>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
+
+	<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
 	<!-- link type="text/css" rel="stylesheet" href="../res_evocell/css/jquery-ui-1.10.4.custom.css" / -->
@@ -68,12 +70,18 @@
 <label><input type="radio" value="rectangle" data-bind="checked: selectedDrawShape" />Recangle</label><br/>
 
 
-<label for="importRule">import rule:</label><input type="file" value="import..." id="importRule" />
+
+
+<div class="fileUpload btn">
+    <span>Import Rule...</span>
+    <input type="file" class="upload" id="importRule" />
+</div>
+<input class="btn" type="button" id="saveRule" value="export.." />
+<input class="btn" type="button" id="deleteRule" value="delete" />
+
 <select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableRules, selectedOptions: selectedRules"></select><br/>
 
-<input type="button" id="assignLayerRule" value="assign" />
-<input type="button" id="saveRule" value="export.." />
-<input type="button" id="deleteRule" value="delete" />
+<input class="btn" type="button" id="assignLayerRule" value="assign" />
 
 <select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableLayers, selectedOptions: selectedLayers"></select><br/>
 <select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableStates, selectedOptions: selectedStates"></select><br/>

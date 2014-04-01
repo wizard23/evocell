@@ -36,6 +36,13 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			reader.readAsArrayBuffer(file); // start async operation
 		});
 
+		document.getElementById("deleteRule").addEventListener('click', function(evt) {
+			var ruleName = gameState.drawModel.get("selectedRules")[0];
+			fileStore.deleteRule(ruleName, function() {
+				csUtils.refreshAvailableRules();
+			});
+		}, false);
+
 		document.getElementById("stepLink").addEventListener('click', function(evt) {
 			csUtils.gameStep();
 		}, false);

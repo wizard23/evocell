@@ -63,7 +63,7 @@ body {
 	padding: 0px 0x 0px 0px;
 	border:0px solid #AAAAAA; 
 position: fixed; bottom: 0px;right: 0px; z-index:2; 
-color: white; width: 360px;
+color: white; width: 400px;
 background:rgba(0,0,0,1);
 }
 
@@ -121,5 +121,21 @@ select option:nth-child(even) {  }
    line-height: 1em;
 }
 
+.fileUpload {
+	position: relative;
+	overflow: hidden;
+	margin: 10px;
+	padding: 10px;
+}
 
-
+.fileUpload input.upload {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 0;
+	padding: 0;
+	font-size: 20px;
+	cursor: pointer;
+	opacity: 0;
+	filter: alpha(opacity=0);
+}
