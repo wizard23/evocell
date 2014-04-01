@@ -62,7 +62,12 @@ var storeRule = function(name, ruleData, callback) {
 };
 
 var deleteRule = function(name, callback) {
-  var request = db.transaction([ruleStoreName], "readwrite")
+  var transaction = db.transaction([ruleStoreName], "readwrite");
+
+  //transaction.onabort = function(e) { alert("atransbort"); };
+  //transaction.oncomplete = function(e) { alert("ctrans omplete"); };
+  
+  var request = transaction
                 .objectStore(ruleStoreName)
                 .delete(name);
   request.onerror = function(event) {
