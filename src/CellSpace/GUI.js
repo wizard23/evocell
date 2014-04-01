@@ -22,24 +22,41 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 
 		$('#importRule').change(function(evt) {
-			var file = evt.target.files[0]; // FileList object
-			var reader = new FileReader();
-			reader.onload = function(evt) {	
-				var arrayBufferData = evt.target.result;
-				var evoCellData = new EC.ECFile(arrayBufferData);
-				//alert(evoCellData);
-				//alert(file.name);
-				fileStore.storeRule(file.name, evoCellData, function() {
-					csUtils.refreshAvailableRules();
-				});
-			};
-			reader.readAsArrayBuffer(file); // start async operation
+			var files = evt.target.files; // FileList object
+
+			_.each(files, function(file) {
+				var reader = new FileReader();
+				reader.onload = function(evt) {	
+					var arrayBufferData = evt.target.result;
+					var evoCellData = new EC.ECFile(arrayBufferData);
+					//alert(evoCellData);
+					//alert(file.name);
+					fileStore.storeRule(file.name, evoCellData, function() {
+						csUtils.refreshAvailableRules();
+					});
+				};
+				reader.readAsArrayBuffer(file); // start async operation
+			});
 		});
 
 		document.getElementById("deleteRule").addEventListener('click', function(evt) {
-			var ruleName = gameState.drawModel.get("selectedRules")[0];
-			fileStore.deleteRule(ruleName, function() {
+			var selectedRules = gameState.drawModel.get("selectedRules");
+
+			var refresh = _.after(selectedRules.length, function() {
+				//alert("refresh");
 				csUtils.refreshAvailableRules();
+			});
+
+			_.each(selectedRules, function(ruleName) {
+				fileStore.loadRule(ruleName, function(rule) {
+					if (!rule ) {
+						alert("cant delete nonextent: " + ruleName);
+					}
+					fileStore.deleteRule(ruleName, function() {
+						//alert("deleted:" + ruleName);
+						refresh();
+					});
+				});
 			});
 		}, false);
 

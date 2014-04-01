@@ -118,6 +118,7 @@ define(["CellSpace/State", "data/FileStore", "three", "Utils"], function(gameSta
 	var refreshAvailableRules = function() {
 		fileStore.loadAllRuleNames(function(names) {
 			gameState.drawModel.set("availableRules", names);
+			//alert(names);
         });
 	};
 
