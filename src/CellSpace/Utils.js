@@ -1,5 +1,10 @@
-define(["CellSpace/State", "data/FileStore", "three", "Utils"], function(gameState, fileStore, THREE, utils) {
-	"use strict";
+define([
+	"jquery-ui", "Utils", "EvoCell", "story/StoryTeller", "underscore", 
+	"backbone", "knockback", "knockout", "data/FileStore", "three", "datgui", 
+	"CellSpace/State"], 
+function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat, 
+	gameState) {
+		"use strict";
 
 /////// PUBLIC ///////////
 	// access to gamestate
