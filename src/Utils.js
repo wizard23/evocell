@@ -90,12 +90,14 @@ define(["jquery", "FileSaver"], function($, saveAs) {
 		var loopContext = this;
 		this.pauseRequested = false;
 		var myFn = function() {
+			// requestnext frame aspa according to: https://developer.mozilla.org/en-US/docs/Games/Anatomy
 			if (!loopContext.pauseRequested) {
-				loopContext.callback();
 				if (loopContext.ms)
 					setTimeout(myFn, loopContext.ms);
 				else
 					requestAnimFrame(myFn);
+
+				loopContext.callback();
 			}
 		};
 		myFn();
