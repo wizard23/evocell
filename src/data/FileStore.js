@@ -50,22 +50,28 @@ request.onupgradeneeded = function(event) {
 
 
 var storeRule = function(name, ruleData, callback) {
-  var objectStore = db.transaction([ruleStoreName], "readwrite").objectStore(ruleStoreName);
+  var transaction = db.transaction([ruleStoreName], "readwrite");
+   transaction.oncomplete = function(e) { 
+    if (callback) callback(); 
+  };
+
+  var objectStore = transaction.objectStore(ruleStoreName);
   var request = objectStore.add({name:name, ruleData:ruleData});
   request.onerror = function(event) {
     alert("me so sorry, could not save:" + ruleData);
   };
   request.onsuccess = function(event) {
-    //alert("I haz saved rule" + ruleData);
-    if (callback) callback();
+    // dont call callback here call it later when transaction is done!
+    //if (callback) callback();
   };
 };
 
 var deleteRule = function(name, callback) {
   var transaction = db.transaction([ruleStoreName], "readwrite");
-
   //transaction.onabort = function(e) { alert("atransbort"); };
-  //transaction.oncomplete = function(e) { alert("ctrans omplete"); };
+  transaction.oncomplete = function(e) { 
+   if (callback) callback(); 
+  };
   
   var request = transaction
                 .objectStore(ruleStoreName)
@@ -75,7 +81,6 @@ var deleteRule = function(name, callback) {
   };
   request.onsuccess = function(event) {
     // It's gone!
-    if (callback) callback();
   };
 };
 
