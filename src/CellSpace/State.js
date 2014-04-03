@@ -45,6 +45,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		enableScrolling: 1,
 		shipX: 0, shipY: 0,
 		scrollX: 0, scrollY: 0,
+		parallaxX: 0, parallaxY: 0,
 		playerEnergy: 10000,
 		stepSize: 1.5, 
 		

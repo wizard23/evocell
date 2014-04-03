@@ -27,7 +27,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 		
 		loader.load("rules.shipExplosion", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
-		//loader.load("rules.shipExplosion", resPath + "rules/ship_avg4_nice", "ecfile");
+		loader.load("rules.shipExplosion", resPath + "rules/moore5-coolspaceships", "ecfile");
 
 		loader.load("rules.ship", resPath + "rules/ship_avg4_nice", "ecfile");
 
@@ -76,7 +76,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			gameState.shaders.drawPoints = reactor.compileShader(data.vertexPoints, data.drawAll);
 			
 			gameState.shaders.clear = reactor.compileShader(data.clear);
-			gameState.shaders.scrollingRender = reactor.compileShader(data.rendererVertex, data.rendererFragment);
+			gameState.shaders.cameraRenderer = reactor.compileShader(data.rendererVertex, data.rendererFragment);
 
 			gameState.shaders.drawRect = reactor.compileShader(data.drawRect);
 			gameState.shaders.drawCircle = reactor.compileShader(data.drawCircle);
