@@ -144,7 +144,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				gameState.parallaxY  += deltaY;
 
 
-				var parallax = 2;
+				var parallax = 3;
 				var pX = Math.round(gameState.parallaxX/parallax);
 				var pY = Math.round(gameState.parallaxY/parallax);
 

@@ -159,9 +159,8 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 				[0, 255, 0, 255]
 			]);
 
-			gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, 0.0005);
+			gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, 0.001);
 			gameState.dishes.enemy2.randomize(gameState.rules.enemy.nrStates, 0.01);
-			gameState.dishes.shipExplosion.randomize(gameState.rules.shipExplosion.nrStates, 0.01);
 			gameState.shipX = gameState.gameW/2;
 			gameState.shipY = gameState.gameH/2;
 
