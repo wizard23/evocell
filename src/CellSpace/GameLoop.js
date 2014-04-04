@@ -144,19 +144,19 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				gameState.parallaxY  += deltaY;
 
 
-				var parallax = 3;
-				var pX = Math.round(gameState.parallaxX/parallax);
-				var pY = Math.round(gameState.parallaxY/parallax);
+				var parallaxDist = 3;
+				var pScrollX = Math.round(gameState.parallaxX/parallaxDist);
+				var pScrollY = Math.round(gameState.parallaxY/parallaxDist);
 
-				if (pX || pY) {
-					var pX = -pX/gameState.gameW;
-					var pY = -pY/gameState.gameH;
+				if (pScrollX || pScrollY) {
+					var dX = -pScrollX/gameState.gameW;
+					var dY = -pScrollY/gameState.gameH;
 
 					reactor.mixDish(gameState.shaders.scroll, gameState.dishes.enemy2, 
-						{scroll: [pX, pY]});
+						{scroll: [dX, dY]});
 
-					gameState.parallaxX  = 0;
-					gameState.parallaxY = 0;
+					gameState.parallaxX  -= pScrollX*parallaxDist;
+					gameState.parallaxY -= pScrollY*parallaxDist;
 				}
 
 				csUtils.refreshGUI();
