@@ -90,32 +90,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// Dish INTERACTION ///////////////////////////////////
 
 
-		//enemy shields
-		reactor.mixDish(gameState.shaders.shieldSpawn, gameState.dishes.enemyShield, {
-			texShield: gameState.dishes.enemyShield, texTarget: gameState.dishes.enemy,
-			width: gameState.gameW, height: gameState.gameH
-		});
-
-		// shield gets erroded by explosions
-		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemyShield, { 
-			tex1: gameState.dishes.enemyShield, tex2: gameState.dishes.weapon, 
-			state: (gameState.rules.weaponExplosion.nrStates-1)/255, 
-			operation: OP_REPLACE
-		});
-
-		// explosions get killed by shield 
-		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, { 
-			tex1: gameState.dishes.enemyShield, tex2: gameState.dishes.weaponExplosion, 
-			state: 0/255, 
-			operation: OP_REPLACE
-		});
-		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weapon, { 
-			tex1: gameState.dishes.enemyShield, tex2: gameState.dishes.weapon, 
-			state: 0/255, 
-			operation: OP_REPLACE
-		});
-
-
+	
 
 		// weapon + enemy -> weaponExplosion
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, { 
@@ -127,6 +102,38 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// enemy spawn even more explosion when explodion
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, 
 			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.weaponExplosion, state: 3/255, operation: OP_REPLACE});
+
+
+		//enemy shields generate
+		reactor.mixDish(gameState.shaders.shieldSpawn, gameState.dishes.enemyShield, {
+			texShield: gameState.dishes.enemyShield, texTarget: gameState.dishes.enemy,
+			width: gameState.gameW, height: gameState.gameH
+		});
+
+		// shield gets erroded by explosions
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemyShield, { 
+			tex1: gameState.dishes.enemyShield, tex2: gameState.dishes.weapon, 
+			state: -1/255, 
+			operation: OP_ADD
+		});
+
+		// weapon killed by shield
+		/*
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weapon, { 
+			tex1: gameState.dishes.enemyShield, tex2: gameState.dishes.weapon, 
+			state: 0/255, 
+			operation: OP_REPLACE
+		});
+		*/
+
+		// explosions get killed by shield 
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, { 
+			tex1: gameState.dishes.enemyShield, tex2: gameState.dishes.weaponExplosion, 
+			state: 0/255, 
+			operation: OP_REPLACE
+		});
+
+
 
 		// enemy dies from explosion
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 

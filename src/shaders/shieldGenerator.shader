@@ -26,6 +26,8 @@ void main(void) {
 		}
 		else
 		{
+			a = texture2D(texShield, vTexCoord + vec2(0, 0)).a;
+			if (a > 0. && a < aMin) aMin = a;
 			a = texture2D(texShield, vTexCoord + vec2(dx, 0)).a;
 			if (a > 0. && a < aMin) aMin = a;
 			a = texture2D(texShield, vTexCoord + vec2(-dx, 0)).a;

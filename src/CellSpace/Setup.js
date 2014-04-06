@@ -173,6 +173,10 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 				[255, 255, 255, 140],
 				[255, 255, 255, 160],
 				[255, 255, 255, 180],
+				[255, 255, 255, 180],
+				[255, 255, 255, 180],
+				[255, 255, 255, 180],
+				[255, 255, 255, 180],
 			]);
 
 			gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, 0.001);
