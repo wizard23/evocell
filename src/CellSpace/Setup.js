@@ -164,20 +164,23 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 				[0, 255, 0, 255]
 			]);
 
-			gameState.colors.enemyShield = new EC.Palette(reactor, [
-				[0, 0, 0, 255],
-				[255, 0, 0, 100],
-				[0, 255, 0, 100],
-				[0, 0, 255, 150],
-				[255, 255, 255, 120],
-				[255, 255, 255, 140],
-				[255, 255, 255, 160],
-				[255, 255, 255, 180],
-				[255, 255, 255, 180],
-				[255, 255, 255, 180],
-				[255, 255, 255, 180],
-				[255, 255, 255, 180],
-			]);
+			gameState.colors.enemyShield = new EC.Palette(reactor);
+
+			var a = 50;
+			gameState.colors.enemyShield.generateColors({
+				0: [0,0,0,0], 
+				6:[255,0,0,a], 
+				12:[0,255,0,a], 
+				18:[0,0,255,a],
+				24:[255,255,255,a]
+			});
+
+			// yellow shield
+			gameState.colors.enemyShield.generateColors({
+				0: [0,0,0,0], 
+				1:[255,255,0,0], 
+				24:[255,255,0,250]
+			});
 
 			gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, 0.001);
 			gameState.dishes.enemy2.randomize(gameState.rules.enemy.nrStates, 0.01);
