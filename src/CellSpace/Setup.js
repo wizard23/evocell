@@ -23,6 +23,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 		loader.load("rules.weapon", resPath + "rules/ship_avg4_nice", "ecfile");
 		
 		loader.load("rules.weaponExplosion", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
+		loader.load("rules.weaponExplosion", resPath + "rules/moore5-coolspaceships", "ecfile");
 		//loader.load("rules.weaponExplosion", resPath + "rules/ship_avg4_nice", "ecfile");
 
 		
@@ -48,6 +49,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 		loader.load("rendererFragment", "src/shaders/cameraRenderer.shader", "text");
 
 		loader.load("intersectSpawn", "src/shaders/intersectSpawn.shader", "text");
+		loader.load("shieldSpawn", "src/shaders/shieldGenerator.shader", "text");
 
 		loader.load("copyPaste", "src/shaders/copyPasteRect.shader", "text");
 
@@ -62,6 +64,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 			var dishes = gameState.dishes;
 			dishes.enemy = reactor.compileDish();
+			dishes.enemyShield = reactor.compileDish();
 			dishes.enemy2 = reactor.compileDish();
 			dishes.ship = reactor.compileDish();
 			dishes.shipExplosion = reactor.compileDish();
@@ -83,11 +86,13 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 			gameState.shaders.mix = reactor.compileShader(data.mixPalette);
 			gameState.shaders.intersectSpawn = reactor.compileShader(data.intersectSpawn);
+			gameState.shaders.shieldSpawn = reactor.compileShader(data.shieldSpawn);
 			gameState.shaders.copy = reactor.compileShader(data.copyPaste);
 
 			gameState.shaders.scroll = reactor.compileShader(data.scroller);
 
 			csUtils.refreshAvailableRules();
+			csUtils.refreshAvailableDishes();
 
 			//fileStore.storeRule(data.rules.enemy2);
 			//fileStore.loadRule("starwars", function(loadedRule) {
@@ -115,10 +120,10 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 			gameState.colors.weapon = new EC.Palette(reactor, [
 				[0, 0, 0, 255],
-				[0, 120, 0, 255],
-				[0, 255, 0, 255],
-				[120, 255, 0, 255],
-				[200, 255, 0, 255],
+				[0, 120, 0, 180],
+				[0, 255, 0, 180],
+				[120, 255, 0, 180],
+				[200, 255, 0, 180],
 			]);
 
 			gameState.colors.weaponExplosion = new EC.Palette(reactor, [
@@ -140,9 +145,9 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 			gameState.colors.ship = new EC.Palette(reactor, [
 				[0, 0, 0, 255], 
-				[0, 0, 255, 255],
-				[0, 80, 255, 255],
-				[0, 190, 255, 255]
+				[0, 0, 255, 200],
+				[0, 80, 255, 200],
+				[0, 190, 255, 200]
 			]);
 
 			gameState.colors.shipExplosion = new EC.Palette(reactor, [
@@ -157,6 +162,17 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 				[0, 130, 0, 255],
 				[0, 190, 0, 255],
 				[0, 255, 0, 255]
+			]);
+
+			gameState.colors.enemyShield = new EC.Palette(reactor, [
+				[0, 0, 0, 255],
+				[255, 0, 0, 100],
+				[0, 255, 0, 100],
+				[0, 0, 255, 150],
+				[255, 255, 255, 120],
+				[255, 255, 255, 140],
+				[255, 255, 255, 160],
+				[255, 255, 255, 180],
 			]);
 
 			gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, 0.001);

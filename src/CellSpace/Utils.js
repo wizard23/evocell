@@ -127,6 +127,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
         });
 	};
 
+	var refreshAvailableDishes = function() {
+			gameState.drawModel.set("availableLayers", Object.keys(gameState.dishes));
+	};
+
 ////// PTIVATE //////////////
 
 	return {
@@ -138,6 +142,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		gameStep: gameStep,
 		gamePlayPause: gamePlayPause,
 		onGameSizeChanged: onGameSizeChanged,
+
 		refreshAvailableRules: refreshAvailableRules,
+		refreshAvailableDishes: refreshAvailableDishes,
 	};
 });

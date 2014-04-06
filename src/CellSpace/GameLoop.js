@@ -89,19 +89,46 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 		// Dish INTERACTION ///////////////////////////////////
 
+
+		//enemy shields
+		reactor.mixDish(gameState.shaders.shieldSpawn, gameState.dishes.enemyShield, {
+			texShield: gameState.dishes.enemyShield, texTarget: gameState.dishes.enemy,
+			width: gameState.gameW, height: gameState.gameH
+		});
+
+		// shield gets erroded by explosions
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemyShield, { 
+			tex1: gameState.dishes.enemyShield, tex2: gameState.dishes.weapon, 
+			state: (gameState.rules.weaponExplosion.nrStates-1)/255, 
+			operation: OP_REPLACE
+		});
+
+		// explosions get killed by shield 
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, { 
+			tex1: gameState.dishes.enemyShield, tex2: gameState.dishes.weaponExplosion, 
+			state: 0/255, 
+			operation: OP_REPLACE
+		});
+
+
 		// weapon + enemy -> weaponExplosion
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, { 
 			tex1: gameState.dishes.weapon, tex2: gameState.dishes.enemy, 
 			state: (gameState.rules.weaponExplosion.nrStates-1)/255, 
 			operation: OP_REPLACE
 		});
+
+		// enemy spawn even more explosion when explodion
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, 
 			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.weaponExplosion, state: 3/255, operation: OP_REPLACE});
 
+		// enemy dies from explosion
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
 			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.weaponExplosion, state: 0/255, operation: OP_REPLACE});
-		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weapon, 
-			{tex1: gameState.dishes.weapon, tex2: gameState.dishes.weaponExplosion, state: 3/255, operation: OP_REPLACE});	
+		
+		// strange infectious weapon from expoloshion
+	//	reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weapon, 
+	//		{tex1: gameState.dishes.weapon, tex2: gameState.dishes.weaponExplosion, state: 3/255, operation: OP_REPLACE});	
 
 
 		// ship to enemy colissions spawn shipExplosions
@@ -111,6 +138,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			operation: OP_REPLACE});
 		
 		// shipExplosions reinforced by enemys
+		// state 3 actually makes it passive
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.shipExplosion, 
 			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: 3/255, operation: OP_REPLACE});
 	
@@ -122,11 +150,6 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// ship gets killed by shipExplosions
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.ship, 
 			{tex1: gameState.dishes.ship, tex2: gameState.dishes.shipExplosion, state: 0/255, operation: OP_REPLACE});			
-
-		//reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
-		//	{texNew: gameState.dishes.enemy, texPalette: gameState.colors.enemy.getTexture()});
-
-		//reactor.mixDish(shaders.mix, dishes.render, {texNew: dishes.copy, texPalette: colors.copy.getTexture()});		
 
 
 		if (gameState.enableScrolling === 1 || gameState.enableScrolling === "1") {
@@ -244,6 +267,9 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			{texNew: gameState.dishes.weaponExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.shipExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});			
+		
+		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
+			{texNew: gameState.dishes.enemyShield, texPalette: gameState.colors.enemyShield.getTexture()});			
 
 		reactor.paintDish(gameState.shaders.cameraRenderer, gameState.dishes.render, function(gl, shader) {
 			gl.uniform2f(gl.getUniformLocation(shader, "resolution"), gameState.gameW, gameState.gameH);
