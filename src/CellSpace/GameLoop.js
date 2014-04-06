@@ -109,6 +109,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			state: 0/255, 
 			operation: OP_REPLACE
 		});
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weapon, { 
+			tex1: gameState.dishes.enemyShield, tex2: gameState.dishes.weapon, 
+			state: 0/255, 
+			operation: OP_REPLACE
+		});
+
 
 
 		// weapon + enemy -> weaponExplosion
