@@ -22,6 +22,7 @@ void main(void) {
 		float damp = color2.a;
 		//damp /= 2.;
 		//damp = 0.5;
+		damp = 3. * damp * damp;
 		gl_FragColor = vec4(color.r*damp, color.g*damp, color.b*damp, 1.);
 	}
 	else

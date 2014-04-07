@@ -97,6 +97,9 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 						if (l === 2) {
 							gl.uniform2f(gl.getUniformLocation(progCA, paramName), param[0], param[1]);
 						}
+						else if (l === 4) {
+							gl.uniform4f(gl.getUniformLocation(progCA, paramName), param[0], param[1], param[2], param[3]);
+						}
 					}
 				}
 			}

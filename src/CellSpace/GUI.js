@@ -319,6 +319,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			gameState.dishes.enemyShield.randomize(24, 0.1);
 		}
 
+		if (keyboard.isPressed("S".charCodeAt())) {
+			gameState.reactor.mixDish(gameState.shaders.clear, gameState.dishes.enemyShield, 
+				{color: [0,0,0,24/255]});
+		}
+
 		// escape
 		if (keyboard.isPressed(27))
 		{

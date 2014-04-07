@@ -270,7 +270,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		gameState.viewMatrix = new THREE.Matrix4().multiplyMatrices(shipCenterMatrix, gameState.viewMatrix);
 
 				// COMPOSE ////////////////////////////////////////////
-		reactor.applyShaderOnDish(gameState.shaders.clear, gameState.dishes.render);
+		reactor.mixDish(gameState.shaders.clear, gameState.dishes.render, {color: [0,0,0,255]});
 
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.enemy2, texPalette: gameState.colors.enemy2.getTexture()});
