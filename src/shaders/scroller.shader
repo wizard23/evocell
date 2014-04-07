@@ -15,8 +15,8 @@ void main(void) {
 	//if (pos.y > 1.) pos.y -= 1.;
 	//if (pos.y < 0.) pos.y += 1.;
 	
-	pos.x = mod(pos.x, 1.);
-	pos.y = mod(pos.y, 1.);
+	//pos.x = mod(pos.x, 1.);
+	//pos.y = mod(pos.y, 1.);
 
 	vec4 color = texture2D(texFrame, pos);
 	gl_FragColor = color;
