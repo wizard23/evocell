@@ -73,6 +73,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			dishes.copy = reactor.compileDish();
 			dishes.buffer = reactor.compileDish(64, 64);
 			dishes.render = reactor.compileDish();
+			dishes.render2 = reactor.compileDish();
 
 			gameState.shots = new EC.ParticleSystem(reactor, gameState.maxParticles, gameState.gameW, gameState.gameH);
 
@@ -178,8 +179,8 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			// yellow shield
 			gameState.colors.enemyShield.generateColors({
 				0: [0,0,0,0], 
-				1:[255,255,0,0], 
-				24:[255,255,0,250]
+				1:[0,0,0,20], 
+				24:[0,0,0,255]
 			});
 
 			gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, 0.001);

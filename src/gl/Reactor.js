@@ -38,7 +38,7 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		this.defaultDishSize = {width: w, height : h};
 	}; 
 	
-	Reactor.prototype.paintDish = function(paintShader, dish, callback)
+	Reactor.prototype.paintDish = function(paintShader, dish, dish2, callback)
 	{
 		this.gl.viewport(0,0, this.renderWidth, this.renderHeight);
 		var bindCallback = function(gl, progCA)
@@ -47,6 +47,10 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 			gl.activeTexture(gl.TEXTURE0);    
 			gl.bindTexture(gl.TEXTURE_2D, dish.getCurrentTexture());
 
+			gl.uniform1i(gl.getUniformLocation(progCA, "texFrame2"), 1);
+			gl.activeTexture(gl.TEXTURE1);    
+			gl.bindTexture(gl.TEXTURE_2D, dish2.getCurrentTexture());
+
 			if (callback)
 				callback(gl, progCA);
 		};
@@ -54,6 +58,7 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		this.applyShader(paintShader, null, bindCallback);
 	};
 
+	// main function to call
 	Reactor.prototype.mixDish = function(mixShader, mainDish, parameters, callback)
 	{
 		this.gl.viewport(0,0, mainDish.width, mainDish.height);
@@ -70,9 +75,11 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 			var textureCount = 1;
 			for (var paramName in parameters) {
 				var param = parameters[paramName];
+				// type conversion
 				if (param instanceof Dish) {
 					param = param.getCurrentTexture();
 				}
+
 				// distinguish types				
 				if (param instanceof WebGLTexture) {
 					gl.uniform1i(gl.getUniformLocation(progCA, paramName), textureCount);
@@ -87,7 +94,7 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 					}
 					else {
 						var l = param.length;
-						if (l == 2) {
+						if (l === 2) {
 							gl.uniform2f(gl.getUniformLocation(progCA, paramName), param[0], param[1]);
 						}
 					}
@@ -95,12 +102,12 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 			}
 			
 			if (callback) {
-				callback(gl, progCA)
+				callback(gl, progCA);
 			}
-		}
+		};
 		this.applyShader(mixShader, framebuffer, bindCallback);
 		mainDish.flip();
-	}
+	};
 
 	Reactor.prototype.step = function(rule, dish) 
 	{

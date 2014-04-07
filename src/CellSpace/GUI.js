@@ -315,6 +315,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// space
 		if (keyboard.isPressed(32)) {
 			csUtils.resetGame();
+
+			gameState.dishes.enemyShield.randomize(24, 0.1);
 		}
 
 		// escape
