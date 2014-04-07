@@ -286,8 +286,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			{texNew: gameState.dishes.shipExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});			
 		
 		// render shields in render2
-		reactor.applyShaderOnDish(gameState.shaders.clear, gameState.dishes.render2);
-		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render2, 
+		//reactor.applyShaderOnDish(gameState.shaders.clear, gameState.dishes.render2);
+		reactor.mixDish(gameState.shaders.stamp, gameState.dishes.render2, 
 			{texNew: gameState.dishes.enemyShield, texPalette: gameState.colors.enemyShield.getTexture()});			
 
 		//reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 

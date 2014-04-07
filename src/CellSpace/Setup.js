@@ -39,6 +39,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 		loader.load("clear", "src/shaders/clear.shader", "text");
 		loader.load("mixPalette", "src/shaders/mixPalette.shader", "text");	
+		loader.load("stampPalette", "src/shaders/stampPalette.shader", "text");	
 
 		loader.load("drawRect", "src/shaders/drawRect.shader", "text");
 		loader.load("drawCircle", "src/shaders/drawCircle.shader", "text");
@@ -86,6 +87,8 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			gameState.shaders.drawCircle = reactor.compileShader(data.drawCircle);
 
 			gameState.shaders.mix = reactor.compileShader(data.mixPalette);
+			gameState.shaders.stamp = reactor.compileShader(data.stampPalette);
+
 			gameState.shaders.intersectSpawn = reactor.compileShader(data.intersectSpawn);
 			gameState.shaders.shieldSpawn = reactor.compileShader(data.shieldSpawn);
 			gameState.shaders.copy = reactor.compileShader(data.copyPaste);
@@ -112,7 +115,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			rules.weaponExplosion = reactor.compileRule(data["rules.weaponExplosion"], gameState.dishes.enemy2);
 			
 			gameState.colors.enemy = new EC.Palette(reactor, [
-				[0, 0, 0, 255],
+				[0, 0, 0, 0],
 				[140, 10, 140, 255],
 				[255, 255, 255, 255],
 				[255, 30, 255, 255],
@@ -120,7 +123,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			]);
 
 			gameState.colors.weapon = new EC.Palette(reactor, [
-				[0, 0, 0, 255],
+				[0, 0, 0, 0],
 				[0, 120, 0, 180],
 				[0, 255, 0, 180],
 				[120, 255, 0, 180],
@@ -128,7 +131,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			]);
 
 			gameState.colors.weaponExplosion = new EC.Palette(reactor, [
-				[60, 60, 90, 255],
+				[60, 60, 90, 0],
 				[23, 108, 126, 255],
 				[18, 164, 195, 255],
 				[0, 210, 255, 255],
@@ -138,28 +141,28 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 			var bs = 0.12;
 			gameState.colors.enemy2 = new EC.Palette(reactor, [
-				[0, 0, 0, 255],
+				[0, 0, 0, 0],
 				[bs*10, bs*80, bs*80, 255], 
 				[bs*20, bs*170, bs*170, 255],
 				[bs*30, bs*255, bs*255, 255]
 			]);
 
 			gameState.colors.ship = new EC.Palette(reactor, [
-				[0, 0, 0, 255], 
+				[0, 0, 0, 0], 
 				[0, 0, 255, 200],
 				[0, 80, 255, 200],
 				[0, 190, 255, 200]
 			]);
 
 			gameState.colors.shipExplosion = new EC.Palette(reactor, [
-				[0, 0, 0, 255],
+				[0, 0, 0, 0],
 				[255, 0, 0, 255],
 				[255, 160, 0, 255],
 				[255, 255, 0, 255]
 			]);
 
 			gameState.colors.copy = new EC.Palette(reactor, [
-				[0, 0, 0, 255],
+				[0, 0, 0, 0],
 				[0, 130, 0, 255],
 				[0, 190, 0, 255],
 				[0, 255, 0, 255]
@@ -176,10 +179,10 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 				24:[255,255,255,a]
 			});
 
-			// yellow shield
+			// alpha only  shield
 			gameState.colors.enemyShield.generateColors({
-				0: [0,0,0,0], 
-				1:[0,0,0,20], 
+				0: [0,0,0,1], 
+				1:[0,0,0,10], 
 				24:[0,0,0,255]
 			});
 
