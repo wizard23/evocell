@@ -33,7 +33,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 
 		gameW: 256, gameH: 500,
 		screenW: 1200,
-		screenH: 900,
+		screenH: 800,
 
 		zoom: 1/3, // cell/pixel ratio
 		rot: 0,

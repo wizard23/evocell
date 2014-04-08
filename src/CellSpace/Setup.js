@@ -6,6 +6,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 	var setup = function(canvas, callback) {
 		var loader = new EC.ResLoader();
 		loader.load("rules.enemy", resPath + "rules/enemy_ludwigBuildships", "ecfile");
+		//loader.load("rules.enemy", resPath + "rules/enemy_lounge23", "ecfile");
 		//loader.load("rules.enemy", resPath + "rules/enemy_evil", "ecfile");
 		//loader.load("rules.enemy", resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
 		//loader.load("rules.enemy", "rules/enemy_d54_awesomeships", "ecfile");
@@ -31,6 +32,8 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 		loader.load("rules.shipExplosion", resPath + "rules/moore5-coolspaceships", "ecfile");
 
 		loader.load("rules.ship", resPath + "rules/ship_avg4_nice", "ecfile");
+		loader.load("rules.ship", resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
+		
 
 		// rules/ship_avg4_nice rules/ship_avg4_schweif
 
@@ -149,9 +152,11 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 			gameState.colors.ship = new EC.Palette(reactor, [
 				[0, 0, 0, 0], 
-				[0, 0, 255, 200],
+				[0, 0, 255, 100],
 				[0, 80, 255, 200],
-				[0, 190, 255, 200]
+				[0, 190, 255, 255],
+				[0, 225, 255, 255],
+				[0, 255, 255, 255],
 			]);
 
 			gameState.colors.shipExplosion = new EC.Palette(reactor, [
@@ -170,7 +175,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 			gameState.colors.enemyShield = new EC.Palette(reactor);
 
-			var a = 50;
+			var a = 100;
 			gameState.colors.enemyShield.generateColors({
 				0: [0,0,0,0], 
 				6:[255,0,0,a], 
@@ -182,8 +187,8 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			// alpha only  shield
 			gameState.colors.enemyShield.generateColors({
 				0: [0,0,0,1], 
-				1:[0,0,0,10], 
-				24:[0,0,0,255]
+				1:[255,255,0,10], 
+				24:[255,255,0,255]
 			});
 
 			gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, 0.001);
