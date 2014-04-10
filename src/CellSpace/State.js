@@ -31,7 +31,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		colors: {},
 		shots: null,
 
-		gameW: 350, gameH: 350,
+		gameW: 256, gameH: 256,
 		screenW: 1200,
 		screenH: 800,
 

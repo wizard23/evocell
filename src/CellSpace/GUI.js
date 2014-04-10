@@ -241,15 +241,23 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				csUtils.gameStep();
 			}
 		}
-		else if (keyboard.isPressed("X".charCodeAt()))
+		/*else if (keyboard.isPressed("X".charCodeAt()))
 		{
 			if (once) {
 				once=0;
 				csUtils.gamePlayPause();
 			}
-		}
+		}*/
 		else
 			once = 1;	
+
+		// shoot straight ahead
+		if (keyboard.isPressed("X".charCodeAt()))
+		{
+			var tx = gameState.shipX + Math.cos(gameState.shipDir);
+			var ty = gameState.shipY + Math.sin(gameState.shipDir);
+			csUtils.fireShotAt(tx, ty); 
+		}
 
 
 		if (keyboard.isPressed("O".charCodeAt()))
@@ -310,7 +318,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		}
 		// inertia based movement
 		else {
-			var rotSpeed = 0.1;
+			var rotSpeed = 0.15;
 			var accel = 0.1;
 			var minSpeed = 0.4;
 			var maxSpeed = 3;

@@ -33,7 +33,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 		loader.load("rules.ship", resPath + "rules/ship_avg4_nice", "ecfile");
 		loader.load("rules.ship", resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
-		
+
 
 		// rules/ship_avg4_nice rules/ship_avg4_schweif
 
