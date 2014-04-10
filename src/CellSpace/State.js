@@ -31,7 +31,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		colors: {},
 		shots: null,
 
-		gameW: 256, gameH: 500,
+		gameW: 350, gameH: 350,
 		screenW: 1200,
 		screenH: 800,
 
@@ -44,6 +44,9 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 
 		enableScrolling: 1,
 		shipX: 0, shipY: 0,
+		shipDir: Math.PI/2,
+		shipSpeed: 1.5,
+
 		scrollX: 0, scrollY: 0,
 		parallaxX: 0, parallaxY: 0,
 		playerEnergy: 10000,

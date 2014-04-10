@@ -25,9 +25,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		reactor.step(gameState.rules.shipExplosion, gameState.dishes.shipExplosion);
 		reactor.step(gameState.rules.ship, gameState.dishes.ship);
 
+
+		var shipR = 3;
 		// "DRAW" SHIP
 		reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.ship, 
-			{center: [gameState.shipX, gameState.shipY], radius: 3.5, state: (gameState.rules.ship.nrStates-1)/255});
+			{center: [gameState.shipX, gameState.shipY], radius: shipR, state: (gameState.rules.ship.nrStates-1)/255});
 
 		var cb = function(pos) {
 			try
@@ -48,7 +50,6 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 		// collide ship
 		if (gameState.cnt > 40) {
-			var shipR = 3;
 			var pX, pY;
 
 			var oldEnergy = gameState.playerEnergy;
@@ -165,6 +166,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			{tex1: gameState.dishes.ship, tex2: gameState.dishes.shipExplosion, state: 0/255, operation: OP_REPLACE});			
 
 
+		// DAT.gui workaround (stores ints as strings)
 		if (gameState.enableScrolling === 1 || gameState.enableScrolling === "1") {
 			var deltaX = Math.round(gameState.gameW/2 - gameState.shipX);
 			var deltaY = Math.round(gameState.gameH/2 - gameState.shipY);

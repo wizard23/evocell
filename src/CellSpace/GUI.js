@@ -276,34 +276,61 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			csUtils.refreshGUI();
 		}
 
+		// TODO: soyuld be in step
+		// direct movement
+		if (false) {
+			var dX = 0, dY = 0;
+			if (keyboard.isPressed(keyboard.UP)) dY +=1;
+			if (keyboard.isPressed(keyboard.DOWN)) dY -= 1;
+			if (keyboard.isPressed(keyboard.LEFT)) dX -= 1;
+			if (keyboard.isPressed(keyboard.RIGHT)) dX += 1;
 
-		var dX = 0, dY = 0;
-		if (keyboard.isPressed(keyboard.UP)) dY +=1;
-		if (keyboard.isPressed(keyboard.DOWN)) dY -= 1;
-		if (keyboard.isPressed(keyboard.LEFT)) dX -= 1;
-		if (keyboard.isPressed(keyboard.RIGHT)) dX += 1;
+			if (dX !== 0 || dY !== 0)
+			{
+				var dirV = new THREE.Vector4(dX, dY, 0);
+				dirV.w=0;
+				dirV.normalize().multiplyScalar(0.1);
+				dirV.add(new THREE.Vector4(0.5, 0.5, 0));
+				dirV.w = 0;
 
-		if (dX !== 0 || dY !== 0)
-		{
-			var dirV = new THREE.Vector4(dX, dY, 0);
-			dirV.w=0;
-			dirV.normalize().multiplyScalar(0.1);
-			dirV.add(new THREE.Vector4(0.5, 0.5, 0));
-			dirV.w = 0;
+				var moveDir = utils.intersectClick(dirV, gameState.viewMatrix, gameState.cameraAngle/2);
 
-			var moveDir = utils.intersectClick(dirV, gameState.viewMatrix, gameState.cameraAngle/2);
+				moveDir.sub(new THREE.Vector4(gameState.shipX/gameState.gameW, gameState.shipY/gameState.gameH, 0));
+				moveDir.w = 0;
+				moveDir.normalize().multiplyScalar(gameState.stepSize);
+				
+				// TODO: fix above direction Mapping
+				// TODO: Use clifford's NumJS Parer for THREE :)
+				//gameState.shipX += moveDir.x;
+				//gameState.shipY += moveDir.y;
 
-			moveDir.sub(new THREE.Vector4(gameState.shipX/gameState.gameW, gameState.shipY/gameState.gameH, 0));
-			moveDir.w = 0;
-			moveDir.normalize().multiplyScalar(gameState.stepSize);
+				gameState.shipX += dX;
+				gameState.shipY += dY;
+			}
+		}
+		// inertia based movement
+		else {
+			var rotSpeed = 0.1;
+			var accel = 0.1;
+			var minSpeed = 0.4;
+			var maxSpeed = 3;
+
+			if (keyboard.isPressed(keyboard.UP)) {
+				gameState.shipSpeed += accel;
+				if (gameState.shipSpeed > maxSpeed)
+					gameState.shipSpeed = maxSpeed;
+			}
+			if (keyboard.isPressed(keyboard.DOWN)) {
+				gameState.shipSpeed -= accel;
+				if (gameState.shipSpeed < minSpeed)
+					gameState.shipSpeed = minSpeed;
+			}
+			if (keyboard.isPressed(keyboard.LEFT)) gameState.shipDir += rotSpeed;
+			if (keyboard.isPressed(keyboard.RIGHT)) gameState.shipDir -= rotSpeed;
+
+			gameState.shipX += gameState.shipSpeed * Math.cos(gameState.shipDir);
+			gameState.shipY += gameState.shipSpeed * Math.sin(gameState.shipDir);
 			
-			// TODO: fix above direction Mapping
-			// TODO: Use clifford's NumJS Parer for THREE :)
-			//gameState.shipX += moveDir.x;
-			//gameState.shipY += moveDir.y;
-
-			gameState.shipX += dX;
-			gameState.shipY += dY;
 		}
 
 /*
@@ -316,7 +343,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		if (keyboard.isPressed(32)) {
 			csUtils.resetGame();
 
-			gameState.dishes.enemyShield.randomize(24, 0.1);
+			gameState.dishes.enemyShield.randomize(24, 0.001);
 		}
 
 		if (keyboard.isPressed("S".charCodeAt())) {
