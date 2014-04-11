@@ -99,12 +99,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 	
 
-		// // weapon + enemy -> weaponExplosion
-		// reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, { 
-		// 	tex1: gameState.dishes.weapon, tex2: gameState.dishes.enemy, 
-		// 	state: (gameState.rules.weaponExplosion.nrStates-1)/255, 
-		// 	operation: OP_REPLACE
-		// });
+		// weapon + enemy -> weaponExplosion
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, { 
+			tex1: gameState.dishes.weapon, tex2: gameState.dishes.enemy, 
+			state: (gameState.rules.weaponExplosion.nrStates-1)/255, 
+			operation: OP_REPLACE
+		});
 
 		// enemy spawn even more explosion when explodion
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, 
