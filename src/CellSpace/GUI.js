@@ -105,6 +105,9 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 		folder.add(gameState, 'frontShots', 1, 12).step(1);
 		folder.add(gameState, 'frontShotAngle', 0, 2*Math.PI);
+		folder.add(gameState, 'shipRadius', 1, 20);
+		folder.add(gameState, 'randomDensity', 0, 1);
+		
 
 		folder.add(gameState, 'enableScrolling', {yes: 1, no: 0});
 
@@ -345,7 +348,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		if (keyboard.isPressed(32)) {
 			csUtils.resetGame();
 
-			gameState.dishes.enemyShield.randomize(24, 0.001);
+			//gameState.dishes.enemyShield.randomize(, gameState.randomDensity);
 		}
 
 		if (keyboard.isPressed("S".charCodeAt())) {

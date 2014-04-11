@@ -75,7 +75,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 	var resetGame = function() {
 		gameState.cnt = 0;
-		gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, 0.001);
+		gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, gameState.randomDensity);
 		gameState.dishes.enemy2.randomize(gameState.rules.enemy.nrStates, 0.01);
 		if (gameState.shipX < 0 || gameState.shipX > gameState.gameW || 
 			gameState.shipY < 0 || gameState.shipY > gameState.gameH) {

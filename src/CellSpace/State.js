@@ -35,6 +35,8 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		screenW: 1200,
 		screenH: 800,
 
+		randomDensity: 0.001,
+
 		zoom: 1/3, // cell/pixel ratio
 		rot: 0,
 
@@ -44,7 +46,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 
 		enableScrolling: 1,
 		shipX: 0, shipY: 0,
-		
+		shipRadius: 3,
 		shipDir: Math.PI/2,
 		shipSpeed: 1.5,
 		shipSpeedX: 0, shipSpeedY: 0, // derived values

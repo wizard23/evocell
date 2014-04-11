@@ -26,7 +26,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		reactor.step(gameState.rules.ship, gameState.dishes.ship);
 
 
-		var shipR = 3;
+		var shipR = gameState.shipRadius;
 		// "DRAW" SHIP
 		reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.ship, 
 			{center: [gameState.shipX, gameState.shipY], radius: shipR, state: (gameState.rules.ship.nrStates-1)/255});
@@ -157,15 +157,15 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				state: (gameState.rules.shipExplosion.nrStates-1)/255,
 			operation: OP_REPLACE});
 		
-		// // shipExplosions reinforced by enemys
-		// // state 3 actually makes it passive
-		// reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.shipExplosion, 
-		// 	{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: 3/255, operation: OP_REPLACE});
+		// shipExplosions reinforced by enemys
+		// state 3 actually makes it passive
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.shipExplosion, 
+			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: 3/255, operation: OP_REPLACE});
 	
-		// // dishes.enemy gets slowly killed by shipExplosions
-		// if (gameState.cnt % 6 === 1)
-		// reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
-		// 	{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: -1/255, operation: OP_ADD});
+		// dishes.enemy gets slowly killed by shipExplosions
+		if (gameState.cnt % 6 === 1)
+		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
+			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: -1/255, operation: OP_ADD});
 
 		// ship gets killed by shipExplosions
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.ship, 
