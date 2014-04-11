@@ -34,7 +34,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		var cb = function(pos) {
 			try
 			{
-				gameState.sndHit.playbackRate = 3.5;
+				gameState.sndHit.playbackRate = 2.0;
 				gameState.sndHit.volume = 0.5;
 				utils.playSound(gameState.sndHit);
 			} catch(ex) {}
@@ -43,8 +43,14 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// too costly
 		//gameState.shots.collide(gameState.dishes.enemy, cb);
 		gameState.shots.step();
-		var enemyPixel = gameState.shots.collide(gameState.dishes.enemy, cb);
-		gameState.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon);
+		var enemyPixel = gameState.shots.collide(gameState.dishes.enemy, 
+		 	gameState.scrollX, gameState.scrollY, cb);
+		//var enemyPixel = gameState.shots.collide(gameState.dishes.enemy, 
+		//	0, 0, cb);
+
+		gameState.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 
+			2*gameState.scrollX, 2*gameState.scrollY);
+		//gameState.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 0, 0);
 
 
 
@@ -93,12 +99,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 	
 
-		// weapon + enemy -> weaponExplosion
-		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, { 
-			tex1: gameState.dishes.weapon, tex2: gameState.dishes.enemy, 
-			state: (gameState.rules.weaponExplosion.nrStates-1)/255, 
-			operation: OP_REPLACE
-		});
+		// // weapon + enemy -> weaponExplosion
+		// reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, { 
+		// 	tex1: gameState.dishes.weapon, tex2: gameState.dishes.enemy, 
+		// 	state: (gameState.rules.weaponExplosion.nrStates-1)/255, 
+		// 	operation: OP_REPLACE
+		// });
 
 		// enemy spawn even more explosion when explodion
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weaponExplosion, 

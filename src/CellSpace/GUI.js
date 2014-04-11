@@ -68,28 +68,19 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			csUtils.gamePlayPause();
 		}, false);
 
-		document.getElementById("zoomIn").addEventListener('click', function(evt) {
-			gameState.zoom+=0.5;
-		}, false);
-
-		document.getElementById("zoomOut").addEventListener('click', function(evt) {
-			gameState.zoom-=0.5;
-		}, false);
-
-
 		document.getElementById("showIntroLink").addEventListener('click', function(evt) {
 			storyTeller.RunIntro();
 		}, false);
 
-		var idxxxx = -1;
-		document.getElementById("switchLink").addEventListener('click', function(evt) {
-			fileStore.loadAllRules(function(rulesModelData) {
-					idxxxx++;
-					idxxxx %= rulesModelData.length;
-					gameState.rules.enemy = gameState.reactor.compileRule(rulesModelData[idxxxx].ruleData, 
-						gameState.dishes.enemy);
-				});
-		}, false);
+		// var idxxxx = -1;
+		// document.getElementById("switchLink").addEventListener('click', function(evt) {
+		// 	fileStore.loadAllRules(function(rulesModelData) {
+		// 			idxxxx++;
+		// 			idxxxx %= rulesModelData.length;
+		// 			gameState.rules.enemy = gameState.reactor.compileRule(rulesModelData[idxxxx].ruleData, 
+		// 				gameState.dishes.enemy);
+		// 		});
+		// }, false);
 
 		var gui = gameState.gui;
 
@@ -104,8 +95,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// hack continues below
 
 		var ctrl = folder.add(gameState, 'rot', -Math.PI*2, Math.PI*2).step(0.01);
-		//ctrl.__precision = 3;
-		//ctrl.__impliedStep = 0.001;
+		//ctrl.__precision = 3; // does not help
+		//ctrl.__impliedStep = 0.001; // does not help
 
 		// hack!
 		gameState.rot = oldRot;
@@ -320,7 +311,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		else {
 			var rotSpeed = 0.15;
 			var accel = 0.1;
-			var minSpeed = 0.4;
+			var minSpeed = 0;
 			var maxSpeed = 3;
 
 			if (keyboard.isPressed(keyboard.UP)) {

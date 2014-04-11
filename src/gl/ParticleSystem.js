@@ -6,15 +6,18 @@ define([], function() {
 		this.n = n;
 		this.width = width;
 		this.height = height;
+		
+		var pointAlive = new Uint8Array(n);
 		var pointCoordinates = new Float32Array(2*n);
 		var pointSpeeds = new Float32Array(2*n);
+
 		this.pointCoordinates = pointCoordinates;
 		this.pointSpeeds = pointSpeeds;
 		//var pointAlive = new Array(n);
 
 		for (var i = 0; i < n; i++)
 		{
-			//pointAlive[i] = 1;
+			pointAlive[i] = 1;
 			pointSpeeds[2*i] = 0;
 			pointSpeeds[2*i+1] = 0;
 			pointCoordinates[2*i] = 10; // outside of bound
@@ -31,7 +34,7 @@ define([], function() {
 		gl.bufferSubData(gl.ARRAY_BUFFER, 0, pointCoordinates);
 	};
 
-	ParticleSystem.prototype.draw = function(shader, dish) {
+	ParticleSystem.prototype.draw = function(shader, dish, offsetx, offsety) {
 		var gl = this.gl;
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.pointsBuffer);
 		gl.bufferData(gl.ARRAY_BUFFER, this.pointCoordinates.byteLength, gl.STATIC_DRAW);
@@ -44,7 +47,13 @@ define([], function() {
 			gl.enableVertexAttribArray(pointPosLoc);
 			gl.vertexAttribPointer(pointPosLoc, 2, gl.FLOAT, gl.FALSE, 0, 0);
 
+			// var pointAliveLoc = gl.getAttribLocation(shader, "pointAlive");
+			// gl.enableVertexAttribArray(pointAliveLoc);
+			// gl.vertexAttribPointer(pointAliveLoc, 1, gl.UNSIGNED_BYTE, gl.FALSE, 0, 0);
+
 			gl.uniform1f(gl.getUniformLocation(shader, "state"), 3/255);
+
+			gl.uniform2f(gl.getUniformLocation(shader, "offset"), offsetx/psContext.width, offsety/psContext.height);
 
 			gl.drawArrays(gl.POINTS,0, psContext.pointCoordinates.length/2);
 		});
@@ -59,17 +68,21 @@ define([], function() {
 		}
 	};
 
-	ParticleSystem.prototype.collide = function(dish, cb) {
+	ParticleSystem.prototype.collide = function(dish, offsetx, offsety, cb) {
 		var gl = this.gl;
 
 		gl.bindFramebuffer(gl.FRAMEBUFFER, dish.getCurrentFramebuffer());
 		gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, dish.getCurrentTexture(), 0);
 		gl.readPixels(0, 0, this.width, this.height, gl.RGBA, gl.UNSIGNED_BYTE, this.pixelValues);
 
+
+		var soffsetx = offsetx / this.width;
+		var soffsety = offsety / this.height;
+
 		for (var i = 0; i < this.n; i++)
 		{
-			var pX = Math.round(this.width*0.5*(this.pointCoordinates[2*i]+1));
-			var pY = Math.round(this.height*0.5*(this.pointCoordinates[2*i+1]+1));
+			var pX = Math.round(offsetx + this.width*0.5*(this.pointCoordinates[2*i]+1));
+			var pY = Math.round(offsety + this.height*0.5*(this.pointCoordinates[2*i+1]+1));
 
 			if (pX >= 0 && pX < this.width && pY >= 0 && pY < this.height) {
 				if (this.pixelValues[(pX+pY*this.width)*4 + 3] !== 0) {

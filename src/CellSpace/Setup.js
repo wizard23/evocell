@@ -6,6 +6,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 	var setup = function(canvas, callback) {
 		var loader = new EC.ResLoader();
 		loader.load("rules.enemy", resPath + "rules/enemy_ludwigBuildships", "ecfile");
+		loader.load("rules.enemy", resPath + "rules/enemy_ludwigBuildships_lessActive", "ecfile");
 		//loader.load("rules.enemy", resPath + "rules/enemy_lounge23", "ecfile");
 		//loader.load("rules.enemy", resPath + "rules/enemy_evil", "ecfile");
 		//loader.load("rules.enemy", resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");

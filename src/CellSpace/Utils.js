@@ -34,7 +34,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		var aa = gameState.frontShots > 1 ? -gameState.frontShotAngle/2 : 0;
 
 		for (var i = 0; i < gameState.frontShots; i++) {
-			gameState.shots.allocateParticle(gameState.shipX, gameState.shipY, Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
+			gameState.shots.allocateParticle(gameState.shipX-1*gameState.scrollX, gameState.shipY-1*gameState.scrollY, 
+				Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
 			
 			if (gameState.frontShots > 1)
 				aa += gameState.frontShotAngle/(gameState.frontShots-1);
