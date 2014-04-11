@@ -14,7 +14,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		// GAMESTATE //////////
 		// shots
 		maxParticles: 2800,
-		shotSpeed: 2.4,
+		shotSpeed: 3.4,
 		frontShots: 3,
 		frontShotAngle: 0.6,
 		shotN: 8,

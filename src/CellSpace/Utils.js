@@ -58,17 +58,19 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		}
 	};
 
-	var refreshGUI = function() {
-		for (var i in gameState.gui.__controllers) {
-			gameState.gui.__controllers[i].updateDisplay();
-		}
+	var refreshGUI = function(names) {
+		names = names ? (names.length ? names : [names]) : [];
 
-		for (var fIdx in gameState.gui.__folders) {
-			var folder = gameState.gui.__folders[fIdx];
-			for (i in folder.__controllers) {
-				folder.__controllers[i].updateDisplay();
+		var refresh = function(controller) {
+			if (_.contains(names, controller.property)) { 
+				controller.updateDisplay();
 			}
-		}
+		};
+
+		_.each(gameState.gui.__controllers, refresh);
+		_.each(gameState.gui.__folders, function(folder) {
+			_.each(folder.__controllers, refresh);
+		});
 	};
 
 	var resetGame = function() {

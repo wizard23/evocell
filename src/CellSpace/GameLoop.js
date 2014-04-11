@@ -77,7 +77,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			}
 
 			if (oldEnergy !== gameState.playerEnergy) {
-				csUtils.refreshGUI();
+				csUtils.refreshGUI(["playerEnergy"]);
 			}
 
 			// did we just die?
@@ -157,15 +157,15 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				state: (gameState.rules.shipExplosion.nrStates-1)/255,
 			operation: OP_REPLACE});
 		
-		// shipExplosions reinforced by enemys
-		// state 3 actually makes it passive
-		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.shipExplosion, 
-			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: 3/255, operation: OP_REPLACE});
+		// // shipExplosions reinforced by enemys
+		// // state 3 actually makes it passive
+		// reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.shipExplosion, 
+		// 	{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: 3/255, operation: OP_REPLACE});
 	
-		// dishes.enemy gets slowly killed by shipExplosions
-		if (gameState.cnt % 6 === 1)
-		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
-			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: -1/255, operation: OP_ADD});
+		// // dishes.enemy gets slowly killed by shipExplosions
+		// if (gameState.cnt % 6 === 1)
+		// reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
+		// 	{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: -1/255, operation: OP_ADD});
 
 		// ship gets killed by shipExplosions
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.ship, 
@@ -203,7 +203,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 					gameState.parallaxY -= pScrollY*parallaxDist;
 				}
 
-				csUtils.refreshGUI();
+				csUtils.refreshGUI(["shipX", "shipY", "scrollX", "scrollY", "parallaxX", "parallaxY"]);
 
 				var dX = -deltaX/gameState.gameW;
 				var dY = -deltaY/gameState.gameH;

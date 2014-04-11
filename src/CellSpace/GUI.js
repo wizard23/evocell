@@ -100,7 +100,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 		// hack!
 		gameState.rot = oldRot;
-		csUtils.refreshGUI();
+		csUtils.refreshGUI(["rot"]);
 		// end of ugly hack 
 
 		folder.add(gameState, 'frontShots', 1, 12).step(1);
@@ -254,25 +254,25 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		if (keyboard.isPressed("O".charCodeAt()))
 		{
 			gameState.zoom -= 0.03;
-			csUtils.refreshGUI();
+			csUtils.refreshGUI(["zoom"]);
 		}
 
 		if (keyboard.isPressed("L".charCodeAt()))
 		{
 			gameState.zoom += 0.03;
-			csUtils.refreshGUI();
+			csUtils.refreshGUI(["zoom"]);
 		}
 
 		if (keyboard.isPressed("N".charCodeAt()))
 		{
 			gameState.rot += 0.05;
-			csUtils.refreshGUI();
+			csUtils.refreshGUI(["zoom"]);
 		}
 
 		if (keyboard.isPressed("M".charCodeAt()))
 		{
 			gameState.rot -= 0.05;
-			csUtils.refreshGUI();
+			csUtils.refreshGUI(["zoom"]);
 		}
 
 		// TODO: should be in step
