@@ -127,11 +127,11 @@ define([], function() {
 		}		
 	};
 
-	ParticleSystem.prototype.allocateSphere = function(n, x, y, s, angle) {
+	ParticleSystem.prototype.allocateSphere = function(n, x, y, s, angle, shipSpeedX, shipSpeedY) {
 		this.allocateParticles(n, function(i, n) {
 			return [x, y, 
-				s * Math.cos(angle+Math.PI*2*i/n), 
-				s * Math.sin(angle+Math.PI*2*i/n)
+				s * Math.cos(angle+Math.PI*2*i/n) + shipSpeedX, 
+				s * Math.sin(angle+Math.PI*2*i/n) + shipSpeedY
 			];
 		});
 	};

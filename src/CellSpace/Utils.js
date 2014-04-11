@@ -28,8 +28,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		var dX = tx-gameState.shipX;
 		var dY = ty-gameState.shipY;
 		var dL = Math.sqrt(dX*dX+dY*dY);
+
 		var sX = gameState.shotSpeed * dX/dL;
 		var sY = gameState.shotSpeed * dY/dL;
+
+		sX += gameState.shipSpeedX;
+		sY += gameState.shipSpeedY;
 
 		var aa = gameState.frontShots > 1 ? -gameState.frontShotAngle/2 : 0;
 

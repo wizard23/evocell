@@ -275,7 +275,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			csUtils.refreshGUI();
 		}
 
-		// TODO: soyuld be in step
+		// TODO: should be in step
 		// direct movement
 		if (false) {
 			var dX = 0, dY = 0;
@@ -327,8 +327,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			if (keyboard.isPressed(keyboard.LEFT)) gameState.shipDir += rotSpeed;
 			if (keyboard.isPressed(keyboard.RIGHT)) gameState.shipDir -= rotSpeed;
 
-			gameState.shipX += gameState.shipSpeed * Math.cos(gameState.shipDir);
-			gameState.shipY += gameState.shipSpeed * Math.sin(gameState.shipDir);
+			gameState.shipSpeedX = gameState.shipSpeed * Math.cos(gameState.shipDir);
+			gameState.shipSpeedY = gameState.shipSpeed * Math.sin(gameState.shipDir);
+
+			gameState.shipX += gameState.shipSpeedX;
+			gameState.shipY += gameState.shipSpeedY;
 			
 		}
 
@@ -381,7 +384,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				for (var i = 0; i < gameState.shotN; i++)
 				{
 					gameState.bAngle += Math.PI * 2 / 1.61803398875;
-					gameState.shots.allocateSphere(1, gameState.shipX, gameState.shipY, gameState.shotSpeed, gameState.bAngle);
+					gameState.shots.allocateSphere(1, 
+						gameState.shipX -1*gameState.scrollX, gameState.shipY -1*gameState.scrollY, 
+						gameState.shotSpeed, gameState.bAngle, 
+						gameState.shipSpeedX, gameState.shipSpeedY);
 				}
 
 				utils.playSound(gameState.sndBomb);

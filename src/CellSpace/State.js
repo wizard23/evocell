@@ -16,7 +16,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		maxParticles: 2800,
 		shotSpeed: 2.4,
 		frontShots: 3,
-		frontShotAngle: 0.8,
+		frontShotAngle: 0.6,
 		shotN: 8,
 		bombFired: 0,
 		bAngle: 0, // direction of bomb fire
@@ -44,8 +44,10 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 
 		enableScrolling: 1,
 		shipX: 0, shipY: 0,
+		
 		shipDir: Math.PI/2,
 		shipSpeed: 1.5,
+		shipSpeedX: 0, shipSpeedY: 0, // derived values
 
 		scrollX: 0, scrollY: 0,
 		parallaxX: 0, parallaxY: 0,
