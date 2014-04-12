@@ -6,6 +6,9 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	gameState, csSetup, gameLoop, csUtils) {
 	"use strict";
 
+	// used for breaking to 0 and then reverse
+	var allowReturn = 0;
+
 	var setupGui = function() {
 		window.addEventListener("resize", function () {
 			gameState.screenW = window.innerWidth;
@@ -328,7 +331,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		else {
 			var rotSpeed = 0.15;
 			var accel = 0.1;
-			var minSpeed = 0;
+			var minSpeed = -1;
 			var maxSpeed = 3;
 
 			if (keyboard.isPressed(keyboard.UP)) {
@@ -337,9 +340,21 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 					gameState.shipSpeed = maxSpeed;
 			}
 			if (keyboard.isPressed(keyboard.DOWN)) {
-				gameState.shipSpeed -= accel;
-				if (gameState.shipSpeed < minSpeed)
-					gameState.shipSpeed = minSpeed;
+				if (gameState.shipSpeed > 0) {
+					gameState.shipSpeed -= accel;
+					if (gameState.shipSpeed < 0) {
+						gameState.shipSpeed = 0;
+						allowReturn = 0;
+					}
+				}
+				else if (allowReturn) {
+					gameState.shipSpeed -= accel;
+					if (gameState.shipSpeed < minSpeed)
+						gameState.shipSpeed = minSpeed;
+				}
+			}
+			else {
+				allowReturn = 1;
 			}
 			if (keyboard.isPressed(keyboard.LEFT)) gameState.shipDir += rotSpeed;
 			if (keyboard.isPressed(keyboard.RIGHT)) gameState.shipDir -= rotSpeed;
