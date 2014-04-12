@@ -94,7 +94,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		gameState.rot = 0.01;
 		// hack continues below
 
-		var ctrl = folder.add(gameState, 'rot', -Math.PI*2, Math.PI*2).step(0.01);
+		var ctrl = folder.add(gameState, 'rot', 0, Math.PI*2).step(0.01);
 		//ctrl.__precision = 3; // does not help
 		//ctrl.__impliedStep = 0.001; // does not help
 
@@ -107,8 +107,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		folder.add(gameState, 'frontShotAngle', 0, 2*Math.PI);
 		folder.add(gameState, 'shipRadius', 1, 20);
 		folder.add(gameState, 'randomDensity', 0, 1);
-		
-
+	
 		folder.add(gameState, 'enableScrolling', {yes: 1, no: 0});
 
 		folder.add(gameState, 'shipX');
@@ -144,7 +143,9 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		$( "#toolsMenu" ).accordion("option", "active", false);
 
 
-		$('#colorpicker1').farbtastic('#color1');
+		// TODO: implement palette
+		// $('#colorpicker1').farbtastic('#color1');
+		
 		$( "#menu" ).menu();
 		
 		gameState.fpsMonotor = new utils.FPSMonitor("fpsMonitor");
@@ -217,6 +218,15 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		};
 		gameState.canvas.addEventListener('mousemove', handleCanvasMouseMove, false);
 
+
+		var handleMouseWheel = function(e) {
+			var maxZoom = 5;
+			var delta = Math.max(-maxZoom, Math.min(maxZoom, (e.wheelDelta || -e.detail)));
+			csUtils.zoom(delta);
+			return false;
+		};
+		gameState.canvas.addEventListener("mousewheel", handleMouseWheel, false);
+		gameState.canvas.addEventListener("DOMMouseScroll", handleMouseWheel, false);
 	};
 
 	var once = 1;

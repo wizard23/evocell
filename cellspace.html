@@ -62,7 +62,7 @@
 </div>
 
 <div id="toolsMenu" style="">
-  <h3 class="toolMenuHeader">Draw</h3>  
+  <h3 class="toolMenuHeader">Tools</h3>  
   <div id="drawTool" class="toolMenuContent">
 <label><input type="radio" value="circle" data-bind="checked: selectedDrawShape" />Circle</label>
 <label><input type="radio" value="rectangle" data-bind="checked: selectedDrawShape" />Recangle</label><br/>
@@ -88,24 +88,18 @@ height: <input id="height" type="number" min="1" max="1000" data-bind="value: dr
 <label><input type="checkbox" id="fixedRatio">fixedRatio</label><br/>
   </div>
 
-  <h3 class="toolMenuHeader">Mutate</h3>
-  <div class="toolMenuContent">
-	why u no implement me?
-	</div>
-
-  <h3 class="toolMenuHeader">Palette</h3>
+  <!-- h3 class="toolMenuHeader">Colors</h3>
   <div class="toolMenuContent">
 		why u no implement me?
 		<div class="colorpicker">
 		  <div id="colorpicker1"></div>
 		  <form><input type="text" id="color1" /></form>
 		</div>
-  </div>
+  </div -->
 
 	<h3 class="toolMenuHeader">Audio</h3>
 	<div class="toolMenuContent">
-
-		Laser sound effect by: "www.kenney.nl"
+		Laser sound effects by: <a href="http://www.kenney.nl/">www.kenney.nl</a>
 		<br />
 		<br />
 		Awesome 8bit sound by Eric Skiff
@@ -117,7 +111,12 @@ height: <input id="height" type="number" min="1" max="1000" data-bind="value: dr
 		<audio controls>
   			<source src="../res_evocell/music/Adam Morton - Wizball high-score (2008).mp3" type="audio/mpeg">
   			Your browser does not support this audio format.
-		</audio -->
+		</audio>
+		<audio controls>
+  			<source src="../res_evocell/music/SmoothLifeL-KJe9H6qS82I.mp4" type="audio/mpeg">
+  			Your browser does not support this audio format.
+		</audio>
+
 	</div>
 </div>
 	<div id="container" stylea="background:rgba(255,255,255,0.2);z-index:1001;" style="z-index:1001; border:1px solid black;  width:100%; border:0px solid black; position: fixed; top: 0px; left: 0px; z-index:1000;  background:rgba(0,0,0,0.8); width:100%; height:100%; text-align:center; display:none;" ></div>

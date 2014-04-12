@@ -138,6 +138,13 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			gameState.drawModel.set("availableLayers", Object.keys(gameState.dishes));
 	};
 
+	// dir 
+	var zoom = function(dir) {
+		var zoomSpeed = 1.005;
+		gameState.zoom *= Math.pow(zoomSpeed, dir);
+		refreshGUI(["zoom"]);
+	};
+
 ////// PTIVATE //////////////
 
 	return {
@@ -149,6 +156,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		gameStep: gameStep,
 		gamePlayPause: gamePlayPause,
 		onGameSizeChanged: onGameSizeChanged,
+		zoom: zoom,
 
 		refreshAvailableRules: refreshAvailableRules,
 		refreshAvailableDishes: refreshAvailableDishes,
