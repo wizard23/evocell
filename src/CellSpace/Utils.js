@@ -96,6 +96,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		updateButtons();
 	};
 
+	var onScreenSizeChanged = function() {
+		gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
+		refreshGUI(["screenW", "screenH"]);	
+	};
+
 	var onGameSizeChanged = function() {
 		var reactor = gameState.reactor;
 
@@ -150,13 +155,15 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	return {
 		pollAutoFire: pollAutoFire,
 		fireShotAt: fireShotAt,
+		zoom: zoom,
 		updateButtons: updateButtons,
 		refreshGUI: refreshGUI,
 		resetGame: resetGame,
 		gameStep: gameStep,
 		gamePlayPause: gamePlayPause,
+
+		onScreenSizeChanged: onScreenSizeChanged,
 		onGameSizeChanged: onGameSizeChanged,
-		zoom: zoom,
 
 		refreshAvailableRules: refreshAvailableRules,
 		refreshAvailableDishes: refreshAvailableDishes,

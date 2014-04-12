@@ -7,7 +7,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	"use strict";
 
 	var setupGui = function() {
-
+		window.addEventListener("resize", function () {
+			gameState.screenW = window.innerWidth;
+			gameState.screenH = window.innerHeight;
+			csUtils.onScreenSizeChanged();
+		}, false);
 
 		document.getElementById("assignLayerRule").addEventListener('click', function(evt) {
 			var ruleName = gameState.drawModel.get("selectedRules")[0];

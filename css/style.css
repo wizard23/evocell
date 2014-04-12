@@ -11,7 +11,7 @@ body {
 
 	overflow:hidden;
 	width:300px;
-	height:2.6em;
+	height:4.2em;
 	position: fixed; bottom: 0px;left: 0px; z-index:10; 
 	color: white;
 	background:rgba(255,0,0,0.2);

@@ -32,8 +32,8 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		shots: null,
 
 		gameW: 356, gameH: 356,
-		screenW: 1200,
-		screenH: 800,
+		screenW: window.innerWidth ? window.innerWidth : 1000,
+		screenH: window.innerHeight ? window.innerHeight :800,
 
 		randomDensity: 0.001,
 
