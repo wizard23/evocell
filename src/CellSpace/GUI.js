@@ -6,7 +6,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	gameState, csSetup, gameLoop, csUtils) {
 	"use strict";
 
-	// used for breaking to 0 and then reverse
+	// used for breaking to 0 and then reversse
 	var allowReturn = 0;
 
 	var setupGui = function() {
