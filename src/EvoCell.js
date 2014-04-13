@@ -1,4 +1,5 @@
-define(["Utils", "gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palette", "gl/ParticleSystem"], function(utils, Reactor, Dish, Rule, Palette, ParticleSystem) {
+define(["Utils", "data/FileStore", "gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palette", "gl/ParticleSystem"], 
+	function(utils, FileStore,  Reactor, Dish, Rule, Palette, ParticleSystem) {
 
 	var ResLoader = function() {
 		this.queue = {};
@@ -15,40 +16,56 @@ define(["Utils", "gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palette", "gl/ParticleS
 		var o = {};
 		this.objs[id] = o;
 		return o;
-	}
+	};
 
-	ResLoader.prototype.start = function(cb) {
+	ResLoader.prototype.start = function(cb, useDB) {
 		var item;
 		var data = {};
 		var loaderCtx = this;
 		var itemsToLoad = Object.keys(this.queue).length;
 		var loadedCount = 0;
 
-		for (var key in this.queue) {
-			var givenType = this.types[key];
+		var queueFn = function(givenType, key) {
+			return  function(result) {
+				if (loaderCtx.factories[givenType])
+					result = loaderCtx.factories[givenType](result);
+				data[key] = result;
+				loadedCount++;
+				loaderCtx.objs[key].value = result;
+
+				if (loadedCount == itemsToLoad) {
+					cb(data);
+				}
+			};
+		};
+
+		var ctx = this;
+		var fn = function(key) {
+			var givenType = ctx.types[key];
 			var factory = loaderCtx.factories[givenType];
 			var type = factory ? "arraybuffer" : givenType || "arraybuffer";
 
-			utils.getFromURL(this.queue[key], type, function(givenType, key) {
-				return function(result) {
-					if (loaderCtx.factories[givenType])
-						result = loaderCtx.factories[givenType](result);
-					data[key] = result;
-					loadedCount++;
-					loaderCtx.objs[key].value = result;
+			utils.getFromURL(ctx.queue[key], type, queueFn(givenType, key));
+		};
 
-					if (loadedCount == itemsToLoad) {
-						cb(data);
-					}
-				}
-			}(givenType, key));
+		if (useDB) {
+			var oldFn = fn;
+			fn = function() {
+				FileStore.loadAllRuleNames(function(cachedNames) {
+					oldFn();
+				});
+			};
 		}
-	}
+		_.each(ctx.queue, function(key) {
+
+			fn(key);
+		});
+	};
 		
 	var ECFile = function(arrayBuffer) {
 		if (arrayBuffer)		
 			this.loadFromArrayBuffer(arrayBuffer);
-	}
+	};
 
 	ECFile.prototype.saveToBlob = function() {
 		var evoCellData = this;
