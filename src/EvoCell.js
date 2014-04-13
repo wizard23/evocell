@@ -18,48 +18,70 @@ define(["Utils", "data/FileStore", "gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palet
 		return o;
 	};
 
-	ResLoader.prototype.start = function(cb, useDB) {
+	ResLoader.prototype.start = function(cb) {
+		// hardcoded for now
+		var useDB = 0;
+
 		var item;
 		var data = {};
 		var loaderCtx = this;
 		var itemsToLoad = Object.keys(this.queue).length;
 		var loadedCount = 0;
 
-		var queueFn = function(givenType, key) {
-			return  function(result) {
-				if (loaderCtx.factories[givenType])
-					result = loaderCtx.factories[givenType](result);
+		var doParsing = function(result, givenType) {
+			if (loaderCtx.factories[givenType])
+				result = loaderCtx.factories[givenType](result);
+			return result;
+		};
+
+		var createBla = function(key) {
+			return function(result) {
 				data[key] = result;
 				loadedCount++;
 				loaderCtx.objs[key].value = result;
-
 				if (loadedCount == itemsToLoad) {
 					cb(data);
 				}
 			};
 		};
-
 		var ctx = this;
-		var fn = function(key) {
-			var givenType = ctx.types[key];
-			var factory = loaderCtx.factories[givenType];
-			var type = factory ? "arraybuffer" : givenType || "arraybuffer";
+		var iterateAll = function(cachedNames) {
+			_.each(ctx.queue, function(url, key) {
+				var givenType = ctx.types[key];
+				var factory = loaderCtx.factories[givenType];
+				var type = factory ? "arraybuffer" : givenType || "arraybuffer";
 
-			utils.getFromURL(ctx.queue[key], type, queueFn(givenType, key));
+				// used cache version if availab
+				if (useDB && _.contains(cachedNames, url))
+				{
+					FileStore.loadRule(key, createBla(key));
+				}
+				else 
+				{
+					utils.getFromURL(ctx.queue[key], type, function(result) {
+						result = doParsing(result, givenType);
+
+						if (useDB)
+							FileStore.storeRule(url, result);	
+
+						createBla(key)(result);
+					});
+				}
+			});
 		};
 
 		if (useDB) {
-			var oldFn = fn;
-			fn = function() {
-				FileStore.loadAllRuleNames(function(cachedNames) {
-					oldFn();
+			var oldIterateAll = iterateAll
+			iterateAll = function() {
+				FileStore.ready(function() {
+					FileStore.loadAllRuleNames(function(cachedNames) {
+						oldIterateAll(cachedNames);
+					});
 				});
 			};
 		}
-		_.each(ctx.queue, function(key) {
 
-			fn(key);
-		});
+		iterateAll();
 	};
 		
 	var ECFile = function(arrayBuffer) {

@@ -1,4 +1,4 @@
-define(["backbone"], function(bb) {
+define(["underscore", "backbone"], function(_, bb) {
 
 var indexedDB = window.indexedDB;
 
@@ -8,31 +8,43 @@ var db = null;
 const ruleStoreName = "rules";
 var ruleStore = null;
 
+var readyFns = [];
+
+var ready = function(fn) {
+  if (db) fn();
+  else {
+    readyFns.push(fn);
+  }
+};
+
 var request = indexedDB.open(dbName, 2);
 request.onerror = function(event) {
-  alert("Why didn't you allow my web app to use IndexedDB?!");
+  alert("Oh no! Why didn't you allow my web app to use IndexedDB?! Cell is sad now!");
 };
 request.onsuccess = function(event) {
   db = event.target.result;
+
+  _.each(readyFns, function(fn) { fn(); });
 
   db.onerror = function(event) {
     // Generic error handler for all errors targeted at this database's requests!
     alert("Database error: " + event.target.errorCode);
   };
 
-  var objectStore = db.transaction(ruleStoreName).objectStore(ruleStoreName);
-  objectStore.openCursor().onsuccess = function(event) {
-    var cursor = event.target.result;
-    if (cursor) {
-      //alert("Rule " + cursor.value.id + " is " + cursor.value.ruleTableSize);
-      cursor.continue();
-    }
-    else {
-      //alert("No more rules!");
-    }
-  };
+  // var objectStore = db.transaction(ruleStoreName).objectStore(ruleStoreName);
+  // objectStore.openCursor().onsuccess = function(event) {
+  //   var cursor = event.target.result;
+  //   if (cursor) {
+  //     //alert("Rule " + cursor.value.id + " is " + cursor.value.ruleTableSize);
+  //     cursor.continue();
+  //   }
+  //   else {
+  //     //alert("No more rules!");
+  //   }
+  // };
 
 };
+
 request.onupgradeneeded = function(event) { 
   //alert("upgrade from: " + event.oldVersion + " to: " + event.newVersion);
   var db = event.target.result;
@@ -48,7 +60,6 @@ request.onupgradeneeded = function(event) {
   //objectStore.createIndex("name", "name", { unique: true });
 };
 
-
 var storeRule = function(name, ruleData, callback) {
   var transaction = db.transaction([ruleStoreName], "readwrite");
    transaction.oncomplete = function(e) { 
@@ -58,7 +69,7 @@ var storeRule = function(name, ruleData, callback) {
   var objectStore = transaction.objectStore(ruleStoreName);
   var request = objectStore.add({name:name, ruleData:ruleData});
   request.onerror = function(event) {
-    alert("me so sorry, could not save:" + ruleData);
+    alert("me so sorry, could not save: " + name + "\n" + ruleData);
   };
   request.onsuccess = function(event) {
     // dont call callback here call it later when transaction is done!
@@ -130,6 +141,7 @@ return {
   loadRule: loadRule,
   loadAllRules: loadAllRules,
   loadAllRuleNames: loadAllRuleNames,
+  ready: ready,
 };
 
 
