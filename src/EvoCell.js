@@ -20,7 +20,7 @@ define(["Utils", "data/FileStore", "gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palet
 
 	ResLoader.prototype.start = function(cb) {
 		// hardcoded for now
-		var useDB = 0;
+		var useDB = 1;
 
 		var item;
 		var data = {};
@@ -54,7 +54,10 @@ define(["Utils", "data/FileStore", "gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palet
 				// used cache version if availab
 				if (useDB && _.contains(cachedNames, url))
 				{
-					FileStore.loadRule(key, createBla(key));
+					FileStore.loadRule(url, function(rule) {
+						var result = rule.ruleData;
+						createBla(key)(result);
+					});
 				}
 				else 
 				{

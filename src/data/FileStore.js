@@ -103,7 +103,8 @@ var loadRule = function(name, callback) {
   };
   request.onsuccess = function(event) {
     var result = event.target.result;
-    //alert("I haz loaded rule" + result);
+    if (!result)
+      alert("Empty result for rule: " + name);
     callback(result);
   };
 };
