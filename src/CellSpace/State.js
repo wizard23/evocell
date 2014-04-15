@@ -45,6 +45,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		projectionMatrix: new THREE.Matrix4(),
 
 		enableScrolling: 1,
+		renderer: "Cell", // "Cell", "TV", "Simple", "Fast"
 		shipX: 0, shipY: 0,
 		shipRadius: 3,
 		shipDir: Math.PI/2,

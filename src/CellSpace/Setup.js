@@ -51,14 +51,17 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 		loader.load("scroller", "src/shaders/scroller.shader", "text");
 
 		loader.load("rendererVertex", "src/shaders/cameraRenderer.vshader", "text");
-		loader.load("rendererFragment", "src/shaders/cameraRenderer.shader", "text");
+		loader.load("rendererFragmentCell", "src/shaders/cameraRenderer.shader", "text");
+		loader.load("rendererFragmentTV", "src/shaders/cameraRendererTV.shader", "text");
+		loader.load("rendererFragmentSimple", "src/shaders/cameraRendererSimple.shader", "text");
+		loader.load("rendererFragmentFast", "src/shaders/cameraRendererFast.shader", "text");
 
 		loader.load("intersectSpawn", "src/shaders/intersectSpawn.shader", "text");
 		loader.load("shieldSpawn", "src/shaders/shieldGenerator.shader", "text");
 
 		loader.load("copyPaste", "src/shaders/copyPasteRect.shader", "text");
 
-		loader.start(function (data) { 
+		loader.start(false, function (data) { 
 			// Setup core
 			var reactor = new  EC.Reactor(canvas, gameState.gameW, gameState.gameH);
 			gameState.reactor = reactor;
@@ -85,7 +88,11 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			gameState.shaders.drawPoints = reactor.compileShader(data.vertexPoints, data.drawAll);
 			
 			gameState.shaders.clear = reactor.compileShader(data.clear);
-			gameState.shaders.cameraRenderer = reactor.compileShader(data.rendererVertex, data.rendererFragment);
+
+			gameState.shaders.cameraRendererCell = reactor.compileShader(data.rendererVertex, data.rendererFragmentCell);
+			gameState.shaders.cameraRendererTV = reactor.compileShader(data.rendererVertex, data.rendererFragmentTV);
+			gameState.shaders.cameraRendererSimple = reactor.compileShader(data.rendererVertex, data.rendererFragmentSimple);
+			gameState.shaders.cameraRendererFast = reactor.compileShader(data.rendererVertex, data.rendererFragmentFast);
 
 			gameState.shaders.drawRect = reactor.compileShader(data.drawRect);
 			gameState.shaders.drawCircle = reactor.compileShader(data.drawCircle);
@@ -187,8 +194,8 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 			// alpha only  shield
 			gameState.colors.enemyShield.generateColors({
-				0: [0,0,0,1], 
-				1:[255,255,0,10], 
+				0: [0,0,0,0], 
+				1:[255,255,0,100], 
 				24:[255,255,0,255]
 			});
 

@@ -18,10 +18,7 @@ define(["Utils", "data/FileStore", "gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palet
 		return o;
 	};
 
-	ResLoader.prototype.start = function(cb) {
-		// hardcoded for now
-		var useDB = 1;
-
+	ResLoader.prototype.start = function(useDB, cb) {
 		var item;
 		var data = {};
 		var loaderCtx = this;

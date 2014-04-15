@@ -294,7 +294,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			{texNew: gameState.dishes.shipExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});			
 		
 		// render shields in render2
-		//reactor.applyShaderOnDish(gameState.shaders.clear, gameState.dishes.render2);
+		reactor.mixDish(gameState.shaders.clear, gameState.dishes.render2, {color: [0,0,0,0]});
 		reactor.mixDish(gameState.shaders.stamp, gameState.dishes.render2, 
 			{texNew: gameState.dishes.enemyShield, texPalette: gameState.colors.enemyShield.getTexture()});			
 
@@ -302,7 +302,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		//	{texNew: gameState.dishes.enemyShield, texPalette: gameState.colors.enemyShield.getTexture()});			
 
 
-		reactor.paintDish(gameState.shaders.cameraRenderer, gameState.dishes.render, gameState.dishes.render2, function(gl, shader) {
+		reactor.paintDish(gameState.shaders["cameraRenderer" + gameState.renderer], gameState.dishes.render, gameState.dishes.render2, function(gl, shader) {
 			gl.uniform2f(gl.getUniformLocation(shader, "resolution"), gameState.gameW, gameState.gameH);
 			gl.uniformMatrix4fv(gl.getUniformLocation(shader, "projectionMatrix"), false, gameState.projectionMatrix.elements);
 			gl.uniformMatrix4fv(gl.getUniformLocation(shader, "modelViewMatrix"), false, gameState.viewMatrix.elements);

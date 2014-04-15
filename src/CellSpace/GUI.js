@@ -129,6 +129,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		folder = gui.addFolder('Core');
 		var screenWCtrl = folder.add(gameState, 'screenW');
 		var screenHCtrl = folder.add(gameState, 'screenH');
+		folder.add(gameState, 'renderer', {Fast: "Fast", Simple:"Simple", TV:"TV", Cell:"Cell"});
 
 		var onResized = function(value) {
 			gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
