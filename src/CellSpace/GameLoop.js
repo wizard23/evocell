@@ -230,6 +230,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 					{scroll: [dX, dY]});	
 			}		
 		}
+
+		// move ship 
+		gameState.shipX += gameState.shipSpeedX;
+		gameState.shipY += gameState.shipSpeedY;
 	
 		gameState.cnt++;
 	};

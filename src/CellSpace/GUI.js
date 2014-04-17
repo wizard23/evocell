@@ -253,13 +253,13 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				csUtils.gameStep();
 			}
 		}
-		/*else if (keyboard.isPressed("X".charCodeAt()))
+		else if (keyboard.isPressed("Q".charCodeAt()))
 		{
 			if (once) {
 				once=0;
 				csUtils.gamePlayPause();
 			}
-		}*/
+		}
 		else
 			once = 1;	
 
@@ -296,84 +296,40 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			csUtils.refreshGUI(["zoom"]);
 		}
 
-		// TODO: should be in step
-		// direct movement
-		if (false) {
-			var dX = 0, dY = 0;
-			if (keyboard.isPressed(keyboard.UP)) dY +=1;
-			if (keyboard.isPressed(keyboard.DOWN)) dY -= 1;
-			if (keyboard.isPressed(keyboard.LEFT)) dX -= 1;
-			if (keyboard.isPressed(keyboard.RIGHT)) dX += 1;
 
-			if (dX !== 0 || dY !== 0)
-			{
-				var dirV = new THREE.Vector4(dX, dY, 0);
-				dirV.w=0;
-				dirV.normalize().multiplyScalar(0.1);
-				dirV.add(new THREE.Vector4(0.5, 0.5, 0));
-				dirV.w = 0;
+		// direction/speed based controll of ship
+		var rotSpeed = 0.15;
+		var accel = 0.1;
+		var minSpeed = -1;
+		var maxSpeed = 3;
 
-				var moveDir = utils.intersectClick(dirV, gameState.viewMatrix, gameState.cameraAngle/2);
-
-				moveDir.sub(new THREE.Vector4(gameState.shipX/gameState.gameW, gameState.shipY/gameState.gameH, 0));
-				moveDir.w = 0;
-				moveDir.normalize().multiplyScalar(gameState.stepSize);
-				
-				// TODO: fix above direction Mapping
-				// TODO: Use clifford's NumJS Parer for THREE :)
-				//gameState.shipX += moveDir.x;
-				//gameState.shipY += moveDir.y;
-
-				gameState.shipX += dX;
-				gameState.shipY += dY;
+		if (keyboard.isPressed(keyboard.UP)) {
+			gameState.shipSpeed += accel;
+			if (gameState.shipSpeed > maxSpeed)
+				gameState.shipSpeed = maxSpeed;
+		}
+		if (keyboard.isPressed(keyboard.DOWN)) {
+			if (gameState.shipSpeed > 0) {
+				gameState.shipSpeed -= accel;
+				if (gameState.shipSpeed < 0) {
+					gameState.shipSpeed = 0;
+					allowReturn = 0;
+				}
+			}
+			else if (allowReturn) {
+				gameState.shipSpeed -= accel;
+				if (gameState.shipSpeed < minSpeed)
+					gameState.shipSpeed = minSpeed;
 			}
 		}
-		// inertia based movement
 		else {
-			var rotSpeed = 0.15;
-			var accel = 0.1;
-			var minSpeed = -1;
-			var maxSpeed = 3;
-
-			if (keyboard.isPressed(keyboard.UP)) {
-				gameState.shipSpeed += accel;
-				if (gameState.shipSpeed > maxSpeed)
-					gameState.shipSpeed = maxSpeed;
-			}
-			if (keyboard.isPressed(keyboard.DOWN)) {
-				if (gameState.shipSpeed > 0) {
-					gameState.shipSpeed -= accel;
-					if (gameState.shipSpeed < 0) {
-						gameState.shipSpeed = 0;
-						allowReturn = 0;
-					}
-				}
-				else if (allowReturn) {
-					gameState.shipSpeed -= accel;
-					if (gameState.shipSpeed < minSpeed)
-						gameState.shipSpeed = minSpeed;
-				}
-			}
-			else {
-				allowReturn = 1;
-			}
-			if (keyboard.isPressed(keyboard.LEFT)) gameState.shipDir += rotSpeed;
-			if (keyboard.isPressed(keyboard.RIGHT)) gameState.shipDir -= rotSpeed;
-
-			gameState.shipSpeedX = gameState.shipSpeed * Math.cos(gameState.shipDir);
-			gameState.shipSpeedY = gameState.shipSpeed * Math.sin(gameState.shipDir);
-
-			gameState.shipX += gameState.shipSpeedX;
-			gameState.shipY += gameState.shipSpeedY;
-			
+			allowReturn = 1;
 		}
+		if (keyboard.isPressed(keyboard.LEFT)) gameState.shipDir += rotSpeed;
+		if (keyboard.isPressed(keyboard.RIGHT)) gameState.shipDir -= rotSpeed;
+		gameState.shipSpeedX = gameState.shipSpeed * Math.cos(gameState.shipDir);
+		gameState.shipSpeedY = gameState.shipSpeed * Math.sin(gameState.shipDir);			
 
-/*
-		if (keyboard.isPressed(keyboard.UP)) gameState.shipY += gameState.stepSize;
-		if (keyboard.isPressed(keyboard.DOWN)) gameState.shipY -= gameState.stepSize;
-		if (keyboard.isPressed(keyboard.LEFT)) gameState.shipX -= gameState.stepSize;
-		if (keyboard.isPressed(keyboard.RIGHT)) gameState.shipX += gameState.stepSize;
-*/
 		// space
 		if (keyboard.isPressed(32)) {
 			csUtils.resetGame();

@@ -61,35 +61,31 @@ require([
 	"backbone", "knockback", "knockout", "data/FileStore", "three", "datgui", 
 	"CellSpace/State", "CellSpace/Setup", "CellSpace/GameLoop", "CellSpace/GUI", "CellSpace/Utils"], 
 function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat, 
-	gameState, csSetup, csLoop, csUI, csUtils) {
+	gameState, csSetup, csGame, csUI, csUtils) {
 	"use strict";
 
-	// game must be less than 20 LOC :)
-	// MAIN APP
+	// MAIN LOOP (must be less than 20 LOC :)
 
 	// TODO: extract this in CellSpace.App which bundles State, Setup, UI, ...
 
 	// TODO: should we not put this in backbone ready function?
-	// is jquery redy better?
+	// is jquery ready better?
 	//$(window).load(function(e) { 
 		var canvas = document.getElementById('c');
 
 		csSetup.setup(canvas, function () {
 			csUI.setupGui();
 
-
-			gameState.gameLoop = new utils.AnimationLoop(1000/1000, function() {
+			gameState.mainLoop = new utils.AnimationLoop(0, function() {
 				csUI.pollUserInteraction();
-				csLoop.step();
+				if (!gameState.pause || gameState.doOneStep) {
+					csGame.step();
+					gameState.doOneStep = false;
+				}
+				csGame.render();
 			});
-			//gameState.gameLoop.start();
 
-			gameState.renderLoop = new utils.AnimationLoop(0, function() {
-				csUI.pollUserInteraction();
-				csLoop.step();
-				csLoop.render();
-			});
-			gameState.renderLoop.start();
+			gameState.mainLoop.start();
 		});
 	//});
 });

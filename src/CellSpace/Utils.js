@@ -50,7 +50,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 	// TODO: could be done in backbone via a conceptual model ;)
 	var updateButtons = function() {
-		if (gameState.renderLoop.pauseRequested) {
+		if (gameState.pause) {
 			document.getElementById("playPause").children[0].className = "fa fa-play fa-2x";
 		}
 		else {
@@ -86,13 +86,13 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	};
 
 	var gameStep = function() {
-		gameState.renderLoop.stop();
-		gameState.renderLoop.step();
+		gameState.pause = true;
+		gameState.doOneStep = true;
 		updateButtons();
 	};
 
 	var gamePlayPause = function() {
-		gameState.renderLoop.toggle();
+		gameState.pause = !gameState.pause;
 		updateButtons();
 	};
 

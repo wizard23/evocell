@@ -31,6 +31,9 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		gui: new dat.GUI(),
 		//fpsMonotor: null,
 		keyboard: utils.keyboard,
+
+		pause: false,
+		doOnestep: false,
 		
 		// GAMESTATE //////////
 		// shots
