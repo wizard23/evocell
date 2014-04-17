@@ -1,6 +1,27 @@
 define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, utils) {
 	"use strict";
 
+
+// 	// Define a Todo Model
+// var Layer = Backbone.Model.extend({
+//   // Default todo attribute values
+//   defaults: {
+//   	name: "no name given",
+//     palette: null,
+//     rule: null,
+//     dish: null,
+//   }
+// });
+
+
+//var Layers = 
+
+// Instantiate the Todo Model with a title, with the completed attribute
+// defaulting to false
+// var myTodo = new Todo({
+//   title: 'Check attributes property of the logged models in the console.'
+// });
+
 	var gameState = {
 		// APPSTATE ///////////
 		canvas: null,

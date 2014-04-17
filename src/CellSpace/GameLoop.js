@@ -280,6 +280,15 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				// COMPOSE ////////////////////////////////////////////
 		reactor.mixDish(gameState.shaders.clear, gameState.dishes.render, {color: [0,0,0,255]});
 
+
+
+		// // TODO: fixup this dirty hack for visualizing ruletable
+		// var rule = gameState.rules.enemy2;
+		// var colors = gameState.colors.enemy;
+		// reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
+		// 	{texNew: rule.getTexture(), texPalette: colors.getTexture()});
+
+
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.enemy2, texPalette: gameState.colors.enemy2.getTexture()});
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
@@ -292,6 +301,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			{texNew: gameState.dishes.weaponExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.shipExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});			
+		
 		
 		// render shields in render2
 		reactor.mixDish(gameState.shaders.clear, gameState.dishes.render2, {color: [0,0,0,0]});
