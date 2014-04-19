@@ -78,7 +78,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 
 		scrollX: 0, scrollY: 0,
 		parallaxX: 0, parallaxY: 0,
-		playerEnergy: 10000,
+		playerEnergy: 1000,
 		stepSize: 1.5, 
 		
 		mouseMode: "shoot",	

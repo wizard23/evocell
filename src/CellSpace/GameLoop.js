@@ -82,12 +82,15 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 			// did we just die?
 			if (gameState.playerEnergy < 0) {
-				gameState.renderLoop.stop();
+				var oldPause = gameState.pause;
+				gameState.pause = 1;
 				
 				storyTeller.RunDeath(function() {
-					gameState.playerEnergy = 200;
+					gameState.playerEnergy = 1000;
+					csUtils.refreshGUI(["playerEnergy"]);	
+
 					csUtils.resetGame();
-					gameState.renderLoop.start();
+					gameState.pause = oldPause;
 				});
 				
 			}
