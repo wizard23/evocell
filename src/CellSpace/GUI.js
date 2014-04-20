@@ -131,6 +131,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		var screenHCtrl = folder.add(gameState, 'screenH');
 		folder.add(gameState, 'renderer', {Fast: "Fast", Simple:"Simple", TV:"TV", Cell:"Cell"});
 
+		folder = gui.addFolder('Rest');
+		folder.add(gameState, 'perfStartJSTime');
+		folder.add(gameState, 'perfRequireTime');
+		folder.add(gameState, 'perfFinishedJSTime');
+
 		var onResized = function(value) {
 			gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
 		};
@@ -230,6 +235,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		var handleMouseWheel = function(e) {
 			var maxZoom = 5;
 			var delta = Math.max(-maxZoom, Math.min(maxZoom, (e.wheelDelta || -e.detail)));
+			delta /= 1000;
 			csUtils.zoom(delta);
 			return false;
 		};

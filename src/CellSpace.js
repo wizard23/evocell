@@ -1,25 +1,19 @@
-// Example: local resources in the same directory
-// var resPath = "./"; 
-// resources in res_evocell repository
-var resPath = "../res_evocell/";
-var libPath = "../" + resPath + "src/libs/";
-
+var perfStartedJSTime = performance.now();	
 
 require.config({
 	baseUrl: 'src',
 	paths: {
-		jquery: libPath + 'jquery-1.10.2',
-		"jquery-ui": libPath + 'jquery-ui-1.10.4.custom',
-		"underscore": libPath + "underscore",
-		backbone: libPath + "backbone",
-		knockback: libPath + "knockback",
-		knockout: libPath + "knockout-3.0.0",
-		meSpeak: libPath + "mespeak/mespeak",
-		three: libPath + "three", 
-		"jquery-cycle": libPath + "jquery.cycle.all",
-		datgui: libPath + "dat.gui.min",
-		FileSaver: libPath + "FileSaver",
-		"three.parser": "../../three.parser.js/src/THREE.Parser",
+		jquery: '../../res_evocell/src/libs/jquery-1.10.2',
+		"jquery-ui": '../../res_evocell/src/libs/jquery-ui-1.10.4.custom',
+		"underscore": "../../res_evocell/src/libs/underscore",
+		backbone: "../../res_evocell/src/libs/backbone",
+		knockback: "../../res_evocell/src/libs/knockback",
+		knockout: "../../res_evocell/src/libs/knockout-3.0.0",
+		meSpeak: "../../res_evocell/src/libs/mespeak/mespeak",
+		three: "../../res_evocell/src/libs/three", 
+		"jquery-cycle": "../../res_evocell/src/libs/jquery.cycle.all",
+		datgui: "../../res_evocell/src/libs/dat.gui.min",
+		FileSaver: "../../res_evocell/src/libs/FileSaver",
 	},
 	shim: {
 		datgui: {
@@ -27,10 +21,10 @@ require.config({
 		}, 
         "jquery-ui": {
             exports: "$",
-            deps: ['jquery', libPath + 'farbtastic']
+            deps: ['jquery', '../../res_evocell/src/libs/farbtastic']
         },
 		"jquery-cycle": {
-			deps: ["jquery-ui"]
+			deps: ["juery-ui"]
 		},
 		underscore : {
 			exports: "_",
@@ -64,6 +58,9 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	gameState, csSetup, csGame, csUI, csUtils) {
 	"use strict";
 
+	gameState.perfRequireTime = performance.now();
+	gameState.perfStartedJSTime = perfStartedJSTime;
+
 	// MAIN LOOP (must be less than 20 LOC :)
 
 	// TODO: extract this in CellSpace.App which bundles State, Setup, UI, ...
@@ -84,6 +81,9 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				}
 				csGame.render();
 			});
+
+			gameState.perfFinishedJSTime = performance.now();
+			csUtils.refreshGUI(["perfStartedJSTime","perfFinishedJSTime", "perfRequireTime"]);
 
 			gameState.mainLoop.start();
 		});

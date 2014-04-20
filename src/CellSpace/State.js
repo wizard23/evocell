@@ -22,6 +22,10 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 //   title: 'Check attributes property of the logged models in the console.'
 // });
 
+	var resPath = "../res_evocell/";
+	var libPath = "../" + resPath + "src/libs/";
+
+
 	var gameState = {
 		// APPSTATE ///////////
 		canvas: null,
@@ -69,7 +73,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		projectionMatrix: new THREE.Matrix4(),
 
 		enableScrolling: 1,
-		renderer: "Cell", // "Cell", "TV", "Simple", "Fast"
+		renderer: "Simple", // "Cell", "TV", "Simple", "Fast"
 		shipX: 0, shipY: 0,
 		shipRadius: 3,
 		shipDir: Math.PI/2,
@@ -114,6 +118,17 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 			selectedStates : [3],
 			selectedLayers : ["enemyshield"],
 		}), 
+
+		// Example: local resources in the same directory
+		// resPath: "./"
+		// resources in res_evocell repository
+		resPath: resPath,
+		libPath: libPath,
+
+		// performance measures
+		perfStartJSTime: -0.001,
+		perfRequireTime: -0.001,
+		perfFinishedJSTime: -0.001,
 	};	
 
 	return gameState;

@@ -1,6 +1,7 @@
 define([
-	"jquery-ui", "Utils", "EvoCell", "underscore", "backbone", "knockback", "knockout", "meSpeak", "jquery-cycle"], 
-	function($, utils, EC, _, Backbone, kb, ko, meSpeak) {
+	"jquery-ui", "Utils", "EvoCell", "underscore", "backbone", "knockback", 
+	"knockout", "meSpeak", "CellSpace/State"], 
+	function($, utils, EC, _, Backbone, kb, ko, meSpeak, gameState) {
 
 	function getSpeechURL(text, language) {
 		if (!language) language = "en";
@@ -9,8 +10,8 @@ define([
 		return x.replace(/ /g, "%20");
 	}
 
-	meSpeak.loadConfig(resPath + "src/libs/mespeak/mespeak_config.json");
-	meSpeak.loadVoice(resPath + 'src/libs/mespeak/voices/en/en-us.json');
+	meSpeak.loadConfig(gameState.resPath + "src/libs/mespeak/mespeak_config.json");
+	meSpeak.loadVoice(gameState.resPath + 'src/libs/mespeak/voices/en/en-us.json');
 
 	//meSpeak.speak("hello", {}, function() {alert();});
 

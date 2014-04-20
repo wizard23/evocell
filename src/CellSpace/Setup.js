@@ -4,7 +4,11 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 	// static
 	var setup = function(canvas, callback) {
+		
+		var resPath = gameState.resPath;
+
 		var loader = new EC.ResLoader();
+		
 		loader.load("rules.enemy", resPath + "rules/enemy_ludwigBuildships", "ecfile");
 		//loader.load("rules.enemy", resPath + "rules/enemy_ludwigBuildships_lessActive", "ecfile");
 		//loader.load("rules.enemy", resPath + "rules/enemy_lounge23", "ecfile");
