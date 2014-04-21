@@ -173,9 +173,9 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			var clickedNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);	
 			var clickedPoint = utils.intersectClick(clickedNDC, gameState.viewMatrix, gameState.cameraAngle/2);
 
-			if (activeTool === 0) {
-					var dish = gameState.dishes[gameState.drawModel.attributes.selectedLayers[0]];
+			var dish = gameState.dishes[gameState.drawModel.attributes.selectedLayers[0]];
 
+			if (activeTool === 0 && evt.button === 0) {
 					var state = 0;
 					var firstSel = gameState.drawModel.attributes.selectedStates[0];
 					if (firstSel) state = firstSel;
@@ -197,25 +197,30 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 					}
 				
 			}
-			else if (activeTool !== 0) { // || mouseMode == "shoot") {
+			else if (evt.button === 0) { // || mouseMode == "shoot") {
 				csUtils.fireShotAt(gameState.gameW*(clickedPoint.x+1)/2, gameState.gameH*(clickedPoint.y+1)/2);	
-
 				// no autofire for now
 				//gameState.autoFireOn = 1 - gameState.autoFireOn;	
 			}	
-			else if (gameState.mouseMode == "copy") {
-				gameState.reactor.mixDish(shaders.copy, dishes.buffer, {
-					destinationPos: [0, 0], destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
-					texSource: gameState.dishes.enemy, 
-					sourcePos: [x-gameState.dishes.buffer.width/2, y-gameState.dishes.buffer.height/2], 
+			// copy
+			else if (evt.button === 2) {
+				gameState.reactor.mixDish(gameState.shaders.copy, gameState.dishes.buffer, {
+					destinationPos: [0, 0], 
+					destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
+					texSource: dish, 
+					sourcePos: [gameState.gameW*(clickedPoint.x+1)/2-gameState.dishes.buffer.width/2, 
+						gameState.gameH*(clickedPoint.y+1)/2-gameState.dishes.buffer.height/2], 
 					sourceRes: [gameState.gameW, gameState.gameH],
 				}); 
 			}		
-			else if (gameState.mouseMode == "paste") {
-				gameState.reactor.mixDish(shaders.copy, dishes.enemy, {
-					destinationPos: [x-gameState.dishes.buffer.width/2, y-gameState.dishes.buffer.height/2], 
+			// paste
+			else if (evt.button === 1) {
+				gameState.reactor.mixDish(gameState.shaders.copy, dish, {
+					destinationPos:[gameState.gameW*(clickedPoint.x+1)/2-gameState.dishes.buffer.width/2, 
+						gameState.gameH*(clickedPoint.y+1)/2-gameState.dishes.buffer.height/2], 
 					destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
-					texSource: gameState.dishes.buffer, sourcePos: [0, 0], 
+					texSource: gameState.dishes.buffer, 
+					sourcePos: [0, 0], 
 					sourceRes: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
 				}); 
 			}		
@@ -224,6 +229,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			evt.stopPropagation();
 		}
 		gameState.canvas.addEventListener('mousedown', handleCanvasMouseDown, false);
+
+		var blockContextMenu = function (evt) {
+			evt.preventDefault();
+		};
+		gameState.canvas.addEventListener('contextmenu', blockContextMenu, false);
 
 		var handleCanvasMouseMove = function(evt)
 		{
@@ -235,7 +245,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		var handleMouseWheel = function(e) {
 			var maxZoom = 5;
 			var delta = Math.max(-maxZoom, Math.min(maxZoom, (e.wheelDelta || -e.detail)));
-			delta /= 1000;
+			//delta /= 1000;
 			csUtils.zoom(delta);
 			return false;
 		};
