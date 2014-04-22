@@ -65,7 +65,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 		loader.load("copyPaste", "src/shaders/copyPasteRect.shader", "text");
 
-		loader.start(false, function (data) { 
+		var setupFn = function (data) { 
 			// Setup core
 			var reactor = new  EC.Reactor(canvas, gameState.gameW, gameState.gameH);
 			gameState.reactor = reactor;
@@ -209,7 +209,17 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			gameState.shipY = gameState.gameH/2;
 
 			callback();
-		});
+		};
+
+		// USE this if you need the database (we do we refresh the list of rules in setup)
+		var oldSetupFn = setupFn;
+		setupFn = function(data) {
+			fileStore.ready(function() {
+				oldSetupFn(data);
+			});
+		};
+
+		loader.start(false, setupFn);
 	};
 
 	return {

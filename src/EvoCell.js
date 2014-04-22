@@ -71,7 +71,7 @@ define(["Utils", "data/FileStore", "gl/Reactor", "gl/Dish", "gl/Rule", "gl/Palet
 		};
 
 		if (useDB) {
-			var oldIterateAll = iterateAll
+			var oldIterateAll = iterateAll;
 			iterateAll = function() {
 				FileStore.ready(function() {
 					FileStore.loadAllRuleNames(function(cachedNames) {
