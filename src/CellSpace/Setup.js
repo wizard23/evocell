@@ -83,8 +83,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			dishes.shipExplosion = reactor.compileDish();
 			dishes.weapon = reactor.compileDish();
 			dishes.weaponExplosion = reactor.compileDish();
-			dishes.copy = reactor.compileDish();
-			dishes.buffer = reactor.compileDish(64, 64);
+			dishes.buffer = reactor.compileDish();
 			dishes.render = reactor.compileDish();
 			dishes.render2 = reactor.compileDish();
 

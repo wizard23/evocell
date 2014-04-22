@@ -120,7 +120,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		}), 
 
 		selection : {
-			active: true,
+			active: false,
 			size: [100, 100],
 			pos:[100, 120],
 			downPos: [],

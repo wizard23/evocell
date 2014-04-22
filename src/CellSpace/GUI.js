@@ -8,27 +8,59 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 	// used for breaking to 0 and then reversse
 	var allowReturn = 0;
+	var oldPauseState = false;
 
 
-	
+	var getActiveDish = function() {
+		return gameState.dishes[gameState.drawModel.attributes.selectedLayers[0]] || gameState.dishes.enemy;
+	};
+
 	var updateSelection = function(evt) {
-		var coords = gameState.canvas.relMouseCoords(evt);
-		var x = coords.x;
-		var y = gameState.screenH - coords.y;
-		var clickedNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);	
-		var clickedPoint = utils.intersectClick(clickedNDC, gameState.viewMatrix, gameState.cameraAngle/2);
-		
+		if (evt.button === 2)
+		{
+			var coords = gameState.canvas.relMouseCoords(evt);
+			var x = coords.x;
+			var y = gameState.screenH - coords.y;
+			var clickedNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);	
+			var clickedPoint = utils.intersectClick(clickedNDC, gameState.viewMatrix, gameState.cameraAngle/2);
+			var cx = gameState.gameW*(clickedPoint.x+1)/2;
+			var cy = gameState.gameH*(clickedPoint.y+1)/2;
 
-		var ox = gameState.selection.downPos[0];
-		var oy = gameState.selection.downPos[1];
-		var cx = gameState.gameW*(clickedPoint.x+1)/2;
-		var cy = gameState.gameH*(clickedPoint.y+1)/2;
+			// start new
+			if (!gameState.selection.active) 
+			{
+				oldPauseState = gameState.pause;
+				gameState.pause = true;
+				gameState.selection.downPos = [cx, cy];
+				gameState.selection.active = true;
+			}
 
-		var minx = Math.min(cx, ox);
-		var miny = Math.min(cy, oy);
+			var ox = gameState.selection.downPos[0];
+			var oy = gameState.selection.downPos[1];
+			
+			var minx = Math.min(cx, ox);
+			var miny = Math.min(cy, oy);
 
-		gameState.selection.pos = [minx, miny];
-		gameState.selection.size = [Math.abs(cx-ox), Math.abs(cy-oy)];
+			gameState.selection.pos = [minx, miny];
+			gameState.selection.size = [Math.abs(cx-ox), Math.abs(cy-oy)];
+		}
+		else {
+			if (gameState.selection.active) {
+				var dish = getActiveDish();
+
+				gameState.reactor.mixDish(gameState.shaders.copy, gameState.dishes.buffer, {
+					destinationPos: [0, 0], 
+					destinationSize: gameState.selection.size,
+					texSource: dish, 
+					sourcePos: gameState.selection.pos, 
+					sourceRes: [gameState.gameW, gameState.gameH],
+				}); 
+
+				gameState.pause = oldPauseState;
+
+				gameState.selection.active = false;
+			}
+		}
 	}
 
 	var setupGui = function() {
@@ -196,7 +228,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			var clickedNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);	
 			var clickedPoint = utils.intersectClick(clickedNDC, gameState.viewMatrix, gameState.cameraAngle/2);
 
-			var dish = gameState.dishes[gameState.drawModel.attributes.selectedLayers[0]] || gameState.dishes.ship;
+			var dish = getActiveDish();
 
 			if (activeTool === 0 && evt.button === 0) {
 					var state = 0;
@@ -226,7 +258,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				//gameState.autoFireOn = 1 - gameState.autoFireOn;	
 			}	
 			// copy
-			else if (evt.button === 1) {
+			else if (evt.button === 2) {
 				/*
 				gameState.reactor.mixDish(gameState.shaders.copy, gameState.dishes.buffer, {
 					destinationPos: [0, 0], 
@@ -238,21 +270,28 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				}); 
 */
 
-
-				gameState.selection.downPos = [gameState.gameW*(clickedPoint.x+1)/2, 
-					gameState.gameH*(clickedPoint.y+1)/2];
 				updateSelection(evt);
 			}		
 			// paste
-			else if (evt.button === 2) {
+			else if (evt.button === 1) {
+				var tx = gameState.gameW*(clickedPoint.x+1)/2-gameState.selection.size[0]/2;
+				var ty = gameState.gameH*(clickedPoint.y+1)/2-gameState.selection.size[1]/2;
+
 				gameState.reactor.mixDish(gameState.shaders.copy, dish, {
-					destinationPos:[gameState.gameW*(clickedPoint.x+1)/2-gameState.dishes.buffer.width/2, 
-						gameState.gameH*(clickedPoint.y+1)/2-gameState.dishes.buffer.height/2], 
-					destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
+					destinationPos:[tx, ty], 
+					destinationSize: gameState.selection.size,
 					texSource: gameState.dishes.buffer, 
 					sourcePos: [0, 0], 
 					sourceRes: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
 				}); 
+				// gameState.reactor.mixDish(gameState.shaders.copy, dish, {
+				// 	destinationPos:[gameState.gameW*(clickedPoint.x+1)/2-gameState.dishes.buffer.width/2, 
+				// 		gameState.gameH*(clickedPoint.y+1)/2-gameState.dishes.buffer.height/2], 
+				// 	destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
+				// 	texSource: gameState.dishes.buffer, 
+				// 	sourcePos: [0, 0], 
+				// 	sourceRes: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
+				// }); 
 			}		
 			
 			evt.preventDefault();
