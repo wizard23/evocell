@@ -129,6 +129,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		perfStartJSTime: -0.001,
 		perfRequireTime: -0.001,
 		perfFinishedJSTime: -0.001,
+		showBuffer: false,
 	};	
 
 	return gameState;

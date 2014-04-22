@@ -309,9 +309,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.shipExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});			
 		
-		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
-			{texNew: gameState.dishes.buffer, texPalette: gameState.colors.weapon.getTexture()});			
-	
+		if (gameState.showBuffer) {
+			reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
+				{texNew: gameState.dishes.buffer, texPalette: gameState.colors.weapon.getTexture()});
+		}
 		
 		// render shields in render2
 		reactor.mixDish(gameState.shaders.clear, gameState.dishes.render2, {color: [0,0,0,0]});

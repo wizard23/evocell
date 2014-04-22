@@ -131,10 +131,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		var screenHCtrl = folder.add(gameState, 'screenH');
 		folder.add(gameState, 'renderer', {Fast: "Fast", Simple:"Simple", TV:"TV", Cell:"Cell"});
 
-		folder = gui.addFolder('Rest');
+		folder = gui.addFolder('Debug');
 		folder.add(gameState, 'perfStartJSTime');
 		folder.add(gameState, 'perfRequireTime');
 		folder.add(gameState, 'perfFinishedJSTime');
+		folder.add(gameState, "showBuffer");
 
 		var onResized = function(value) {
 			gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
@@ -173,7 +174,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			var clickedNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);	
 			var clickedPoint = utils.intersectClick(clickedNDC, gameState.viewMatrix, gameState.cameraAngle/2);
 
-			var dish = gameState.dishes[gameState.drawModel.attributes.selectedLayers[0]];
+			var dish = gameState.dishes[gameState.drawModel.attributes.selectedLayers[0]] || gameState.dishes.ship;
 
 			if (activeTool === 0 && evt.button === 0) {
 					var state = 0;
@@ -203,7 +204,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				//gameState.autoFireOn = 1 - gameState.autoFireOn;	
 			}	
 			// copy
-			else if (evt.button === 2) {
+			else if (evt.button === 1) {
 				gameState.reactor.mixDish(gameState.shaders.copy, gameState.dishes.buffer, {
 					destinationPos: [0, 0], 
 					destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
@@ -214,7 +215,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				}); 
 			}		
 			// paste
-			else if (evt.button === 1) {
+			else if (evt.button === 2) {
 				gameState.reactor.mixDish(gameState.shaders.copy, dish, {
 					destinationPos:[gameState.gameW*(clickedPoint.x+1)/2-gameState.dishes.buffer.width/2, 
 						gameState.gameH*(clickedPoint.y+1)/2-gameState.dishes.buffer.height/2], 
