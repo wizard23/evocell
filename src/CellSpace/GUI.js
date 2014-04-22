@@ -9,6 +9,28 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	// used for breaking to 0 and then reversse
 	var allowReturn = 0;
 
+
+	
+	var updateSelection = function(evt) {
+		var coords = gameState.canvas.relMouseCoords(evt);
+		var x = coords.x;
+		var y = gameState.screenH - coords.y;
+		var clickedNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);	
+		var clickedPoint = utils.intersectClick(clickedNDC, gameState.viewMatrix, gameState.cameraAngle/2);
+		
+
+		var ox = gameState.selection.downPos[0];
+		var oy = gameState.selection.downPos[1];
+		var cx = gameState.gameW*(clickedPoint.x+1)/2;
+		var cy = gameState.gameH*(clickedPoint.y+1)/2;
+
+		var minx = Math.min(cx, ox);
+		var miny = Math.min(cy, oy);
+
+		gameState.selection.pos = [minx, miny];
+		gameState.selection.size = [Math.abs(cx-ox), Math.abs(cy-oy)];
+	}
+
 	var setupGui = function() {
 		window.addEventListener("resize", function () {
 			gameState.screenW = window.innerWidth;
@@ -205,6 +227,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			}	
 			// copy
 			else if (evt.button === 1) {
+				/*
 				gameState.reactor.mixDish(gameState.shaders.copy, gameState.dishes.buffer, {
 					destinationPos: [0, 0], 
 					destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
@@ -213,6 +236,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 						gameState.gameH*(clickedPoint.y+1)/2-gameState.dishes.buffer.height/2], 
 					sourceRes: [gameState.gameW, gameState.gameH],
 				}); 
+*/
+
+
+				gameState.selection.downPos = [gameState.gameW*(clickedPoint.x+1)/2, 
+					gameState.gameH*(clickedPoint.y+1)/2];
+				updateSelection(evt);
 			}		
 			// paste
 			else if (evt.button === 2) {
@@ -238,6 +267,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 		var handleCanvasMouseMove = function(evt)
 		{
+			updateSelection(evt);
 			gameState.lastMouseNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);
 		};
 		gameState.canvas.addEventListener('mousemove', handleCanvasMouseMove, false);

@@ -47,6 +47,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 		loader.load("clear", "src/shaders/clear.shader", "text");
 		loader.load("mixPalette", "src/shaders/mixPalette.shader", "text");	
+		loader.load("mixRect", "src/shaders/mixRect.shader", "text");	
 		loader.load("stampPalette", "src/shaders/stampPalette.shader", "text");	
 
 		loader.load("drawRect", "src/shaders/drawRect.shader", "text");
@@ -102,6 +103,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			gameState.shaders.drawCircle = reactor.compileShader(data.drawCircle);
 
 			gameState.shaders.mix = reactor.compileShader(data.mixPalette);
+			gameState.shaders.mixRect = reactor.compileShader(data.mixRect);
 			gameState.shaders.stamp = reactor.compileShader(data.stampPalette);
 
 			gameState.shaders.intersectSpawn = reactor.compileShader(data.intersectSpawn);

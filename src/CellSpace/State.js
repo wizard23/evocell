@@ -119,6 +119,13 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 			selectedLayers : ["enemyshield"],
 		}), 
 
+		selection : {
+			active: true,
+			size: [100, 100],
+			pos:[100, 120],
+			downPos: [],
+		},
+
 		// Example: local resources in the same directory
 		// resPath: "./"
 		// resources in res_evocell repository

@@ -313,7 +313,15 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 				{texNew: gameState.dishes.buffer, texPalette: gameState.colors.weapon.getTexture()});
 		}
-		
+
+		if (gameState.selection.active) {
+			reactor.mixDish(gameState.shaders.mixRect, gameState.dishes.render, {
+				rectPos: gameState.selection.pos, 
+				rectSize: gameState.selection.size, 
+				color: [1,1,1,0.3],
+			});
+		}
+			
 		// render shields in render2
 		reactor.mixDish(gameState.shaders.clear, gameState.dishes.render2, {color: [0,0,0,0]});
 		reactor.mixDish(gameState.shaders.stamp, gameState.dishes.render2, 
