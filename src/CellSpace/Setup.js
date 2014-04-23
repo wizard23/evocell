@@ -141,11 +141,22 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 			gameState.colors.enemy.generateColors({
 				0: [0,0,0,0], 
+				1:[140, 0, 140, 255], 
+				//2:[255,255,255,255],
+				3:[255,30, 255, 255],
+				5:[0,255,0,255],
+				7:[0,255,255,255],
+				9:[255,255,0,255],
+			});
+
+			/*gameState.colors.enemy.generateColors({
+				0: [0,0,0,0], 
 				1:[255,0,0,255], 
 				4:[255,255,0,255],
 				7:[0,255,255,255],
 				10:[255,255,255,255],
 			});
+*/
 
 			gameState.colors.weapon = new EC.Palette(reactor, [
 				[0, 0, 0, 0],
