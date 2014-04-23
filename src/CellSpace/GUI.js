@@ -119,6 +119,42 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		}, false);
 
 
+		document.getElementById("savePattern").addEventListener('click', function(evt) {
+			var ruleName = prompt('Pattern can haz name?','pattern_');
+
+			if (ruleName) 
+			{
+				// capture pixel from buffer
+				var dish = gameState.dishes.buffer;
+				var w = gameState.selection.size[0];
+				var h = gameState.selection.size[1];
+				var patternDataRGBA = new Uint8Array(w*h*4);
+				var gl = gameState.reactor.gl;
+
+				gl.bindFramebuffer(gl.FRAMEBUFFER, dish.getCurrentFramebuffer());
+				gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, dish.getCurrentTexture(), 0);
+				gl.readPixels(0, 0, w, h, gl.RGBA, gl.UNSIGNED_BYTE, patternDataRGBA);
+
+				var patternData = new Uint8Array(w*h);
+				for (var i = w*h-1; i >= 0; i--) {
+					patternData[i] = patternDataRGBA[4*i +3];
+				}
+
+				// construct ECFile
+				var ruleData = {
+					containsPattern: true,
+					patternWidth: gameState.selection.size[0],
+					patternHeight: gameState.selection.size[1], 
+					patternData: patternData,
+				};
+
+				fileStore.storeRule(ruleName, ruleData,  function() {
+					csUtils.refreshAvailableRules();
+				});
+			}
+		}, false);
+
+
 		$('#importRule').change(function(evt) {
 			var files = evt.target.files; // FileList object
 
