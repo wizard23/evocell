@@ -23,8 +23,9 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			var y = gameState.screenH - coords.y;
 			var clickedNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);	
 			var clickedPoint = utils.intersectClick(clickedNDC, gameState.viewMatrix, gameState.cameraAngle/2);
-			var cx = gameState.gameW*(clickedPoint.x+1)/2;
-			var cy = gameState.gameH*(clickedPoint.y+1)/2;
+			
+			var cx = Math.round(gameState.gameW*(clickedPoint.x+1)/2);
+			var cy = Math.round(gameState.gameH*(clickedPoint.y+1)/2);
 
 			// start new
 			if (!gameState.selection.active) 
