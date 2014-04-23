@@ -121,9 +121,10 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 
 		selection : {
 			active: false,
-			size: [100, 100],
-			pos:[100, 120],
-			downPos: [],
+			size: [0, 0],
+			pos:[0, 0],
+			downPos: [0, 0],
+			lastPos: [0, 0],
 		},
 
 		// Example: local resources in the same directory

@@ -36,12 +36,27 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				gameState.selection.active = true;
 			}
 
+			var dx = gameState.selection.lastPos[0] - cx;
+			var dy = gameState.selection.lastPos[1] - cy;
+
+			if (evt.ctrlKey) 
+			{
+				gameState.selection.downPos[0] += dx;
+				gameState.selection.downPos[1] += dy;
+			}
+			if (evt.shiftKey) 
+			{
+				gameState.selection.downPos[0] -= dx;
+				gameState.selection.downPos[1] -= dy;
+			}
+
 			var ox = gameState.selection.downPos[0];
 			var oy = gameState.selection.downPos[1];
 			
 			var minx = Math.min(cx, ox);
 			var miny = Math.min(cy, oy);
 
+			gameState.selection.lastPos = [cx, cy];
 			gameState.selection.pos = [minx, miny];
 			gameState.selection.size = [Math.abs(cx-ox), Math.abs(cy-oy)];
 		}
@@ -412,10 +427,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		else {
 			allowReturn = 1;
 		}
+
+		// direction and speed of layer ship
 		if (keyboard.isPressed(keyboard.LEFT)) gameState.shipDir += rotSpeed;
 		if (keyboard.isPressed(keyboard.RIGHT)) gameState.shipDir -= rotSpeed;
 		gameState.shipSpeedX = gameState.shipSpeed * Math.cos(gameState.shipDir);
-		gameState.shipSpeedY = gameState.shipSpeed * Math.sin(gameState.shipDir);			
+		gameState.shipSpeedY = gameState.shipSpeed * Math.sin(gameState.shipDir);		
 
 		// space
 		if (keyboard.isPressed(32)) {
