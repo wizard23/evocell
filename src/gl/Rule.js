@@ -16,18 +16,31 @@ define(["gl/GLHelper"], function(glhelper) {
 	{
 		this.ruleData = ruleData;
 
-		var xN = Math.ceil(ruleData.nrNeighbours/2);
-		var yN = Math.floor(ruleData.nrNeighbours/2);
-		var width = Math.pow(ruleData.nrStates, xN);
-		var height = Math.pow(ruleData.nrStates, yN);
 
-		this.nrStates = ruleData.nrStates;
-		this.ruleTexture  = glhelper.createAlphaTexture(this.gl, width, height, ruleData.ruleTable);	
+		if (ruleData.containsRule)
+		{
+			var xN = Math.ceil(ruleData.nrNeighbours/2);
+			var yN = Math.floor(ruleData.nrNeighbours/2);
+			var width = Math.pow(ruleData.nrStates, xN);
+			var height = Math.pow(ruleData.nrStates, yN);
 
-		this.width = width;
-		this.height = height;
+			this.nrStates = ruleData.nrStates;
+			this.ruleTexture  = glhelper.createAlphaTexture(this.gl, width, height, ruleData.ruleTable);	
 
-		this.invalidateProgram();
+			this.width = width;
+			this.height = height;
+
+			this.invalidateProgram();
+		}
+		if (ruleData.containsPattern) 
+		{
+			this.patternTexture  = glhelper.createAlphaTexture(this.gl, 
+				ruleData.patternWidth, ruleData.patternHeight, ruleData.patternData);
+		}
+	};
+
+	Rule.prototype.getPatternTexture = function() {
+		return this.patternTexture;
 	};
 
 	// candy

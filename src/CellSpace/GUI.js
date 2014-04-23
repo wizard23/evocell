@@ -98,6 +98,27 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		}, false);
 
 
+		document.getElementById("loadPattern").addEventListener('click', function(evt) {
+			var ruleName = gameState.drawModel.get("selectedRules")[0];
+
+			fileStore.loadRule(ruleName, function(loadedRule) {
+				if (loadedRule.ruleData.containsPattern) {
+					var rule = gameState.reactor.compileRule(loadedRule.ruleData);
+
+					gameState.selection.size = [loadedRule.ruleData.patternWidth, loadedRule.ruleData.patternHeight];
+
+					gameState.reactor.mixDish(gameState.shaders.copy, gameState.dishes.buffer, {
+						destinationPos:[0, 0], 
+						destinationSize: gameState.selection.size,
+						texSource: rule.getPatternTexture(), 
+						sourcePos: [0, 0], 
+						sourceRes: gameState.selection.size,
+					}); 
+				}
+			});
+		}, false);
+
+
 		$('#importRule').change(function(evt) {
 			var files = evt.target.files; // FileList object
 

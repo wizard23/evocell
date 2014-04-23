@@ -56,6 +56,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		shaders: {},
 		dishes: {},
 		rules: {},
+		files: {},
 		colors: {},
 		shots: null,
 

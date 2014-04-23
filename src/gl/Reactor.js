@@ -165,24 +165,24 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 		gl.linkProgram(shader);
 
 		return shader;
-	}
+	};
 
 	Reactor.prototype.compileDish = function(w, h)
 	{
 		var dish = new Dish(this, w || this.defaultDishSize.width, h || this.defaultDishSize.height);
 		return dish;
-	}
+	};
 
 	Reactor.prototype.compileRule = function(ruleData, dish)
 	{
 		var rule = new Rule(this, ruleData, dish);
 		return rule;
-	}
+	};
 
 	Reactor.prototype.compilePalette = function(paletteId, colors)
 	{
 		// does this solve palette troules
-	}
+	};
 
 	// GL level
 

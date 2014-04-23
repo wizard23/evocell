@@ -24,7 +24,7 @@ define([], function() {
 			pointCoordinates[2*i+1] = 0;
 		}
 	
-		var pixelValues = new Uint8Array(width*height*4); // for colission deection
+		var pixelValues = new Uint8Array(width*height*4); // for colission detection
 		this.pixelValues = pixelValues;
 
 		var pointsBuffer = gl.createBuffer();
