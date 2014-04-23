@@ -166,10 +166,13 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: 3/255, operation: OP_REPLACE});
 	
 		// dishes.enemy gets slowly killed by shipExplosions
-		if (gameState.cnt % 6 === 1)
-		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
-			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: -1/255, operation: OP_ADD});
-
+		if (gameState.cnt % 6 === 1) {
+			// reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
+			// 	{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: -1/255, operation: OP_ADD});
+			reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
+				{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: 0, operation: OP_REPLACE});
+		}
+		
 		// ship gets killed by shipExplosions
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.ship, 
 			{tex1: gameState.dishes.ship, tex2: gameState.dishes.shipExplosion, state: 0/255, operation: OP_REPLACE});			

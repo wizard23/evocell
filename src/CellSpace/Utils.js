@@ -112,24 +112,32 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// reinit instead of resize (we lose state but who cares?)
 		var dishes = gameState.dishes;
 		dishes.enemy = reactor.compileDish();
+		dishes.enemyShield = reactor.compileDish();
 		dishes.enemy2 = reactor.compileDish();
 		dishes.ship = reactor.compileDish();
 		dishes.shipExplosion = reactor.compileDish();
 		dishes.weapon = reactor.compileDish();
 		dishes.weaponExplosion = reactor.compileDish();
 		dishes.copy = reactor.compileDish();
-		dishes.buffer = reactor.compileDish(64, 64);
+		dishes.buffer = reactor.compileDish();
 		dishes.render = reactor.compileDish();
+		dishes.render2 = reactor.compileDish();
 
-		var rules = gameState.rules;
-		rules.enemy.setCompileSizeDish(gameState.dishes.enemy);
-		rules.enemy2.setCompileSizeDish(gameState.dishes.enemy2);
-		rules.ship.setCompileSizeDish(gameState.dishes.ship);
-		rules.weapon.setCompileSizeDish(gameState.dishes.enemy);
-		rules.shipExplosion.setCompileSizeDish(gameState.dishes.enemy2);
-		rules.weaponExplosion.setCompileSizeDish(gameState.dishes.enemy2);
+		try 
+		{
+			var rules = gameState.rules;
+			rules.enemy.setCompileSizeDish(gameState.dishes.enemy);
+			rules.enemy2.setCompileSizeDish(gameState.dishes.enemy2);
+			rules.ship.setCompileSizeDish(gameState.dishes.ship);
+			rules.weapon.setCompileSizeDish(gameState.dishes.enemy);
+			rules.shipExplosion.setCompileSizeDish(gameState.dishes.enemy2);
+			rules.weaponExplosion.setCompileSizeDish(gameState.dishes.enemy2);
 
-		resetGame();
+			resetGame();
+		}
+		catch (ex) {
+			// FIXME: catch all is dirty hack store rule and compiled rule seperately (dishes, rules and ecfiles)
+		}
 	}; 
 
 	var refreshAvailableRules = function() {

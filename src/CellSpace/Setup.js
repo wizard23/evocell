@@ -24,7 +24,6 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 		//loader.load("rules.enemy", "rules/enemy_linesLounge_moreactive", "ecfile");
 		//loader.load("rules.enemy", "rules/enemy_linesLounge_moreactive-mutA_mut", "ecfile");
 		
-
 		loader.load("rules.enemy2", resPath + "rules/enemy_linebuilder", "ecfile");
 		loader.load("rules.weapon", resPath + "rules/ship_avg4_nice", "ecfile");
 		
@@ -73,21 +72,23 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			gameState.gl = reactor.gl;
 			gameState.canvas = reactor.canvas;
 
-			gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
+			csUtils.onScreenSizeChanged();
+			csUtils.onGameSizeChanged();
+			// gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
 
-			var dishes = gameState.dishes;
-			dishes.enemy = reactor.compileDish();
-			dishes.enemyShield = reactor.compileDish();
-			dishes.enemy2 = reactor.compileDish();
-			dishes.ship = reactor.compileDish();
-			dishes.shipExplosion = reactor.compileDish();
-			dishes.weapon = reactor.compileDish();
-			dishes.weaponExplosion = reactor.compileDish();
-			dishes.buffer = reactor.compileDish();
-			dishes.render = reactor.compileDish();
-			dishes.render2 = reactor.compileDish();
+			// var dishes = gameState.dishes;
+			// dishes.enemy = reactor.compileDish();
+			// dishes.enemyShield = reactor.compileDish();
+			// dishes.enemy2 = reactor.compileDish();
+			// dishes.ship = reactor.compileDish();
+			// dishes.shipExplosion = reactor.compileDish();
+			// dishes.weapon = reactor.compileDish();
+			// dishes.weaponExplosion = reactor.compileDish();
+			// dishes.buffer = reactor.compileDish();
+			// dishes.render = reactor.compileDish();
+			// dishes.render2 = reactor.compileDish();
 
-			gameState.shots = new EC.ParticleSystem(reactor, gameState.maxParticles, gameState.gameW, gameState.gameH);
+			// gameState.shots = new EC.ParticleSystem(reactor, gameState.maxParticles, gameState.gameW, gameState.gameH);
 
 			gameState.shaders.drawPoints = reactor.compileShader(data.vertexPoints, data.drawAll);
 			
@@ -137,6 +138,14 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 				[255, 30, 255, 255],
 				[255, 110, 255, 255]
 			]);
+
+			gameState.colors.enemy.generateColors({
+				0: [0,0,0,0], 
+				1:[255,0,0,255], 
+				4:[255,255,0,255],
+				7:[0,255,255,255],
+				10:[255,255,255,255],
+			});
 
 			gameState.colors.weapon = new EC.Palette(reactor, [
 				[0, 0, 0, 0],

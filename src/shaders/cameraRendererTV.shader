@@ -19,7 +19,7 @@ void main(void) {
 	
 	if (damp <= 0.)  damp = 1.;
 	
-	if (mod(gl_FragCoord.y, 4.) < 2.) {
+	if (mod(gl_FragCoord.y, 6.) < 3.) {
 		//damp *= 0.7;
 	}
 	else {
