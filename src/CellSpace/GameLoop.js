@@ -145,10 +145,15 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 
 
-		// enemy dies from explosion
+		// // enemy dies from explosion
+		// reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
+		// 	{tex1: gameState.dishes.enemy, tex2: gameState.dishes.weaponExplosion, state: -1/255, operation: OP_ADD});
+		//must have faster c thanship; TODO: use bigger neighbourhoods
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
 			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.weaponExplosion, state: 0/255, operation: OP_REPLACE});
 		
+
+
 		// strange infectious weapon from expoloshion
 	//	reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.weapon, 
 	//		{tex1: gameState.dishes.weapon, tex2: gameState.dishes.weaponExplosion, state: 3/255, operation: OP_REPLACE});	
@@ -166,13 +171,18 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: 3/255, operation: OP_REPLACE});
 	
 		// dishes.enemy gets slowly killed by shipExplosions
-		if (gameState.cnt % 6 === 1) {
+		//if (gameState.cnt % 2 === 1) {
+			 // reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
+			 // 	{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: -1/255, operation: OP_ADD});
 			// reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
-			// 	{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: -1/255, operation: OP_ADD});
-			reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
-				{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: 0, operation: OP_REPLACE});
+			// 	{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: 0, operation: OP_REPLACE});
+		//}
+
+		if (gameState.cnt % 6 === 1) {
+			 reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
+			 	{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: -1/255, operation: OP_ADD});
 		}
-		
+
 		// ship gets killed by shipExplosions
 		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.ship, 
 			{tex1: gameState.dishes.ship, tex2: gameState.dishes.shipExplosion, state: 0/255, operation: OP_REPLACE});			
@@ -308,7 +318,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.ship, texPalette: gameState.colors.ship.getTexture()});
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
-			{texNew: gameState.dishes.weaponExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});
+			{texNew: gameState.dishes.weaponExplosion, texPalette: gameState.colors.weaponExplosion.getTexture()});
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.shipExplosion, texPalette: gameState.colors.shipExplosion.getTexture()});			
 		

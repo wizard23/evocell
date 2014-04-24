@@ -9,6 +9,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	// used for breaking to 0 and then reversse
 	var allowReturn = 0;
 	var oldPauseState = false;
+	var buttonWasDown = 0;
 
 
 	var getActiveDish = function() {
@@ -16,7 +17,9 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	};
 
 	var updateSelection = function(evt) {
-		if (evt.button === 2)
+		if (evt.button === 2) buttonWasDown = true;
+
+		if (gameState.selection.active || evt.button === 2)
 		{
 			var coords = gameState.canvas.relMouseCoords(evt);
 			var x = coords.x;
@@ -33,7 +36,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				oldPauseState = gameState.pause;
 				gameState.pause = true;
 				gameState.selection.downPos = [cx, cy];
-				gameState.selection.active = true;
+				gameState.selection.active = 2;
 			}
 
 			var dx = gameState.selection.lastPos[0] - cx;
@@ -60,24 +63,28 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			gameState.selection.pos = [minx, miny];
 			gameState.selection.size = [Math.abs(cx-ox), Math.abs(cy-oy)];
 		}
-		else {
-			if (gameState.selection.active) {
-				var dish = getActiveDish();
+		if (evt.button != 2) { // not pressed
+			if (gameState.selection.active && buttonWasDown) {
+				gameState.selection.active--;
 
-				gameState.reactor.mixDish(gameState.shaders.copy, gameState.dishes.buffer, {
-					destinationPos: [0, 0], 
-					destinationSize: gameState.selection.size,
-					texSource: dish, 
-					sourcePos: gameState.selection.pos, 
-					sourceRes: [gameState.gameW, gameState.gameH],
-				}); 
+				if (!gameState.selection.active)
+				{
+					var dish = getActiveDish();
 
-				gameState.pause = oldPauseState;
+					gameState.reactor.mixDish(gameState.shaders.copy, gameState.dishes.buffer, {
+						destinationPos: [0, 0], 
+						destinationSize: gameState.selection.size,
+						texSource: dish, 
+						sourcePos: gameState.selection.pos, 
+						sourceRes: [gameState.gameW, gameState.gameH],
+					}); 
 
-				gameState.selection.active = false;
+					gameState.pause = oldPauseState;
+				}
 			}
+			buttonWasDown = false;
 		}
-	}
+	};
 
 	var setupGui = function() {
 		window.addEventListener("resize", function () {

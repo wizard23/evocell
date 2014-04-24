@@ -29,6 +29,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 		
 		loader.load("rules.weaponExplosion", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
 		loader.load("rules.weaponExplosion", resPath + "rules/moore5-coolspaceships", "ecfile");
+		//loader.load("rules.weaponExplosion", resPath + "rules/explosion_avg2-far2", "ecfile");
 		//loader.load("rules.weaponExplosion", resPath + "rules/ship_avg4_nice", "ecfile");
 
 		
@@ -158,22 +159,37 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			});
 */
 
+			var weaponV = 100;
 			gameState.colors.weapon = new EC.Palette(reactor, [
 				[0, 0, 0, 0],
-				[0, 120, 0, 180],
-				[0, 255, 0, 180],
-				[120, 255, 0, 180],
-				[200, 255, 0, 180],
+				[0, 120, 0, weaponV],
+				[0, 255, 0, weaponV],
+				[120, 255, 0, weaponV],
+				[200, 255, 0, weaponV],
 			]);
 
-			gameState.colors.weaponExplosion = new EC.Palette(reactor, [
+			var shipExplosionV = 210;
+			gameState.colors.shipExplosion = new EC.Palette(reactor, [
 				[60, 60, 90, 0],
-				[23, 108, 126, 255],
-				[18, 164, 195, 255],
-				[0, 210, 255, 255],
-				[150, 210, 255, 255], 
-				[255, 255, 255, 255]
+				[23, 108, 126, shipExplosionV],
+				[18, 164, 195, shipExplosionV],
+				[0, 210, 255, shipExplosionV],
+				[150, 210, 255, shipExplosionV], 
+				[255, 255, 255, shipExplosionV]
 			]);
+
+			var weaponExplosionV = 210;
+			gameState.colors.weaponExplosion = new EC.Palette(reactor, [
+				[0, 0, 0, 0],
+				[255, 0, 0, weaponExplosionV],
+				[255, 160, 0, weaponExplosionV],
+				[255, 255, 0, weaponExplosionV]
+			]);
+
+			//gameState.colors.shipExplosion = gameState.colors.weaponExplosion;
+
+			//gameState.colors.weaponExplosion = gameState.colors.shipExplosion;
+
 
 			var bs = 0.12;
 			gameState.colors.enemy2 = new EC.Palette(reactor, [
@@ -190,13 +206,6 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 				[0, 190, 255, 255],
 				[0, 225, 255, 255],
 				[0, 255, 255, 255],
-			]);
-
-			gameState.colors.shipExplosion = new EC.Palette(reactor, [
-				[0, 0, 0, 0],
-				[255, 0, 0, 255],
-				[255, 160, 0, 255],
-				[255, 255, 0, 255]
 			]);
 
 			gameState.colors.copy = new EC.Palette(reactor, [

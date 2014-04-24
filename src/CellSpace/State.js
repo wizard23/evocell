@@ -77,12 +77,12 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		shipX: 0, shipY: 0,
 		shipRadius: 3,
 		shipDir: Math.PI/2,
-		shipSpeed: 1.5,
+		shipSpeed: 1,
 		shipSpeedX: 0, shipSpeedY: 0, // derived values
 
 		scrollX: 0, scrollY: 0,
 		parallaxX: 0, parallaxY: 0,
-		playerEnergy: 1000,
+		playerEnergy: 100000,
 		stepSize: 1.5, 
 		
 		mouseMode: "shoot",	
