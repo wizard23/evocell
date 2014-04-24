@@ -14,8 +14,15 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		var reactor = gameState.reactor;
 
 		// ENEMIES //////////////////////////////////////
-		if (gameState.cnt % 2 === 0)
-			reactor.step(gameState.rules.enemy, gameState.dishes.enemy);
+		if (gameState.enemySpeed < 1) {
+			if (gameState.cnt % Math.ceil(1/gameState.enemySpeed) === 0)
+				reactor.step(gameState.rules.enemy, gameState.dishes.enemy);
+		}
+		else {
+			for (var i = 0; i < gameState.enemySpeed; i++) 
+				reactor.step(gameState.rules.enemy, gameState.dishes.enemy);
+		}
+
 		if (gameState.cnt % 6 === 0)
 			reactor.step(gameState.rules.enemy2, gameState.dishes.enemy2);
 
@@ -149,9 +156,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
 		// 	{tex1: gameState.dishes.enemy, tex2: gameState.dishes.weaponExplosion, state: -1/255, operation: OP_ADD});
 		//must have faster c thanship; TODO: use bigger neighbourhoods
-		reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
-			{tex1: gameState.dishes.enemy, tex2: gameState.dishes.weaponExplosion, state: 0/255, operation: OP_REPLACE});
-		
+		if (gameState.cnt % 3 === 1) {
+			reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
+				{tex1: gameState.dishes.enemy, tex2: gameState.dishes.weaponExplosion, state: 0/255, operation: OP_REPLACE});
+		}		
 
 
 		// strange infectious weapon from expoloshion

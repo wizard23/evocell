@@ -64,6 +64,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		screenH: window.innerHeight ? window.innerHeight :800,
 
 		randomDensity: 0.001,
+		enemySpeed: 0.5,
 
 		zoom: 1/3, // cell/pixel ratio
 		rot: 0,
