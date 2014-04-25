@@ -156,7 +156,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
 		// 	{tex1: gameState.dishes.enemy, tex2: gameState.dishes.weaponExplosion, state: -1/255, operation: OP_ADD});
 		//must have faster c thanship; TODO: use bigger neighbourhoods
-		if (gameState.cnt % 3 === 1) {
+		if (gameState.cnt % gameState.weaponExplosionParam === 0) {
 			reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
 				{tex1: gameState.dishes.enemy, tex2: gameState.dishes.weaponExplosion, state: 0/255, operation: OP_REPLACE});
 		}		

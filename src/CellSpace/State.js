@@ -65,6 +65,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 
 		randomDensity: 0.001,
 		enemySpeed: 0.5,
+		weaponExplosionParam: 3,
 
 		zoom: 1/3, // cell/pixel ratio
 		rot: 0,

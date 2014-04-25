@@ -249,7 +249,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		folder.add(gameState, 'shipRadius', 1, 20);
 		folder.add(gameState, 'randomDensity', 0, 1);
 
-		folder.add(gameState, "enemySpeed", 0, 5);
+		folder.add(gameState, "enemySpeed", 0, 12);
+		folder.add(gameState, "weaponExplosionParam");
 	
 		folder.add(gameState, 'enableScrolling', {yes: 1, no: 0});
 
