@@ -43,7 +43,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		// shots
 		maxParticles: 2800,
 		shotSpeed: 3.4,
-		frontShots: 3,
+		frontShots: 1,
 		frontShotAngle: 0.6,
 		shotN: 8,
 		bombFired: 0,
@@ -59,7 +59,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		colors: {},
 		shots: null,
 
-		gameW: 356, gameH: 356,
+		gameW: 400, gameH: 300,
 		screenW: window.innerWidth ? window.innerWidth : 1000,
 		screenH: window.innerHeight ? window.innerHeight :800,
 
@@ -77,7 +77,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		renderer: "Simple", // "Cell", "TV", "Simple", "Fast"
 		shipX: 0, shipY: 0,
 		shipRadius: 3,
-		shipDir: Math.PI/2,
+		shipDir: 0,
 		shipSpeed: 1,
 		shipSpeedX: 0, shipSpeedY: 0, // derived values
 
