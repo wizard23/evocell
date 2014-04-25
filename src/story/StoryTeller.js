@@ -1,6 +1,6 @@
 define([
 	"jquery-ui", "Utils", "EvoCell", "underscore", "backbone", "knockback", 
-	"knockout", "meSpeak", "CellSpace/State"], 
+	"knockout", "meSpeak", "CellSpace/State", "jquery-cycle"], 
 	function($, utils, EC, _, Backbone, kb, ko, meSpeak, gameState) {
 
 	function getSpeechURL(text, language) {
@@ -161,7 +161,7 @@ define([
 			texts.push(text);
 		
 			var id = "sc" + partIndex;
-			$("#container").append(htmlTemplate({text:text, image: resPath + "images/" + image, id:id}));
+			$("#container").append(htmlTemplate({text:text, image: gameState.resPath + "images/" + image, id:id}));
 
 			//var url = getSpeechURL(text);
 			//var a = new Audio(url);

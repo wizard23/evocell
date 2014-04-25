@@ -24,7 +24,7 @@ require.config({
             deps: ['jquery', '../../res_evocell/src/libs/farbtastic']
         },
 		"jquery-cycle": {
-			deps: ["juery-ui"]
+			deps: ["jquery-ui"]
 		},
 		underscore : {
 			exports: "_",
