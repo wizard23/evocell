@@ -54,11 +54,81 @@ request.onupgradeneeded = function(event) {
   }
 
   var objectStore = db.createObjectStore(ruleStoreName, { keyPath: "name"});
+  var objectStore = db.createObjectStore("gameStates", { keyPath: "name"});
 
   // Create an index to search customers by name. We may have duplicates
   // so we can't use a unique index.
   //objectStore.createIndex("name", "name", { unique: true });
 };
+
+var addObject = function(storeName, data, callback) {
+  var transaction = db.transaction([storeName], "readwrite");
+  transaction.oncomplete = function(e) { 
+    if (callback) callback(); 
+  };
+  var objectStore = transaction.objectStore(storeName);
+  var request = objectStore.add(data);
+  request.onerror = function(event) {
+    alert("me so sorry, could not add: " + data + "\n" + storeName);
+  };
+  request.onsuccess = function(event) {
+    // dont call callback here call it later when transaction is done!
+  };
+};
+
+var deleteObject = function(storeName, id, callback) {
+  var transaction = db.transaction([storeName], "readwrite");
+  transaction.oncomplete = function(e) { 
+    if (callback) callback(); 
+  };
+  var request = transaction
+                .objectStore(storeName)
+                .delete(id);
+  request.onerror = function(event) {
+    alert("me so sorry, could not delte object id:" + id);
+  };
+  request.onsuccess = function(event) {
+    // It's gone!
+  };
+};
+var getObject = function(storeName, id, callback) {
+  var objectStore = db.transaction([storeName]).objectStore(storeName);
+  var request = objectStore.get(id);
+  request.onerror = function(event) {
+    alert("me so sorry, could not load object with id name:" + id);
+  };
+  request.onsuccess = function(event) {
+    var result = event.target.result;
+    if (!result)
+      alert("Empty result for id: " + id);
+    callback(result);
+  };
+};
+var getAllObjects = function(storeName, callback, filter) {
+  filter = filter || function(x) { return true; };
+  var  objects = [];
+  var objectStore = db.transaction(ruleStoreName).objectStore(storeName);
+
+  objectStore.openCursor().onsuccess = function(event) {
+    var cursor = event.target.result;
+    if (cursor) {
+      if (filter(cursor.value))
+        objects.push(cursor.value);
+      cursor.continue();
+    }
+    else {
+      callback(objects);
+    }
+  };
+};
+var getAllObjectIds = function(storeName, callback, filter) {
+  getAllObjects(function(rulesModelData) {
+    var ids = _.map(rulesModelData, function(obj) { return obj.id; });
+    callback(ids);
+  }, filter);
+} ;
+
+
 
 var storeRule = function(name, ruleData, callback) {
   var transaction = db.transaction([ruleStoreName], "readwrite");
@@ -129,7 +199,9 @@ var loadAllRuleNames = function(callback) {
   loadAllRules(function(rulesModelData) {
     var names = [];
     for (var ruleIdx in rulesModelData) {
-      names.push(rulesModelData[ruleIdx].name);
+      var rule = rulesModelData[ruleIdx];
+      //if (rule.ruleData.contaisNeighbourhood)
+      names.push(rule.name);
     }
     callback(names);
   });

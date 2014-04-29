@@ -261,7 +261,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			});
 		};
 
-		loader.start(false, setupFn);
+		loader.start(true, setupFn);
 	};
 
 	return {
