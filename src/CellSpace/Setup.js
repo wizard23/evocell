@@ -8,6 +8,9 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 		gameState.resFiles = [
 			resPath + "rules/enemy_ludwigBuildships", 
 			resPath + "rules/moore5-coolspaceships",
+			resPath + "rules/EvoloopN9",
+			resPath + "rules/GameOfLife",
+			resPath + "patterns/evoloop30.ecpattern",
 		];
 
 
@@ -20,13 +23,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 		loader.start(true, function(data) {
 			// do nothing since we just use the cache
-
-			// _.each(data, function(evoCellData, key) {
-			// 	alert(key);
-			// 	fileStore.storeRule(key, evoCellData, function() {
-			// 		csUtils.refreshAvailableRules();
-			// 	});
-			// });
+			csUtils.refreshAvailableRules();
 		});
 
 
