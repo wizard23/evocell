@@ -139,7 +139,9 @@ define(["jquery", "FileSaver"], function($, saveAs) {
 	};
 	FPSMonitor.prototype.frameIncrease = function() {
 		this.frames++;
-	}
+	};
+
+	var ExtractFilename = function(url) {}
 
 	var Keyboard = {
 	  _pressed: {},

@@ -2,6 +2,36 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 	function(utils, fileStore, EC, gameState, csUtils) {
 	"use strict";
 
+	var initDB = function() {
+		// hackinit
+		var resPath = gameState.resPath;
+		gameState.resFiles = [
+			resPath + "rules/enemy_ludwigBuildships", 
+			resPath + "rules/moore5-coolspaceships",
+		];
+
+
+
+		var loader = new EC.ResLoader();
+		_.each(gameState.resFiles, function(fileURL, fileKey) {
+			loader.load("predefinded_" + fileKey, fileURL, "ecfile");
+		});
+		// read from state rules and patterns to load
+
+		loader.start(true, function(data) {
+			// do nothing since we just use the cache
+
+			// _.each(data, function(evoCellData, key) {
+			// 	alert(key);
+			// 	fileStore.storeRule(key, evoCellData, function() {
+			// 		csUtils.refreshAvailableRules();
+			// 	});
+			// });
+		});
+
+
+	};
+
 	// static
 	var setup = function(canvas, callback) {
 		
@@ -75,21 +105,6 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 			csUtils.onScreenSizeChanged();
 			csUtils.onGameSizeChanged();
-			// gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
-
-			// var dishes = gameState.dishes;
-			// dishes.enemy = reactor.compileDish();
-			// dishes.enemyShield = reactor.compileDish();
-			// dishes.enemy2 = reactor.compileDish();
-			// dishes.ship = reactor.compileDish();
-			// dishes.shipExplosion = reactor.compileDish();
-			// dishes.weapon = reactor.compileDish();
-			// dishes.weaponExplosion = reactor.compileDish();
-			// dishes.buffer = reactor.compileDish();
-			// dishes.render = reactor.compileDish();
-			// dishes.render2 = reactor.compileDish();
-
-			// gameState.shots = new EC.ParticleSystem(reactor, gameState.maxParticles, gameState.gameW, gameState.gameH);
 
 			gameState.shaders.drawPoints = reactor.compileShader(data.vertexPoints, data.drawAll);
 			
@@ -253,6 +268,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 	};
 
 	return {
-		setup: setup
+		setup: setup,
+		initDB: initDB,
 	};
 });

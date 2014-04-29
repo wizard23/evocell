@@ -213,6 +213,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			storyTeller.RunIntro();
 		}, false);
 
+		document.getElementById("initializeDB").addEventListener("click", function(evt) {
+			csSetup.initDB();
+		}, false);
+
 		// var idxxxx = -1;
 		// document.getElementById("switchLink").addEventListener('click', function(evt) {
 		// 	fileStore.loadAllRules(function(rulesModelData) {
