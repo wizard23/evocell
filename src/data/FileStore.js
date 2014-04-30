@@ -16,7 +16,7 @@ define(["underscore", "backbone"], function(_, bb) {
     }
   };
 
-  var request = indexedDB.open(dbName, 2);
+  var request = indexedDB.open(dbName, 4);
   request.onerror = function(event) {
     alert("Oh no! Why didn't you allow my web app to use IndexedDB?! Cell is sad now!");
   };
@@ -35,14 +35,20 @@ define(["underscore", "backbone"], function(_, bb) {
     //alert("upgrade from: " + event.oldVersion + " to: " + event.newVersion);
     var db = event.target.result;
 
-    if(db.objectStoreNames.contains(ruleStoreName)) {
-      db.deleteObjectStore(ruleStoreName);
+    if(!db.objectStoreNames.contains(ruleStoreName)) {
+      var objectStore = db.createObjectStore(ruleStoreName, { keyPath: "name"});
+    }
+    // else
+    // {
+    //   db.deleteObjectStore(ruleStoreName);
+    // }
+
+    if(!db.objectStoreNames.contains("gameStates")) {
+       db.createObjectStore("gameStates", { keyPath: "id"});
     }
 
-    var objectStore = db.createObjectStore(ruleStoreName, { keyPath: "name"});
-    var objectStore = db.createObjectStore("gameStates", { keyPath: "name"});
-
-    // Create an index to search customers by name. We may have duplicates
+    
+       // Create an index to search customers by name. We may have duplicates
     // so we can't use a unique index.
     //objectStore.createIndex("name", "name", { unique: true });
   };

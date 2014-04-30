@@ -217,6 +217,26 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			csSetup.initDB();
 		}, false);
 
+		var nonPersistables = ["cnvas", "reactor", "gl", "renderLoop", "gui", "keyboard", "sndInit", "snd", "sndBomb", "sndHit", "sndHit4"];
+
+		document.getElementById("saveGameState").addEventListener("click", function(evt) {
+			var clonedState = {};
+			_.each(gameState, function(value, key) { 
+				if (!_.contains(nonPersistables, key)) {
+					clonedState[key] = value;
+				}
+			});
+			fileStore.addObject("gameStates", {id: "test23", state: clonedState });
+		}, false);
+
+		document.getElementById("loadGameState").addEventListener("click", function(evt) {
+			fileStore.getObject("gameStates", "test23", function(loadedState) {
+				_.each(loadedState, function(value, key) {
+					gameState[key] = value;
+				});
+			});
+		}, false);
+
 		// var idxxxx = -1;
 		// document.getElementById("switchLink").addEventListener('click', function(evt) {
 		// 	fileStore.loadAllRules(function(rulesModelData) {

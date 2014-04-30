@@ -36,6 +36,12 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		//fpsMonotor: null,
 		keyboard: utils.keyboard,
 
+		shaders: {},
+		dishes: {},
+		rules: {},
+		colors: {},
+		shots: null,
+
 		pause: false,
 		doOnestep: false,
 		
@@ -52,13 +58,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		autoFireCounter: 0,
 		autoFireOn: 0,
 		lastMouseNDC: new THREE.Vector2(),
-
-		shaders: {},
-		dishes: {},
-		rules: {},
-		colors: {},
-		shots: null,
-
+		
 		gameW: 400, gameH: 300,
 		screenW: window.innerWidth ? window.innerWidth : 1000,
 		screenH: window.innerHeight ? window.innerHeight :800,
