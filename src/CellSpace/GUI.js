@@ -217,7 +217,51 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			csSetup.initDB();
 		}, false);
 
-		var nonPersistables = ["cnvas", "reactor", "gl", "renderLoop", "gui", "keyboard", "sndInit", "snd", "sndBomb", "sndHit", "sndHit4"];
+
+		// document.getElementById("saveGameState").addEventListener("click", function(evt) {
+			
+		// 			fileStore.addObject("gameStates", {id: "test23XXXX", state: {txt: "txt", nr: 123} },
+		// 				function() { alert("works" + 23); },
+		// 				function() { alert("NOT: " + 23); }
+		// 			);
+			
+		// }, false);
+
+		// var works = ["yo", 12];
+		// var notworks = ["yo", 12];
+
+		// document.getElementById("saveGameState").addEventListener("click", function(evt) {
+		// 	works = [];
+		// 	notworks = [];
+		// 	_.each(gameState, function(value, key) { 
+		// 		var clonedState = {};
+		// 		clonedState[key] = value;
+
+		// 		try {
+		// 			fileStore.addObject("gameStates", {id: "test23" + key, state: clonedState },
+		// 				function() { 
+		// 				//	alert("works" + key); 
+		// 				},
+		// 				function() { 
+		// 				// alert("NOT: " + key); 
+		// 				}
+		// 			);
+
+		// 			works.push("\"" + key + "\"");
+		// 		}
+		// 		catch (ex) {
+		// 			//alert("Except: " + key);
+		// 			notworks.push("\"" + key + "\"");
+		// 		}
+
+		// 	});		
+		// 	alert(notworks);
+		// }, false);
+
+		var nonPersistables = [
+			"canvas","reactor","gl","gui","keyboard","shaders","dishes","rules","colors","shots",
+			"sndInit","snd","sndBomb","sndHit","sndHit2","drawModel","mainLoop"
+		];
 
 		document.getElementById("saveGameState").addEventListener("click", function(evt) {
 			var clonedState = {};
@@ -231,7 +275,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 		document.getElementById("loadGameState").addEventListener("click", function(evt) {
 			fileStore.getObject("gameStates", "test23", function(loadedState) {
-				_.each(loadedState, function(value, key) {
+				_.each(loadedState.state, function(value, key) {
 					gameState[key] = value;
 				});
 			});

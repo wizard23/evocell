@@ -186,9 +186,9 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			// 	{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: 0, operation: OP_REPLACE});
 		//}
 
-		if (gameState.cnt % 6 === 1) {
-			 reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
-			 	{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: -1/255, operation: OP_ADD});
+		if (gameState.cnt % 1 === 0) {
+			reactor.mixDish(gameState.shaders.intersectSpawn, gameState.dishes.enemy, 
+				{tex1: gameState.dishes.enemy, tex2: gameState.dishes.shipExplosion, state: -1/255, operation: OP_ADD});
 		}
 
 		// ship gets killed by shipExplosions

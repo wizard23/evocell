@@ -46,22 +46,19 @@ define(["underscore", "backbone"], function(_, bb) {
     if(!db.objectStoreNames.contains("gameStates")) {
        db.createObjectStore("gameStates", { keyPath: "id"});
     }
-
-    
-       // Create an index to search customers by name. We may have duplicates
+    // Create an index to search customers by name. We may have duplicates
     // so we can't use a unique index.
     //objectStore.createIndex("name", "name", { unique: true });
   };
 
-  var addObject = function(storeName, data, callback) {
+  var addObject = function(storeName, data, oncomplete, onerror) {
     var transaction = db.transaction([storeName], "readwrite");
-    transaction.oncomplete = function(e) { 
-      if (callback) callback(); 
-    };
+    if (oncomplete) transaction.oncomplete = oncomplete;
+    if (onerror) transaction.onerror = onerror;
     var objectStore = transaction.objectStore(storeName);
     var request = objectStore.add(data);
     request.onerror = function(event) {
-      alert("me so sorry, could not add: " + data + "\n" + storeName);
+      //alert("me so sorry, could not add: " + data + "\n" + storeName);
     };
     request.onsuccess = function(event) {
       // dont call callback here call it later when transaction is done!
