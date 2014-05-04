@@ -1,9 +1,9 @@
 define([
 	"jquery-ui", "Utils", "EvoCell", "story/StoryTeller", "underscore", 
 	"backbone", "knockback", "knockout", "data/FileStore", "three", "datgui", 
-	"CellSpace/State", "CellSpace/Setup", "CellSpace/Utils"], 
+	"CellSpace/State", "CellSpace/Setup", "CellSpace/Utils", "CellSpace/GUI"], 
 function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat, 
-	gameState, csSetup, csUtils) {
+	gameState, csSetup, csUtils, csUI) {
 
 	"use strict";
 
@@ -305,16 +305,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// now Subtract mapped shipPos
 		gameState.viewMatrix = new THREE.Matrix4().multiplyMatrices(shipCenterMatrix, gameState.viewMatrix);
 
-				// COMPOSE ////////////////////////////////////////////
+	// COMPOSE ////////////////////////////////////////////
 		reactor.mixDish(gameState.shaders.clear, gameState.dishes.render, {color: [0,0,0,255]});
-
-
-
-		// // TODO: fixup this dirty hack for visualizing ruletable
-		// var rule = gameState.rules.enemy2;
-		// var colors = gameState.colors.enemy;
-		// reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
-		// 	{texNew: rule.getTexture(), texPalette: colors.getTexture()});
 
 
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
@@ -341,6 +333,18 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				rectSize: gameState.selection.size, 
 				color: [1,1,1,0.3],
 			});
+		}
+
+		if (gameState.showRule) {
+			// TODO: fixup this dirty hack for visualizing ruletable
+			var rule = gameState.rules[csUI.getActiveDishName()];
+			var colors = gameState.colors[csUI.getActiveDishName()];
+
+			if (rule && colors) {
+				reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
+					{texNew: rule.getTexture(), texPalette: colors.getTexture()}
+				);
+			}
 		}
 			
 		// render shields in render2

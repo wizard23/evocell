@@ -114,11 +114,11 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 			availableLayers: [], // gets populated
 			availableStates: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
 
-			drawSizeX: 10,
-			drawSizeY: 20,
+			drawSizeX: 30,
+			drawSizeY: 30,
 			selectedDrawShape : "circle",
 			selectedStates : [3],
-			selectedLayers : ["enemyshield"],
+			selectedLayers : ["enemy"],
 		}), 
 
 		selection : {
@@ -140,6 +140,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		perfRequireTime: -0.001,
 		perfFinishedJSTime: -0.001,
 		showBuffer: false,
+		showRule: false,
 	};	
 
 	return gameState;

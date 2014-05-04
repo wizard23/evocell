@@ -11,9 +11,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	var oldPauseState = false;
 	var buttonWasDown = 0;
 
+	var getActiveDishName = function() {
+		return gameState.drawModel.attributes.selectedLayers[0] || "enemy";
+	}
 
 	var getActiveDish = function() {
-		return gameState.dishes[gameState.drawModel.attributes.selectedLayers[0]] || gameState.dishes.enemy;
+		return gameState.dishes[getActiveDishName()] || gameState.dishes.enemy;
 	};
 
 	var updateSelection = function(evt) {
@@ -341,6 +344,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		folder.add(gameState, 'perfRequireTime');
 		folder.add(gameState, 'perfFinishedJSTime');
 		folder.add(gameState, "showBuffer");
+		folder.add(gameState, "showRule");
 
 		var onResized = function(value) {
 			gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
@@ -586,9 +590,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		{
 			var dishes = gameState.dishes;
 
-			dishes.enemy.setAll(0);
-			dishes.ship.setAll(0);
-			dishes.weapon.setAll(0);
+			_.each(dishes, function(dish) {
+				dish.setAll(0);
+			});
+
+			// TODO: add storing rules
 			//fileStore.storeRule("enemy_ludwigBuildships", rules.enemy.ruleData);
 
 			/*fileStore.loadRule("enemy_ludwigBuildships", function(loadedRule) {
@@ -675,6 +681,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 	return {
 		setupGui: setupGui,
-		pollUserInteraction: pollUserInteraction
+		pollUserInteraction: pollUserInteraction,
+		getActiveDishName: getActiveDishName,
 	};
 });
