@@ -356,20 +356,20 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		//view_model.full_name = ko.computed((->return "#{@first_name()} #{@last_name()}"), view_model)
 		ko.applyBindings(view_model, document.getElementById("drawTool"));
 
-		//$( "#toolsMenu" ).hide();
-		$( "#toolsMenu" ).accordion({
-		collapsible: true,
-		heightStyle: "content",
-		animate: true,
-		active: 0,
-		});// .draggable();
-		$( "#toolsMenu" ).accordion("option", "active", false);
+		// //$( "#toolsMenu" ).hide();
+		// $( "#toolsMenu" ).accordion({
+		// collapsible: true,
+		// heightStyle: "content",
+		// animate: true,
+		// active: 0,
+		// });// .draggable();
+		// $( "#toolsMenu" ).accordion("option", "active", false);
 
 
 		// TODO: implement palette
 		// $('#colorpicker1').farbtastic('#color1');
 		
-		$( "#menu" ).menu();
+		//$( "#menu" ).menu();
 		
 		gameState.fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 

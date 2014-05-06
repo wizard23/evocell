@@ -38,8 +38,10 @@
 	sdafdsgasd asgdjdsa lkgjdsajglkjdsalkgjdsalkg <br>jsalkd jglksad jglkdsajglkdsajg lkjsadglkjsadlg<br> kjsalkg jlksalksagj lkjlkj lkj jlk jlk jlkjsa hg
 	</div>
 </div>
-<div id="introElement" stye="overflow:hidden;">
-	<div style="width:300px; overflow:hidden;">
+<div id="toolContainer">
+
+
+	<div id="introElement">
   		<h3 class="toolMenuHeader">About</h3>
 		<div class="toolMenuContent">
 		    CellSpace is a HTML5/JS/WebGL space shooter game built on <a href="http://en.wikipedia.org/wiki/Cellular_automaton">cellular automata</a>. All rule lookups and most of the collission detections are calculated on the GPU :)
@@ -64,79 +66,47 @@
 			</script>
 		</div>
 	</div>
-</div>
-
-<div id="toolsMenu" style="">
-  <h3 class="toolMenuHeader">Tools</h3>  
-  <div id="drawTool" class="toolMenuContent">
-<label><input type="radio" value="circle" data-bind="checked: selectedDrawShape" />Circle</label>
-<label><input type="radio" value="rectangle" data-bind="checked: selectedDrawShape" />Recangle</label><br/>
 
 
+	<div id="toolWindow" style="" >
+		<h3 class="toolMenuHeader">Tools</h3>  
+		<div>
+			<label><input type="radio" value="circle" data-bind="checked: selectedDrawShape" />Circle</label>
+			<label><input type="radio" value="rectangle" data-bind="checked: selectedDrawShape" />Recangle</label><br/>
+			<div class="fileUpload btn">
+				<span>Import Rule...</span>
+				<input id="importRule" type="file" class="upload" multiple />
+			</div>
+			<input class="btn" type="button" id="saveRule" value="export" />
+			<input class="btn" type="button" id="deleteRule" value="delete" />
+			<input class="btn" type="button" id="initializeDB" value="load initial rules" />
 
+			<input class="btn" type="button" id="saveGameState" value="save state" />
+			<input class="btn" type="button" id="loadGameState" value="load state" />
 
-<div class="fileUpload btn">
-    <span>Import Rule...</span>
-    <input id="importRule" type="file" class="upload" multiple />
-</div>
-<input class="btn" type="button" id="saveRule" value="export" />
-<input class="btn" type="button" id="deleteRule" value="delete" />
-<input class="btn" type="button" id="initializeDB" value="load initial rules" />
+			<select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableRules, selectedOptions: selectedRules"></select><br/>
 
-<input class="btn" type="button" id="saveGameState" value="save state" />
-<input class="btn" type="button" id="loadGameState" value="load state" />
+			<input class="btn" type="button" id="assignLayerRule" value="assign" />
+			<input class="btn" type="button" id="loadPattern" value="load Pattern" />
+			<input class="btn" type="button" id="savePattern" value="save Pattern" />
 
-<select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableRules, selectedOptions: selectedRules"></select><br/>
-
-<input class="btn" type="button" id="assignLayerRule" value="assign" />
-<input class="btn" type="button" id="loadPattern" value="load Pattern" />
-<input class="btn" type="button" id="savePattern" value="save Pattern" />
-
-<select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableLayers, selectedOptions: selectedLayers"></select><br/>
-<select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableStates, selectedOptions: selectedStates"></select><br/>
-width: <input id="width" type="number" min="1" max="1000" data-bind="value: drawSizeX, valueUpdate: 'keyup'"><br/>
-height: <input id="height" type="number" min="1" max="1000" data-bind="value: drawSizeY, valueUpdate: 'keyup'"><br/>
-<label><input type="checkbox" id="fixedRatio">fixedRatio</label><br/>
-  </div>
-
-  <!-- h3 class="toolMenuHeader">Colors</h3>
-  <div class="toolMenuContent">
-		why u no implement me?
-		<div class="colorpicker">
-		  <div id="colorpicker1"></div>
-		  <form><input type="text" id="color1" /></form>
+			<select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableLayers, selectedOptions: selectedLayers"></select><br/>
+			<select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableStates, selectedOptions: selectedStates"></select><br/>
+			width: <input id="width" type="number" min="1" max="1000" data-bind="value: drawSizeX, valueUpdate: 'keyup'"><br/>
+			height: <input id="height" type="number" min="1" max="1000" data-bind="value: drawSizeY, valueUpdate: 'keyup'"><br/>
+			<label><input type="checkbox" id="fixedRatio">fixedRatio</label><br/>
 		</div>
-  </div -->
-
-	<!-- <h3 class="toolMenuHeader">Audio</h3>
-	<div class="toolMenuContent">
-		Laser sound effects by: <a href="http://www.kenney.nl/">www.kenney.nl</a>
-		<br />
-		<br />
-		Awesome 8bit sound by Eric Skiff
-		<iframe width="100%" height="300" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/playlists/23678676&amp;auto_play=false&amp;hide_related=false&amp;visual=true"></iframe>
-		but the buttons dont work when the soundcloud iframe plays...
-		<br />
-		<br />
-		Adam Morton - Wizball high-score (2008)
-		<audio controls>
-  			<source src="../res_evocell/music/Adam Morton - Wizball high-score (2008).mp3" type="audio/mpeg">
-  			Your browser does not support this audio format.
-		</audio>
-		<audio controls>
-  			<source src="../res_evocell/music/SmoothLifeL-KJe9H6qS82I.mp4" type="audio/mpeg">
-  			Your browser does not support this audio format.
-		</audio>
 	</div>
-	-->
 </div>
-	<div id="container" stylea="background:rgba(255,255,255,0.2);z-index:1001;" style="z-index:1001; border:1px solid black;  width:100%; border:0px solid black; position: fixed; top: 0px; left: 0px; z-index:1000;  background:rgba(0,0,0,0.8); width:100%; height:100%; text-align:center; display:none;" ></div>
 
-	<canvas id="c" width="100" height="100" style="border:0px solid black; position: fixed; top: 0px;left: 0px; z-index:0; cursor:crosshair" ></canvas>
-	
-	<div style="border:0px solid black; position: fixed; top: 0px;right: 0px; z-index:10000; color:#DDDDDD; font-family:monospace;">
-		fps: <span id="fpsMonitor">n/a</span><br>
-	</div>
+<div id="container" stylea="background:rgba(255,255,255,0.2);z-index:1001;" style="z-index:1001; border:1px solid black;  width:100%; border:0px solid black; position: fixed; top: 0px; left: 0px; z-index:1000;  background:rgba(0,0,0,0.8); width:100%; height:100%; text-align:center; display:none;" ></div>
+
+<canvas id="c" width="100" height="100" style="border:0px solid black; position: fixed; top: 0px;left: 0px; z-index:0; cursor:crosshair" ></canvas>
+
+<div style="border:0px solid black; position: fixed; top: 0px;right: 0px; z-index:10000; color:#DDDDDD; font-family:monospace;">
+	fps: <span id="fpsMonitor">n/a</span><br>
+</div>
+
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

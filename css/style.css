@@ -3,16 +3,50 @@ body {
 	background:rgba(10,10,10,1);
 }
 
-#introElement {
-	transition-property: all;
-	transition-duration: 0.2s;
-	transition-timing-function: ease;
-	transition-delay: 0s;
+#toolContainer {
+	xtransition-property: all;
+	xtransition-duration: 2.5s;
+	xtransition-timing-function: ease;
+	xtransition-delay: 0s;
 
 	overflow:hidden;
-	width:300px;
-	height:4.2em;
-	position: fixed; bottom: 0px;left: 0px; z-index:10; 
+	width:400px;
+	HHheight:100%;
+	position: fixed; top: 0px;left: 0px; z-index:10; 
+	color: white;
+	zbackground:rgba(0,255,0,0.2);
+
+	z-index: 120; 
+}
+
+#toolWindow {
+	Xtransition-property: max-height;
+	Xtransition-duration: 2.8s;
+	Xtransition-timing-function: ease;
+	Xtransition-delay: 0s;
+
+	overflow:hidden;
+	width:100%;
+	max-height:4.2em;
+	color: white;
+	background:rgba(255,0,0,0.2);
+
+	z-index: 120; 
+}
+
+#toolWindow:hover {
+		max-height: 100%;
+}
+
+#introElement {
+	Xtransition-property: max-height;
+	Xtransition-duration: 0.2s;
+	Xtransition-timing-function: ease;
+	xtransition-delay: 0s;
+
+	overflow:hidden;
+	width: 100%;
+	max-height:4.2em;
 	color: white;
 	background:rgba(255,0,0,0.2);
 
@@ -20,7 +54,7 @@ body {
 }
 
 #introElement:hover {
-		height:100%;
+		max-height: 100%;
 }
 
 
