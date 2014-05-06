@@ -1,5 +1,6 @@
 rules/
-
+r.js
+.idea/
 cellspace.sublime-project
 cellspace.sublime-workspace
 *.js~
