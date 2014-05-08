@@ -357,10 +357,38 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		ko.applyBindings(view_model, document.getElementById("drawTool"));
 
 
-		_.each(document.getElementsByClassName("toolMenuHeader"), function(toolWindow) {
+		// function getActiveWindow() {
+		// 	_.each(document.getElementsByClassName(""), function(toolWindow) {
+		// 	toolWindow.addEventListener("click", function(evt) {
+  //               //toolWindow.parentElement.style.color = "magenta";
+  //              toolWindow.setAttribute('class', element.getAttribute('class') + ' another');
+  //           }, false);
+		// });
+		// }
+
+		String.prototype.replaceAll = function(search, replace) {
+			if (replace === undefined) {
+			        return this.toString();
+			 }
+			return this.split(search).join(replace);
+		}
+
+		var toggleClass = function(element, className) {
+			var classes = element.getAttribute("class");
+			if (classes.indexOf(className) >= 0) {
+				classes = classes.replace(className, "")
+			}
+			else {
+				classes = classes + " " + className;
+			}
+			element.setAttribute('class', classes);
+		}
+
+		_.each(document.getElementsByClassName("toolWindow"), function(toolWindow) {
 			toolWindow.addEventListener("click", function(evt) {
-                //toolWindow.parentElement.style.color = "magenta";
-               toolWindow.style. background = "rgba(200,200,200,0.4)";
+               //toolWindow.parentElement.style.color = "magenta";
+               //toolWindow.style.color = "yellow";
+               toggleClass(toolWindow, 'activeWindow');
             }, false);
 		});
 
