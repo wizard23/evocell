@@ -357,14 +357,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		ko.applyBindings(view_model, document.getElementById("drawTool"));
 
 
-		// function getActiveWindow() {
-		// 	_.each(document.getElementsByClassName(""), function(toolWindow) {
-		// 	toolWindow.addEventListener("click", function(evt) {
-  //               //toolWindow.parentElement.style.color = "magenta";
-  //              toolWindow.setAttribute('class', element.getAttribute('class') + ' another');
-  //           }, false);
-		// });
-		// }
+		var getActiveWindowId = function() {
+			var window = null;
+			var windows = document.getElementsByClassName("activeWindow");
+			if (windows.length > 0) return windows[0].id;
+			return null;	
+		};
 
 		String.prototype.replaceAll = function(search, replace) {
 			if (replace === undefined) {
@@ -414,14 +412,14 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			var x = coords.x;
 			var y = gameState.screenH - coords.y;
 
-			var activeTool = $( "#toolsMenu" ).accordion( "option", "active" );
+			var activeTool = getActiveWindowId();
 
 			var clickedNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);	
 			var clickedPoint = utils.intersectClick(clickedNDC, gameState.viewMatrix, gameState.cameraAngle/2);
 
 			var dish = getActiveDish();
 
-			if (activeTool === 0 && evt.button === 0) {
+			if (activeTool === "ToolWindow" && evt.button === 0) {
 					var state = 0;
 					var firstSel = gameState.drawModel.attributes.selectedStates[0];
 					if (firstSel) state = firstSel;

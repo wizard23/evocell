@@ -39,8 +39,13 @@ body {
 }
 
 .activeWindow {
-	max-height: 500px;
-	background:rgba(255,255,0,0.4);
+	max-height: 1200px;
+	background:rgba(255, 0, 204, .3);
+
+	background-image:url("animal-penguin.png");
+	background-size: 48px;
+	background-repeat:no-repeat;
+	background-position:right top;
 }
 
 #aboutWindow {
