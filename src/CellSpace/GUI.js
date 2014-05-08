@@ -356,6 +356,14 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		//view_model.full_name = ko.computed((->return "#{@first_name()} #{@last_name()}"), view_model)
 		ko.applyBindings(view_model, document.getElementById("drawTool"));
 
+
+		_.each(document.getElementsByClassName("toolMenuHeader"), function(toolWindow) {
+			toolWindow.addEventListener("click", function(evt) {
+                //toolWindow.parentElement.style.color = "magenta";
+               toolWindow.style. background = "rgba(200,200,200,0.4)";
+            }, false);
+		});
+
 		// //$( "#toolsMenu" ).hide();
 		// $( "#toolsMenu" ).accordion({
 		// collapsible: true,
