@@ -1,5 +1,5 @@
 define([
-	"jquery-ui", "Utils", "EvoCell", "story/StoryTeller", "underscore", 
+	"jquery", "Utils", "EvoCell", "story/StoryTeller", "underscore", 
 	"backbone", "knockback", "knockout", "data/FileStore", "three", "datgui", 
 	"CellSpace/State", "CellSpace/Setup", "CellSpace/GameLoop", "CellSpace/Utils"], 
 function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat, 
@@ -623,8 +623,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		if (keyboard.isPressed(27))
 		{
 			var dishes = gameState.dishes;
+			var blockedDishes = [gameState.dishes.buffer];
 
-			_.each(dishes, function(dish) {
+            var saveDishes = _.filter(dishes, function(d) { return !_.contains(blockedDishes, d);});
+			_.each(saveDishes, function(dish) {
 				dish.setAll(0);
 			});
 
