@@ -24,7 +24,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		}
 
 		if (gameState.cnt % 6 === 0)
-			reactor.step(gameState.rules.enemy2, gameState.dishes.enemy2);
+			reactor.step(gameState.rules.background, gameState.dishes.background);
 
 		// SHIP ///////////////////////////////////////////
 		reactor.step(gameState.rules.weaponExplosion, gameState.dishes.weaponExplosion);
@@ -220,7 +220,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 					var dX = -pScrollX/gameState.gameW;
 					var dY = -pScrollY/gameState.gameH;
 
-					reactor.mixDish(gameState.shaders.scroll, gameState.dishes.enemy2, 
+					reactor.mixDish(gameState.shaders.scroll, gameState.dishes.background,
 						{scroll: [dX, dY]});
 
 					gameState.parallaxX  -= pScrollX*parallaxDist;
@@ -240,7 +240,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				reactor.mixDish(gameState.shaders.scroll, gameState.dishes.enemy, 
 					{scroll: [dX, dY]});				
 
-				//reactor.mixDish(gameState.shaders.scroll, gameState.dishes.enemy2, 
+				//reactor.mixDish(gameState.shaders.scroll, gameState.dishes.background,
 				//	{scroll: [dX, dY]});
 
 
@@ -310,7 +310,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
-			{texNew: gameState.dishes.enemy2, texPalette: gameState.colors.enemy2.getTexture()});
+			{texNew: gameState.dishes.background, texPalette: gameState.colors.background.getTexture()});
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.enemy, texPalette: gameState.colors.enemy.getTexture()});
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 

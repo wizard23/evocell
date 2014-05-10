@@ -51,7 +51,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 		//loader.load("rules.enemy", "rules/enemy_linesLounge_moreactive", "ecfile");
 		//loader.load("rules.enemy", "rules/enemy_linesLounge_moreactive-mutA_mut", "ecfile");
 		
-		loader.load("rules.enemy2", resPath + "rules/enemy_linebuilder", "ecfile");
+		loader.load("rules.background", resPath + "rules/enemy_linebuilder", "ecfile");
 		loader.load("rules.weapon", resPath + "rules/ship_avg4_nice", "ecfile");
 		
 		loader.load("rules.weaponExplosion", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
@@ -128,7 +128,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			csUtils.refreshAvailableRules();
 			csUtils.refreshAvailableDishes();
 
-			//fileStore.storeRule(data.rules.enemy2);
+			//fileStore.storeRule(data.rules.background);
 			//fileStore.loadRule("starwars", function(loadedRule) {
 			//	rules.enemy = reactor.compileRule(loadedRule, dishes.enemy);
 			//})
@@ -138,11 +138,11 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 			var rules = gameState.rules;
 			rules.enemy = reactor.compileRule(data["rules.enemy"], gameState.dishes.enemy);
-			rules.enemy2 = reactor.compileRule(data["rules.enemy2"], gameState.dishes.enemy2);
+			rules.background = reactor.compileRule(data["rules.background"], gameState.dishes.background);
 			rules.ship = reactor.compileRule(data["rules.ship"], gameState.dishes.ship);
 			rules.weapon = reactor.compileRule(data["rules.weapon"], gameState.dishes.enemy);
-			rules.shipExplosion = reactor.compileRule(data["rules.shipExplosion"], gameState.dishes.enemy2);
-			rules.weaponExplosion = reactor.compileRule(data["rules.weaponExplosion"], gameState.dishes.enemy2);
+			rules.shipExplosion = reactor.compileRule(data["rules.shipExplosion"], gameState.dishes.background);
+			rules.weaponExplosion = reactor.compileRule(data["rules.weaponExplosion"], gameState.dishes.background);
 			
 			gameState.colors.enemy = new EC.Palette(reactor, [
 				[0, 0, 0, 0],
@@ -204,7 +204,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 
 			var bs = 0.12;
-			gameState.colors.enemy2 = new EC.Palette(reactor, [
+			gameState.colors.background = new EC.Palette(reactor, [
 				[0, 0, 0, 0],
 				[bs*10, bs*80, bs*80, 255], 
 				[bs*20, bs*170, bs*170, 255],
@@ -246,7 +246,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 			});
 
 			gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, 0.001);
-			gameState.dishes.enemy2.randomize(gameState.rules.enemy.nrStates, 0.01);
+			gameState.dishes.background.randomize(gameState.rules.enemy.nrStates, 0.01);
 			gameState.shipX = gameState.gameW/2;
 			gameState.shipY = gameState.gameH/2;
 

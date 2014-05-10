@@ -623,7 +623,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		if (keyboard.isPressed(27))
 		{
 			var dishes = gameState.dishes;
-			var blockedDishes = [gameState.dishes.buffer];
+			var blockedDishes = [dishes.buffer, dishes.background];
 
             var saveDishes = _.filter(dishes, function(d) { return !_.contains(blockedDishes, d);});
 			_.each(saveDishes, function(dish) {
