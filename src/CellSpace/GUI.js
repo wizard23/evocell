@@ -10,6 +10,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	var allowReturn = 0;
 	var oldPauseState = false;
 	var buttonWasDown = 0;
+    var bounceEsc = 0;
 
 	var getActiveDishName = function() {
 		return gameState.drawModel.attributes.selectedLayers[0] || "enemy";
@@ -382,11 +383,12 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			element.setAttribute('class', classes);
 		}
 
-		_.each(document.getElementsByClassName("toolWindow"), function(toolWindow) {
+		_.each(document.getElementsByClassName("toolMenuHeader"), function(toolWindow) {
 			toolWindow.addEventListener("click", function(evt) {
                //toolWindow.parentElement.style.color = "magenta";
                //toolWindow.style.color = "yellow";
-               toggleClass(toolWindow, 'activeWindow');
+               //toggleClass(toolWindow, 'activeWindow');
+               toggleClass(toolWindow.parentElement, 'activeWindow');
             }, false);
 		});
 
@@ -622,22 +624,30 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// escape
 		if (keyboard.isPressed(27))
 		{
-			var dishes = gameState.dishes;
-			var blockedDishes = [dishes.buffer, dishes.background];
+            if (!bounceEsc) {
+                bounceEsc = 1;
 
-            var saveDishes = _.filter(dishes, function(d) { return !_.contains(blockedDishes, d);});
-			_.each(saveDishes, function(dish) {
-				dish.setAll(0);
-			});
+                // reset selection
+                if (gameState.selection.active) {
+                    gameState.selection.active = 0;
+                }
+                else {
 
-			// TODO: add storing rules
-			//fileStore.storeRule("enemy_ludwigBuildships", rules.enemy.ruleData);
+                    var dishes = gameState.dishes;
+                    var blockedDishes = [dishes.buffer, dishes.background];
 
-			/*fileStore.loadRule("enemy_ludwigBuildships", function(loadedRule) {
-				rules.enemy = reactor.compileRule(loadedRule.ruleData, dishes.enemy);
-			})
-*/				
+                    var saveDishes = _.filter(dishes, function (d) {
+                        return !_.contains(blockedDishes, d);
+                    });
+                    _.each(saveDishes, function (dish) {
+                        dish.setAll(0);
+                    });
+                }
+            }
 		}
+        else {
+            bounceEsc = 0;
+        }
 
 		if (keyboard.isPressed("I".charCodeAt())) {
 			gameState.shotN++;
