@@ -222,45 +222,6 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		}, false);
 
 
-		// document.getElementById("saveGameState").addEventListener("click", function(evt) {
-			
-		// 			fileStore.addObject("gameStates", {id: "test23XXXX", state: {txt: "txt", nr: 123} },
-		// 				function() { alert("works" + 23); },
-		// 				function() { alert("NOT: " + 23); }
-		// 			);
-			
-		// }, false);
-
-		// var works = ["yo", 12];
-		// var notworks = ["yo", 12];
-
-		// document.getElementById("saveGameState").addEventListener("click", function(evt) {
-		// 	works = [];
-		// 	notworks = [];
-		// 	_.each(gameState, function(value, key) { 
-		// 		var clonedState = {};
-		// 		clonedState[key] = value;
-
-		// 		try {
-		// 			fileStore.addObject("gameStates", {id: "test23" + key, state: clonedState },
-		// 				function() { 
-		// 				//	alert("works" + key); 
-		// 				},
-		// 				function() { 
-		// 				// alert("NOT: " + key); 
-		// 				}
-		// 			);
-
-		// 			works.push("\"" + key + "\"");
-		// 		}
-		// 		catch (ex) {
-		// 			//alert("Except: " + key);
-		// 			notworks.push("\"" + key + "\"");
-		// 		}
-
-		// 	});		
-		// 	alert(notworks);
-		// }, false);
 
 		var nonPersistables = [
 			"canvas","reactor","gl","gui","keyboard","shaders","dishes","rules","colors","shots",
@@ -285,15 +246,6 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			});
 		}, false);
 
-		// var idxxxx = -1;
-		// document.getElementById("switchLink").addEventListener('click', function(evt) {
-		// 	fileStore.loadAllRules(function(rulesModelData) {
-		// 			idxxxx++;
-		// 			idxxxx %= rulesModelData.length;
-		// 			gameState.rules.enemy = gameState.reactor.compileRule(rulesModelData[idxxxx].ruleData, 
-		// 				gameState.dishes.enemy);
-		// 		});
-		// }, false);
 
 		var gui = gameState.gui;
 
@@ -388,24 +340,22 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
                //toolWindow.parentElement.style.color = "magenta";
                //toolWindow.style.color = "yellow";
                //toggleClass(toolWindow, 'activeWindow');
-               toggleClass(toolWindow.parentElement, 'activeWindow');
+               var element = toolWindow.parentElement;
+
+				_.each(document.getElementsByClassName("activeWindow"), function(activeW) {
+					if (activeW !== element) {
+						toggleClass(activeW, 'activeWindow');
+					}
+				});
+
+               toggleClass(element, 'activeWindow');
             }, false);
 		});
-
-		// //$( "#toolsMenu" ).hide();
-		// $( "#toolsMenu" ).accordion({
-		// collapsible: true,
-		// heightStyle: "content",
-		// animate: true,
-		// active: 0,
-		// });// .draggable();
-		// $( "#toolsMenu" ).accordion("option", "active", false);
 
 
 		// TODO: implement palette
 		// $('#colorpicker1').farbtastic('#color1');
-		
-		//$( "#menu" ).menu();
+	
 		
 		gameState.fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 

@@ -36,17 +36,32 @@ body {
 
 .toolWindow:hover {
 	max-height: 1200px;
-}
 
-.activeWindow {
-	max-height: 1200px;
-	background:rgba(255, 0, 204, .3);
-
-	background-image:url("animal-penguin.png");
+	background-image:url("../../res_evocell/images/icons/icons/animal-penguin.png");
 	background-size: 58px;
 	background-repeat:no-repeat;
 	background-position:right top;
 }
+
+.activeWindow {
+	max-height: 1200px;
+	background:rgba(255, 0, 204, .4);
+
+	background-image:url("../../res_evocell/images/icons/icons/animal-penguin.png");
+	background-size: 58px;
+	background-repeat:no-repeat;
+	background-position:right top;
+}
+
+.activeWindow:nth-child(1) {
+	background:rgba(255, 255, 255, .5);
+
+	background-image:url("../../res_evocell/images/icons/icons/animal-penguin.png");
+	background-size: 58px;
+	background-repeat:no-repeat;
+	background-position:right top;
+}
+
 
 #aboutWindow {
 	transition-property: max-height;
