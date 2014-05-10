@@ -10,17 +10,16 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	var OP_REPLACE = 0;
 	var OP_ADD = 1;
 
+    var enemyStepSum = 0;
+
 	var step = function() {
 		var reactor = gameState.reactor;
 
 		// ENEMIES //////////////////////////////////////
-		if (gameState.enemySpeed < 1) {
-			if (gameState.cnt % Math.ceil(1/gameState.enemySpeed) === 0)
-				reactor.step(gameState.rules.enemy, gameState.dishes.enemy);
-		}
-		else {
-			for (var i = 0; i < gameState.enemySpeed; i++) 
-				reactor.step(gameState.rules.enemy, gameState.dishes.enemy);
+        enemyStepSum += gameState.enemySpeed;
+        while (enemyStepSum > 1) {
+		    reactor.step(gameState.rules.enemy, gameState.dishes.enemy);
+            enemyStepSum--;
 		}
 
 		if (gameState.cnt % 6 === 0)
