@@ -1,5 +1,5 @@
 define([
-	"jquery", "Utils", "EvoCell", "story/StoryTeller", "underscore", 
+	"jquery-ui", "Utils", "EvoCell", "story/StoryTeller", "underscore", 
 	"backbone", "knockback", "knockout", "data/FileStore", "three", "datgui", 
 	"CellSpace/State", "CellSpace/Setup", "CellSpace/GameLoop", "CellSpace/Utils"], 
 function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat, 
@@ -10,7 +10,6 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	var allowReturn = 0;
 	var oldPauseState = false;
 	var buttonWasDown = 0;
-    var bounceEsc = 0;
 
 	var getActiveDishName = function() {
 		return gameState.drawModel.attributes.selectedLayers[0] || "enemy";
@@ -222,6 +221,45 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		}, false);
 
 
+		// document.getElementById("saveGameState").addEventListener("click", function(evt) {
+			
+		// 			fileStore.addObject("gameStates", {id: "test23XXXX", state: {txt: "txt", nr: 123} },
+		// 				function() { alert("works" + 23); },
+		// 				function() { alert("NOT: " + 23); }
+		// 			);
+			
+		// }, false);
+
+		// var works = ["yo", 12];
+		// var notworks = ["yo", 12];
+
+		// document.getElementById("saveGameState").addEventListener("click", function(evt) {
+		// 	works = [];
+		// 	notworks = [];
+		// 	_.each(gameState, function(value, key) { 
+		// 		var clonedState = {};
+		// 		clonedState[key] = value;
+
+		// 		try {
+		// 			fileStore.addObject("gameStates", {id: "test23" + key, state: clonedState },
+		// 				function() { 
+		// 				//	alert("works" + key); 
+		// 				},
+		// 				function() { 
+		// 				// alert("NOT: " + key); 
+		// 				}
+		// 			);
+
+		// 			works.push("\"" + key + "\"");
+		// 		}
+		// 		catch (ex) {
+		// 			//alert("Except: " + key);
+		// 			notworks.push("\"" + key + "\"");
+		// 		}
+
+		// 	});		
+		// 	alert(notworks);
+		// }, false);
 
 		var nonPersistables = [
 			"canvas","reactor","gl","gui","keyboard","shaders","dishes","rules","colors","shots",
@@ -246,6 +284,15 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			});
 		}, false);
 
+		// var idxxxx = -1;
+		// document.getElementById("switchLink").addEventListener('click', function(evt) {
+		// 	fileStore.loadAllRules(function(rulesModelData) {
+		// 			idxxxx++;
+		// 			idxxxx %= rulesModelData.length;
+		// 			gameState.rules.enemy = gameState.reactor.compileRule(rulesModelData[idxxxx].ruleData, 
+		// 				gameState.dishes.enemy);
+		// 		});
+		// }, false);
 
 		var gui = gameState.gui;
 
@@ -309,53 +356,20 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		//view_model.full_name = ko.computed((->return "#{@first_name()} #{@last_name()}"), view_model)
 		ko.applyBindings(view_model, document.getElementById("drawTool"));
 
-
-		var getActiveWindowId = function() {
-			var window = null;
-			var windows = document.getElementsByClassName("activeWindow");
-			if (windows.length > 0) return windows[0].id;
-			return null;	
-		};
-
-		String.prototype.replaceAll = function(search, replace) {
-			if (replace === undefined) {
-			        return this.toString();
-			 }
-			return this.split(search).join(replace);
-		}
-
-		var toggleClass = function(element, className) {
-			var classes = element.getAttribute("class");
-			if (classes.indexOf(className) >= 0) {
-				classes = classes.replace(className, "")
-			}
-			else {
-				classes = classes + " " + className;
-			}
-			element.setAttribute('class', classes);
-		}
-
-		_.each(document.getElementsByClassName("toolMenuHeader"), function(toolWindow) {
-			toolWindow.addEventListener("click", function(evt) {
-               //toolWindow.parentElement.style.color = "magenta";
-               //toolWindow.style.color = "yellow";
-               //toggleClass(toolWindow, 'activeWindow');
-               var element = toolWindow.parentElement;
-
-				_.each(document.getElementsByClassName("activeWindow"), function(activeW) {
-					if (activeW !== element) {
-						toggleClass(activeW, 'activeWindow');
-					}
-				});
-
-               toggleClass(element, 'activeWindow');
-            }, false);
-		});
+		// //$( "#toolsMenu" ).hide();
+		// $( "#toolsMenu" ).accordion({
+		// collapsible: true,
+		// heightStyle: "content",
+		// animate: true,
+		// active: 0,
+		// });// .draggable();
+		// $( "#toolsMenu" ).accordion("option", "active", false);
 
 
 		// TODO: implement palette
 		// $('#colorpicker1').farbtastic('#color1');
-	
+		
+		//$( "#menu" ).menu();
 		
 		gameState.fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
@@ -364,14 +378,14 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			var x = coords.x;
 			var y = gameState.screenH - coords.y;
 
-			var activeTool = getActiveWindowId();
+			var activeTool = $( "#toolsMenu" ).accordion( "option", "active" );
 
 			var clickedNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);	
 			var clickedPoint = utils.intersectClick(clickedNDC, gameState.viewMatrix, gameState.cameraAngle/2);
 
 			var dish = getActiveDish();
 
-			if (activeTool === "ToolWindow" && evt.button === 0) {
+			if (activeTool === 0 && evt.button === 0) {
 					var state = 0;
 					var firstSel = gameState.drawModel.attributes.selectedStates[0];
 					if (firstSel) state = firstSel;
@@ -574,30 +588,20 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// escape
 		if (keyboard.isPressed(27))
 		{
-            if (!bounceEsc) {
-                bounceEsc = 1;
+			var dishes = gameState.dishes;
 
-                // reset selection
-                if (gameState.selection.active) {
-                    gameState.selection.active = 0;
-                }
-                else {
+			_.each(dishes, function(dish) {
+				dish.setAll(0);
+			});
 
-                    var dishes = gameState.dishes;
-                    var blockedDishes = [dishes.buffer, dishes.background];
+			// TODO: add storing rules
+			//fileStore.storeRule("enemy_ludwigBuildships", rules.enemy.ruleData);
 
-                    var saveDishes = _.filter(dishes, function (d) {
-                        return !_.contains(blockedDishes, d);
-                    });
-                    _.each(saveDishes, function (dish) {
-                        dish.setAll(0);
-                    });
-                }
-            }
+			/*fileStore.loadRule("enemy_ludwigBuildships", function(loadedRule) {
+				rules.enemy = reactor.compileRule(loadedRule.ruleData, dishes.enemy);
+			})
+*/				
 		}
-        else {
-            bounceEsc = 0;
-        }
 
 		if (keyboard.isPressed("I".charCodeAt())) {
 			gameState.shotN++;
