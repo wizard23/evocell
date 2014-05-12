@@ -49,8 +49,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// too costly
 		//gameState.shots.collide(gameState.dishes.enemy, cb);
 		gameState.shots.step();
-		var enemyPixel = gameState.shots.collide(gameState.dishes.enemy, 
-		 	gameState.scrollX, gameState.scrollY, cb);
+		var enemyPixel = gameState.shots.collide(gameState.dishes.weaponExplosion, gameState.scrollX, gameState.scrollY, cb, -1);
 		//var enemyPixel = gameState.shots.collide(gameState.dishes.enemy, 
 		//	0, 0, cb);
 
