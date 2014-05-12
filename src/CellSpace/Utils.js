@@ -76,7 +76,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	var resetGame = function() {
 		gameState.cnt = 0;
 		gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, gameState.randomDensity);
-		gameState.dishes.enemy2.randomize(gameState.rules.enemy.nrStates, 0.01);
+		gameState.dishes.background.randomize(gameState.rules.enemy.nrStates, 0.01);
 		if (gameState.shipX < 0 || gameState.shipX > gameState.gameW || 
 			gameState.shipY < 0 || gameState.shipY > gameState.gameH) {
 			gameState.shipX = gameState.gameW/2;
@@ -113,7 +113,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		var dishes = gameState.dishes;
 		dishes.enemy = reactor.compileDish();
 		dishes.enemyShield = reactor.compileDish();
-		dishes.enemy2 = reactor.compileDish();
+		dishes.background = reactor.compileDish();
 		dishes.ship = reactor.compileDish();
 		dishes.shipExplosion = reactor.compileDish();
 		dishes.weapon = reactor.compileDish();
@@ -127,11 +127,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		{
 			var rules = gameState.rules;
 			rules.enemy.setCompileSizeDish(gameState.dishes.enemy);
-			rules.enemy2.setCompileSizeDish(gameState.dishes.enemy2);
+			rules.background.setCompileSizeDish(gameState.dishes.background);
 			rules.ship.setCompileSizeDish(gameState.dishes.ship);
 			rules.weapon.setCompileSizeDish(gameState.dishes.enemy);
-			rules.shipExplosion.setCompileSizeDish(gameState.dishes.enemy2);
-			rules.weaponExplosion.setCompileSizeDish(gameState.dishes.enemy2);
+			rules.shipExplosion.setCompileSizeDish(gameState.dishes.background);
+			rules.weaponExplosion.setCompileSizeDish(gameState.dishes.background);
 
 			resetGame();
 		}

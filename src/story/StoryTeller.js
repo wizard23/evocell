@@ -88,7 +88,7 @@ define([
 		finale: [
 			{text: "an adventure in a cellular world unseen by anyone before", image: "blue.jpg"},
 			{text: "a universe of cellular automata hidden in every atom", image: "cellcity.jpg"}, 
-			//{text: "ALL YOUR BASE ARE BELONG TO US", image: "allYourBase.jpg"}, 
+			{text: "ALL YOUR BASE ARE BELONG TO US", image: "allYourBase.jpg"},
 		],
 	}
 

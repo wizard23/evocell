@@ -2,6 +2,8 @@
 <html lang="en-us">
 <head>
 	<link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="icon" type="image/icon" href="favicon.ico" />
+    <xxxlink rel="icon" type="image.png" href="favicon.png" />
 
 	<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
 	<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
@@ -35,29 +37,29 @@
 <body>
 <div id="centeredContainer">
 	<div id="centeredMessage">
-	sdafdsgasd asgdjdsa lkgjdsajglkjdsalkgjdsalkg <br>jsalkd jglksad jglkdsajglkdsajg lkjsadglkjsadlg<br> kjsalkg jlksalksagj lkjlkj lkj jlk jlk jlkjsa hg
+	message text
 	</div>
 </div>
 <div id="toolContainer">
 
 
-	<div id="introElement">
+	<div class="toolWindow activeWindow" id="AboutWindow">
   		<h3 class="toolMenuHeader">About</h3>
 		<div class="toolMenuContent">
 		    CellSpace is a HTML5/JS/WebGL space shooter game built on <a href="http://en.wikipedia.org/wiki/Cellular_automaton">cellular automata</a>. All rule lookups and most of the collission detections are calculated on the GPU :)
-			<h4>Controls</h4>
+			<h4><a id="showIntroLink" href="#">Random Background Story</a><br /></h4>
+			Click the above link to explain what you are doing in this cellular world. Make sure you watch it at least twice because it changes all the time :)
+            <h4>Controls</h4>
 			<ul>
 				<li>mouse click to shoot</li>
 				<li><b>cursor keys</b> for navigation</li>
 			  	<li><b>'b'</b> to fire many shots at once</li> 
-				<li><b>'space'</b> to reset the game </li>
+				<li><b>'space'</b> to reset the game</li>
+                <li><b>'ESC'</b> to clear the screen</li>
+                <li><b>'o'</b> and <b>'l'</b> to zoom </li>
+                <li><b>'m'</b> and <b>'n'</b> to rotate </li>
 			</ul>
-			<a id="stepLink" class="buttons"><i class="fa fa-step-forward fa-2x"></i></a>&nbsp;
-			<a id="playPause" class="buttons"><i class="fa fa-pause fa-2x"></i></a>&nbsp;
-			<br>
-			<br>
-			<a id="showIntroLink" href="#">view background story</a><br />
-			<br />
+
 			This is is an early beta realease please direct bug reports or ideas to the: <br />
 			<a href="https://github.com/wizard23/evocell">EvoCell github page</a><br />
 			GPL 3.0 by Philipp Tiefenbacher / wizard23 
@@ -68,11 +70,12 @@
 	</div>
 
 
-	<div id="toolWindow" style="" >
-		<h3 class="toolMenuHeader">Tools</h3>  
+	<div class="toolWindow"  id="ToolWindow">
+		<h3 class="toolMenuHeader">Tools</h3>
 		<div>
-			<label><input type="radio" value="circle" data-bind="checked: selectedDrawShape" />Circle</label>
-			<label><input type="radio" value="rectangle" data-bind="checked: selectedDrawShape" />Recangle</label><br/>
+            <a id="stepLink" class="buttons"><i class="fa fa-step-forward fa-2x"></i></a>&nbsp;
+            <a id="playPause" class="buttons"><i class="fa fa-pause fa-2x"></i></a>&nbsp;
+            <br>
 			<div class="fileUpload btn">
 				<span>Import Rule...</span>
 				<input id="importRule" type="file" class="upload" multiple />
@@ -94,6 +97,8 @@
 			<select multiple="multiple"  style="width: 100%;height: 9em;" data-bind="options: availableStates, selectedOptions: selectedStates"></select><br/>
 			width: <input id="width" type="number" min="1" max="1000" data-bind="value: drawSizeX, valueUpdate: 'keyup'"><br/>
 			height: <input id="height" type="number" min="1" max="1000" data-bind="value: drawSizeY, valueUpdate: 'keyup'"><br/>
+            <label><input type="radio" value="circle" data-bind="checked: selectedDrawShape" />Circle</label>
+            <label><input type="radio" value="rectangle" data-bind="checked: selectedDrawShape" />Recangle</label><br/>
 			<label><input type="checkbox" id="fixedRatio">fixedRatio</label><br/>
 		</div>
 	</div>

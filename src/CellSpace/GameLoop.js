@@ -10,21 +10,20 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	var OP_REPLACE = 0;
 	var OP_ADD = 1;
 
+    var enemyStepSum = 0;
+
 	var step = function() {
 		var reactor = gameState.reactor;
 
 		// ENEMIES //////////////////////////////////////
-		if (gameState.enemySpeed < 1) {
-			if (gameState.cnt % Math.ceil(1/gameState.enemySpeed) === 0)
-				reactor.step(gameState.rules.enemy, gameState.dishes.enemy);
-		}
-		else {
-			for (var i = 0; i < gameState.enemySpeed; i++) 
-				reactor.step(gameState.rules.enemy, gameState.dishes.enemy);
+        enemyStepSum += gameState.enemySpeed;
+        while (enemyStepSum > 1) {
+		    reactor.step(gameState.rules.enemy, gameState.dishes.enemy);
+            enemyStepSum--;
 		}
 
 		if (gameState.cnt % 6 === 0)
-			reactor.step(gameState.rules.enemy2, gameState.dishes.enemy2);
+			reactor.step(gameState.rules.background, gameState.dishes.background);
 
 		// SHIP ///////////////////////////////////////////
 		reactor.step(gameState.rules.weaponExplosion, gameState.dishes.weaponExplosion);
@@ -220,7 +219,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 					var dX = -pScrollX/gameState.gameW;
 					var dY = -pScrollY/gameState.gameH;
 
-					reactor.mixDish(gameState.shaders.scroll, gameState.dishes.enemy2, 
+					reactor.mixDish(gameState.shaders.scroll, gameState.dishes.background,
 						{scroll: [dX, dY]});
 
 					gameState.parallaxX  -= pScrollX*parallaxDist;
@@ -240,7 +239,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				reactor.mixDish(gameState.shaders.scroll, gameState.dishes.enemy, 
 					{scroll: [dX, dY]});				
 
-				//reactor.mixDish(gameState.shaders.scroll, gameState.dishes.enemy2, 
+				//reactor.mixDish(gameState.shaders.scroll, gameState.dishes.background,
 				//	{scroll: [dX, dY]});
 
 
@@ -310,7 +309,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
-			{texNew: gameState.dishes.enemy2, texPalette: gameState.colors.enemy2.getTexture()});
+			{texNew: gameState.dishes.background, texPalette: gameState.colors.background.getTexture()});
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 
 			{texNew: gameState.dishes.enemy, texPalette: gameState.colors.enemy.getTexture()});
 		reactor.mixDish(gameState.shaders.mix, gameState.dishes.render, 

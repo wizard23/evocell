@@ -19,30 +19,53 @@ body {
 	z-index: 120; 
 }
 
-#toolWindow {
-	Xtransition-property: max-height;
-	Xtransition-duration: 2.8s;
-	Xtransition-timing-function: ease;
-	Xtransition-delay: 0s;
-
+.toolWindow {
+	/*transition-property: max-height;*/
+	/*transition-duration: 0.3s;*/
+	/*transition-timing-function: ease;*/
+	/*transition-delay: 0s;*/
 	overflow:hidden;
 	width:100%;
 	max-height:4.2em;
 	color: white;
-	background:rgba(255,0,0,0.2);
-
-	z-index: 120; 
+	background:rgba(255, 0, 204, .1);
+	z-index: 125;
 }
 
-#toolWindow:hover {
-		max-height: 100%;
+.toolWindow:hover {
+	max-height: 1200px;
+
+	background-image:url("../../res_evocell/images/icons/icons/animal-penguin.png");
+	background-size: 58px;
+	background-repeat:no-repeat;
+	background-position:right top;
 }
 
-#introElement {
-	Xtransition-property: max-height;
-	Xtransition-duration: 0.2s;
-	Xtransition-timing-function: ease;
-	xtransition-delay: 0s;
+.activeWindow {
+	max-height: 1200px;
+	background:rgba(255, 0, 204, .4);
+
+	background-image:url("../../res_evocell/images/icons/icons/animal-penguin.png");
+	background-size: 58px;
+	background-repeat:no-repeat;
+	background-position:right top;
+}
+
+.activeWindow:nth-child(1) {
+	background:rgba(255, 255, 255, .5);
+
+	background-image:url("../../res_evocell/images/icons/icons/animal-penguin.png");
+	background-size: 58px;
+	background-repeat:no-repeat;
+	background-position:right top;
+}
+
+
+#aboutWindow {
+	transition-property: max-height;
+	transition-duration: 0.3s;
+	transition-timing-function: ease;
+	transition-delay: 0s;
 
 	overflow:hidden;
 	width: 100%;
@@ -53,8 +76,8 @@ body {
 	z-index: 120; 
 }
 
-#introElement:hover {
-		max-height: 100%;
+#aboutWindow:hover {
+		max-height: 1200px;
 }
 
 
