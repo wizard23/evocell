@@ -451,8 +451,9 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 
 		var handleMouseWheel = function(e) {
-			var maxZoom = 5;
+			var maxZoom = 25;
 			var delta = Math.max(-maxZoom, Math.min(maxZoom, (e.wheelDelta || -e.detail)));
+            delta *=4;
 			//delta /= 1000;
 			csUtils.zoom(delta);
 			return false;

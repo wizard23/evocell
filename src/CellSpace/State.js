@@ -47,7 +47,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		
 		// GAMESTATE //////////
 		// shots
-		maxParticles: 2800,
+		maxParticles: 100,
 		shotSpeed: 3.4,
 		frontShots: 1,
 		frontShotAngle: 0.6,
@@ -67,7 +67,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		enemySpeed: 0.5,
 		weaponExplosionParam: 3,
 
-		zoom: 1/3, // cell/pixel ratio
+		zoom: 1/2, // cell/pixel ratio
 		rot: 0,
 
 		cameraAngle: 60 * (Math.PI/180),

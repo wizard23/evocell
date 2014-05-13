@@ -30,21 +30,26 @@ body {
 	color: white;
 	background:rgba(255, 0, 204, .1);
 	z-index: 125;
+
+    background-image:url("../../res_evocell/images/icons/icons/plus-button.png");
+    background-size: 58px;
+    background-repeat:no-repeat;
+    background-position:right top;
 }
 
 .toolWindow:hover {
 	/*max-height: 1200px;*/
-	background-image:url("../../res_evocell/images/icons/icons/animal-penguin.png");
-	background-size: 58px;
-	background-repeat:no-repeat;
-	background-position:right top;
+	/*background-image:url("../../res_evocell/images/icons/icons/animal-penguin.png");*/
+	/*background-size: 58px;*/
+	/*background-repeat:no-repeat;*/
+	/*background-position:right top;*/
 }
 
 .activeWindow {
 	max-height: 1200px;
 	background:rgba(255, 0, 204, .4);
 
-	background-image:url("../../res_evocell/images/icons/icons/animal-penguin.png");
+	background-image:url("../../res_evocell/images/icons/icons/minus-button.png");
 	background-size: 58px;
 	background-repeat:no-repeat;
 	background-position:right top;
@@ -53,7 +58,7 @@ body {
 .activeWindow:nth-child(1) {
 	background:rgba(255, 255, 255, .5);
 
-	background-image:url("../../res_evocell/images/icons/icons/animal-penguin.png");
+    background-image:url("../../res_evocell/images/icons/icons/minus.png");
 	background-size: 58px;
 	background-repeat:no-repeat;
 	background-position:right top;
