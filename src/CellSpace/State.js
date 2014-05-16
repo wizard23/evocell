@@ -47,7 +47,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		
 		// GAMESTATE //////////
 		// shots
-		maxParticles: 100,
+		maxParticles: 1000,
 		shotSpeed: 3.4,
 		frontShots: 1,
 		frontShotAngle: 0.6,
@@ -59,7 +59,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		autoFireOn: 0,
 		lastMouseNDC: new THREE.Vector2(),
 		
-		gameW: 400, gameH: 300,
+		gameW: 256, gameH: 256,
 		screenW: window.innerWidth ? window.innerWidth : 1000,
 		screenH: window.innerHeight ? window.innerHeight :800,
 
@@ -67,7 +67,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		enemySpeed: 0.5,
 		weaponExplosionParam: 3,
 
-		zoom: 1/2, // cell/pixel ratio
+		zoom: 1/3, // cell/pixel ratio
 		rot: 0,
 
 		cameraAngle: 60 * (Math.PI/180),
