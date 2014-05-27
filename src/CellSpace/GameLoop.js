@@ -49,7 +49,18 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		// too costly
 		//gameState.shots.collide(gameState.dishes.enemy, cb);
 		gameState.shots.step();
-		var enemyPixel = gameState.shots.collide(gameState.dishes.weaponExplosion, gameState.scrollX, gameState.scrollY, cb, -1);
+
+
+
+        reactor.mixDish(gameState.shaders.clear, gameState.dishes.colliding, {color: [0,0,0,0]});
+        reactor.mixDish(gameState.shaders.mix, gameState.dishes.colliding,
+            {texNew: gameState.dishes.enemy, texPalette: gameState.colors.background.getTexture()});
+        reactor.mixDish(gameState.shaders.mix, gameState.dishes.colliding,
+            {texNew: gameState.dishes.weaponExplosion, texPalette: gameState.colors.enemy.getTexture()});
+
+
+        var enemyPixel = gameState.shots.collide(gameState.dishes.colliding, gameState.scrollX, gameState.scrollY, cb, -1);
+		//var enemyPixel = gameState.shots.collide(gameState.dishes.weaponExplosion, gameState.scrollX, gameState.scrollY, cb, -1);
 		//var enemyPixel = gameState.shots.collide(gameState.dishes.enemy, 
 		//	0, 0, cb);
 

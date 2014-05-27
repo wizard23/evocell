@@ -122,6 +122,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		dishes.buffer = reactor.compileDish();
 		dishes.render = reactor.compileDish();
 		dishes.render2 = reactor.compileDish();
+        dishes.colliding = reactor.compileDish();
 
 		try 
 		{
