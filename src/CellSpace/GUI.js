@@ -336,7 +336,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		_.each(document.getElementsByClassName("toolMenuHeader"), function(toolWindow) {
 			toolWindow.addEventListener("click", function(evt) {
 
-               var element = toolWindow.parentElement;
+                var element = toolWindow.parentElement;
+                //var element = toolWindow;
 
                 // deactivate old active Windows except self
 				_.each(document.getElementsByClassName("activeWindow"), function(activeW) {

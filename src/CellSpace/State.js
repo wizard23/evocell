@@ -49,8 +49,8 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		// shots
 		maxParticles: 1000,
 		shotSpeed: 3.4,
-		frontShots: 1,
-		frontShotAngle: 0.6,
+		frontShots: 3,
+		frontShotAngle: 0.2,
 		shotN: 8,
 		bombFired: 0,
 		bAngle: 0, // direction of bomb fire

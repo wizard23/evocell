@@ -1,6 +1,6 @@
 body {
 	font-family:sans-serif;
-	background:rgba(10,10,10,1);
+	background:rgba(0,0,0,1);
 }
 
 #toolContainer {
@@ -28,14 +28,28 @@ body {
 	width:100%;
 	max-height:4.2em;
 	color: white;
-	background:rgba(255, 0, 204, .1);
+    background:rgba(255, 0, 204, .3);
 	z-index: 125;
-
-    background-image:url("../../res_evocell/images/icons/icons/plus-button.png");
-    background-size: 58px;
-    background-repeat:no-repeat;
-    background-position:right top;
 }
+
+#toolsMenu {
+    padding: 0px 0x 0px 0px;
+    border:0px solid #AAAAAA;
+    position: fixed; bottom: 0px;right: 0px; z-index:2;
+    color: white; width: 400px;
+    background:rgba(0,0,0,1);
+}
+
+#toolsMenu a {
+
+}
+
+.toolMenuContent {
+    background:rgba(0,0,0,0.85);
+    margin: 5px;
+    padding: 5px;
+}
+
 
 .toolWindow:hover {
 	/*max-height: 1200px;*/
@@ -47,21 +61,28 @@ body {
 
 .activeWindow {
 	max-height: 1200px;
-	background:rgba(255, 0, 204, .4);
-
-	background-image:url("../../res_evocell/images/icons/icons/minus-button.png");
-	background-size: 58px;
-	background-repeat:no-repeat;
-	background-position:right top;
+	background:rgba(255, 0, 204, .6);
 }
 
-.activeWindow:nth-child(1) {
-	background:rgba(255, 255, 255, .5);
+.toolMenuHeader {
+    background:rgba(0,0,0,0.8);
+    margin: 5px;
+    padding: 5px;
+    cursor:pointer;
 
+    background-image:url("../../res_evocell/images/icons/icons/plus.png");
+    background-size: 48px;
+    background-repeat:no-repeat;
+    background-position:right top;
+}
+
+/*.activeWindow:nth-child(1) {*/
+.activeWindow .toolMenuHeader {
+    background:rgba(0,0,0, .5);
     background-image:url("../../res_evocell/images/icons/icons/minus.png");
-	background-size: 58px;
-	background-repeat:no-repeat;
-	background-position:right top;
+    background-size: 48px;
+    background-repeat:no-repeat;
+    background-position:right top;
 }
 
 
@@ -118,30 +139,6 @@ body {
 
 .storyElement img {
 	height: 75%;
-}
-
-#toolsMenu { 
-	padding: 0px 0x 0px 0px;
-	border:0px solid #AAAAAA; 
-position: fixed; bottom: 0px;right: 0px; z-index:2; 
-color: white; width: 400px;
-background:rgba(0,0,0,1);
-}
-
-#toolsMenu a {
-
-}
-
-.toolMenuHeader {
-	background:rgba(0,0,0,0.8);
-	margin: 5px;
-	padding: 5px;
-	cursor:pointer;
-}
-.toolMenuContent {
-	background:rgba(0,0,0,0.8);
-	margin: 5px;
-	padding: 5px;
 }
 
 
