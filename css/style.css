@@ -1,6 +1,7 @@
 body {
 	font-family:sans-serif;
 	background:rgba(0,0,0,1);
+    font-size: 1em;
 }
 
 #toolContainer {
@@ -10,13 +11,13 @@ body {
 	xtransition-delay: 0s;
 
 	overflow:hidden;
-	width:400px;
-	HHheight:100%;
+	width:25em;
 	position: fixed; top: 0px;left: 0px; z-index:10; 
 	color: white;
-	zbackground:rgba(0,255,0,0.2);
 
-	z-index: 120; 
+	z-index: 120;
+    padding: 0;
+    margin: 0;
 }
 
 .toolWindow {
@@ -25,16 +26,19 @@ body {
 	transition-timing-function: ease;
 	transition-delay: 0s;
 	overflow:hidden;
-	width:100%;
-	max-height:4.2em;
+	max-height:2.7em; /*(padding == 2*0.4 zaehlen nicht -0.8em) 2em + 2 * 2* 0.1 paddig + 2* 0.2 margin unten */
 	color: white;
     background:rgba(255, 0, 204, .3);
 	z-index: 125;
+    margin: 0;
+    padding: 0.4em;
 }
 
+/*
 #toolsMenu {
-    padding: 0px 0x 0px 0px;
-    border:0px solid #AAAAAA;
+    padding: 0.2em;
+    margin: 0.2em;
+    border: 0px;
     position: fixed; bottom: 0px;right: 0px; z-index:2;
     color: white; width: 400px;
     background:rgba(0,0,0,1);
@@ -43,35 +47,33 @@ body {
 #toolsMenu a {
 
 }
+*/
 
 .toolMenuContent {
     background:rgba(0,0,0,0.85);
-    margin: 5px;
-    padding: 5px;
+    margin: 0;
+    padding: 0.4em;
 }
 
 
 .toolWindow:hover {
-	/*max-height: 1200px;*/
-	/*background-image:url("../../res_evocell/images/icons/icons/animal-penguin.png");*/
-	/*background-size: 58px;*/
-	/*background-repeat:no-repeat;*/
-	/*background-position:right top;*/
+    background:rgba(255, 0, 204, .6);
 }
 
 .activeWindow {
 	max-height: 1200px;
 	background:rgba(255, 0, 204, .6);
 }
-
+/* 2 + 0.4 oben + 0.2 marg + 0.1pad = 2.7*/
 .toolMenuHeader {
     background:rgba(0,0,0,0.8);
-    margin: 5px;
-    padding: 5px;
+    margin: 0 0 0.2em 0;
+    padding: 0.1em;
     cursor:pointer;
+    font-size: 2em;
 
     background-image:url("../../res_evocell/images/icons/icons/plus.png");
-    background-size: 48px;
+    background-size: 1.4em;
     background-repeat:no-repeat;
     background-position:right top;
 }
@@ -80,26 +82,26 @@ body {
 .activeWindow .toolMenuHeader {
     background:rgba(0,0,0, .5);
     background-image:url("../../res_evocell/images/icons/icons/minus.png");
-    background-size: 48px;
+    background-size: 1.4em;
     background-repeat:no-repeat;
     background-position:right top;
 }
 
 
-#aboutWindow {
-	transition-property: max-height;
-	transition-duration: 0.3s;
-	transition-timing-function: ease;
-	transition-delay: 0s;
+/*#aboutWindow {*/
+	/*transition-property: max-height;*/
+	/*transition-duration: 0.3s;*/
+	/*transition-timing-function: ease;*/
+	/*transition-delay: 0s;*/
 
-	overflow:hidden;
-	width: 100%;
-	max-height:4.2em;
-	color: white;
-	background:rgba(255,0,0,0.2);
+	/*overflow:hidden;*/
+	/*width: 100%;*/
+	/*max-height:4.2em;*/
+	/*color: white;*/
+	/*background:rgba(255,0,0,0.2);*/
 
-	z-index: 120; 
-}
+	/*z-index: 120; */
+/*}*/
 
 #aboutWindow:hover {
 		max-height: 1200px;
