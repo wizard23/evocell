@@ -79,7 +79,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 		shipX: 0, shipY: 0,
 		shipRadius: 3,
 		shipDir: 0,
-		shipSpeed: 1,
+		shipSpeed: 0,
 		shipSpeedX: 0, shipSpeedY: 0, // derived values
 
 		scrollX: 0, scrollY: 0,

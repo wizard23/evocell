@@ -1,7 +1,7 @@
 body {
 	font-family:sans-serif;
 	background:rgba(0,0,0,1);
-    font-size: 1em;
+    font-size: 0.7em;
 }
 
 #toolContainer {
@@ -11,7 +11,7 @@ body {
 	xtransition-delay: 0s;
 
 	overflow:hidden;
-	width:25em;
+	width:30em;
 	position: fixed; top: 0px;left: 0px; z-index:10; 
 	color: white;
 
