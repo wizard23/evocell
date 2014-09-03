@@ -459,8 +459,154 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			csUtils.zoom(delta);
 			return false;
 		};
+
 		gameState.canvas.addEventListener("mousewheel", handleMouseWheel, false);
 		gameState.canvas.addEventListener("DOMMouseScroll", handleMouseWheel, false);
+
+
+        // TOUCH events
+
+        function ongoingTouchIndexById(idToFind) {
+            for (var i=0; i < ongoingTouches.length; i++) {
+                var id = ongoingTouches[i].identifier;
+
+                if (id == idToFind) {
+                    return i;
+                }
+            }
+            return -1;    // not found
+        }
+
+        function log(msg) {
+            /*
+            var p = document.getElementById('log');
+
+            if (p)
+            {
+                var s = msg + "<br>" + p.innerHTML;
+                p.innerHTML = s.substring(0, 200);
+            }
+            */
+        }
+
+        function copyTouch(touch) {
+            return { identifier: touch.identifier, pageX: touch.pageX, pageY: touch.pageY };
+        }
+
+
+        var ongoingTouches = new Array();
+
+        function touch2GameCoordinates(touch, el) {
+            var xx =  gameState.gameW*(touch.pageX)/el.width;
+            var yy = gameState.gameH - (gameState.gameH*(touch.pageY)/el.height);
+
+            return [xx, yy];
+        }
+
+        function workaroundFn2(fn, args) {
+            fn(args[0], args[1]);
+        }
+
+        var handleStart = function(evt) {
+            evt.preventDefault();
+            log("touchstart.");
+            var el = document.getElementsByTagName("canvas")[0];
+            //var ctx = el.getContext("2d");
+            var touches = evt.changedTouches;
+
+            for (var i=0; i < touches.length; i++) {
+                log("touchstart:" +i+ "x" + touches[i].pageX + "y" + touches[i].pageY + "w"+ el.width);
+                ongoingTouches.push(copyTouch(touches[i]));
+                //var color = colorForTouch(touches[i]);
+                //ctx.beginPath();
+                //ctx.arc(touches[i].pageX, touches[i].pageY, 4, 0,2*Math.PI, false);  // a circle at the start
+                //ctx.fillStyle = color;
+                //ctx.fill();
+
+             
+                //var xx =  gameState.gameW*(touches[i].pageX)/el.width;
+                //var yy = gameState.gameH - (gameState.gameH*(touches[i].pageY)/el.height);
+
+                workaroundFn2(csUtils.fireShotAt, touch2GameCoordinates(touches[i], el));
+                log("touchstart:"+i+".");
+            }
+        };
+
+        var handleMove = function(evt) {
+            evt.preventDefault();
+            var el = document.getElementsByTagName("canvas")[0];
+            //var ctx = el.getContext("2d");
+            var touches = evt.changedTouches;
+
+            for (var i=0; i < touches.length; i++) {
+                //var color = colorForTouch(touches[i]);
+                var idx = ongoingTouchIndexById(touches[i].identifier);
+
+                if(idx >= 0) {
+                    log("continuing touch "+idx);
+                    //ctx.beginPath();
+                    log("ctx.moveTo("+ongoingTouches[idx].pageX+", "+ongoingTouches[idx].pageY+");");
+                    //ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
+                    log("ctx.lineTo("+touches[i].pageX+", "+touches[i].pageY+");");
+                    //ctx.lineTo(touches[i].pageX, touches[i].pageY);
+                    //ctx.lineWidth = 4;
+                    //ctx.strokeStyle = color;
+                    //ctx.stroke();
+
+                    ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
+                    log(".");
+                } else {
+                    log("can't figure out which touch to continue");
+                }
+            }
+        };
+
+         var handleEnd = function(evt) {
+            evt.preventDefault();
+            log("touchend/touchleave.");
+            var el = document.getElementsByTagName("canvas")[0];
+            //var ctx = el.getContext("2d");
+            var touches = evt.changedTouches;
+
+            for (var i=0; i < touches.length; i++) {
+                //var color = colorForTouch(touches[i]);
+                var idx = ongoingTouchIndexById(touches[i].identifier);
+
+                if(idx >= 0) {
+                    //ctx.lineWidth = 4;
+                    //ctx.fillStyle = color;
+                    //ctx.beginPath();
+                    //ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
+                    //ctx.lineTo(touches[i].pageX, touches[i].pageY);
+                   // ctx.fillRect(touches[i].pageX-4, touches[i].pageY-4, 8, 8);  // and a square at the end
+                    ongoingTouches.splice(idx, 1);  // remove it; we're done
+                } else {
+                    log("can't figure out which touch to end");
+                }
+            }
+        };
+
+        var handleCancel = function (evt) {
+            evt.preventDefault();
+            log("touchcancel.");
+            var touches = evt.changedTouches;
+
+            for (var i=0; i < touches.length; i++) {
+                ongoingTouches.splice(i, 1);  // remove it; we're done
+            }
+        }
+
+        function copyTouch(touch) {
+            return { identifier: touch.identifier, pageX: touch.pageX, pageY: touch.pageY };
+        }
+
+        // touch
+        var el = gameState.canvas;
+        el.addEventListener("touchstart", handleStart, false);
+        el.addEventListener("touchend", handleEnd, false);
+        el.addEventListener("touchcancel", handleCancel, false);
+        el.addEventListener("touchleave", handleEnd, false);
+        el.addEventListener("touchmove", handleMove, false);
 	};
 
 	var once = 1;
