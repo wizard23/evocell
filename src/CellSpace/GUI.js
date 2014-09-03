@@ -523,7 +523,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
                 //ctx.fillStyle = color;
                 //ctx.fill();
 
-             
+
                 //var xx =  gameState.gameW*(touches[i].pageX)/el.width;
                 //var yy = gameState.gameH - (gameState.gameH*(touches[i].pageY)/el.height);
 
@@ -553,6 +553,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
                     //ctx.strokeStyle = color;
                     //ctx.stroke();
 
+                    workaroundFn2(csUtils.fireShotAt, touch2GameCoordinates(touches[i], el));
+
                     ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
                     log(".");
                 } else {
@@ -579,6 +581,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
                     //ctx.moveTo(ongoingTouches[idx].pageX, ongoingTouches[idx].pageY);
                     //ctx.lineTo(touches[i].pageX, touches[i].pageY);
                    // ctx.fillRect(touches[i].pageX-4, touches[i].pageY-4, 8, 8);  // and a square at the end
+
+
                     ongoingTouches.splice(idx, 1);  // remove it; we're done
                 } else {
                     log("can't figure out which touch to end");
