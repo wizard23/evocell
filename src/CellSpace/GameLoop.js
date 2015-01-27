@@ -72,43 +72,24 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 		//gameState.ship.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 0, 0);
 
 
-
 		// collide ship
 		if (gameState.cnt > 40) {
-			var pX, pY;
+			if (gameState.ship.collide(enemyPixel)){
+                csUtils.refreshGUI(["shieldEnergy"]);
 
-			var oldEnergy = gameState.ship.shieldEnergy;
+                // did we just die?
+                if (gameState.ship.shieldEnergy < 0) {
+                    var oldPause = gameState.pause;
+                    gameState.pause = 1;
 
-			for (pX = -shipR; pX <= shipR; pX++) {
-				for (pY = -shipR; pY <= shipR; pY++) {
-
-					var xxx = Math.round(gameState.ship.x + pX);
-					var yyy = Math.round(gameState.ship.y + pY);
-
-					if (enemyPixel[(xxx+yyy*GLOBALS.gameW)*4 + 3] !== 0) {
-						gameState.ship.hit = true;
+                    storyTeller.RunDeath(function() {
+                        this.shieldEnergy = 1000;
                         csUtils.refreshGUI(["shieldEnergy"]);
 
-		//				reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.weapon, 
-		//	{center: [gameState.ship.x + pX, gameState.ship.y + pY], radius: 1.5, state: (gameState.rules.ship.nrStates-1)/255});
-
-					}
-				}
-			}
-
-			// did we just die?
-			if (gameState.ship.shieldEnergy < 0) {
-				var oldPause = gameState.pause;
-				gameState.pause = 1;
-				
-				storyTeller.RunDeath(function() {
-					gameState.ship.shieldEnergy = 1000;
-					csUtils.refreshGUI(["shieldEnergy"]);
-
-					csUtils.resetGame();
-					gameState.pause = oldPause;
-				});
-				
+                        csUtils.resetGame();
+                        gameState.pause = oldPause;
+                    });
+                }
 			}
 		}
 		

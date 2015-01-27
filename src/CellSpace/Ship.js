@@ -91,6 +91,28 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
             return  // TODO: play no-energy sound and show visual effect
         }
 	};
+	Ship.prototype.collide = function(pixelArry){
+	    // collides the ship with given pixel array
+	    // returns true if collision, else returns false
+	    var pX, pY;
+	    var is_hit = false;
+        for (pX = -this.radius; pX <= this.radius; pX++) {
+            for (pY = -this.radius; pY <= this.radius; pY++) {
+
+                var xxx = Math.round(this.x + pX);
+                var yyy = Math.round(this.y + pY);
+
+                if (pixelArry[(xxx+yyy*GLOBALS.gameW)*4 + 3] !== 0) {
+                    this.hit = true;
+                    is_hit = true;  // TODO: can we use this.hit here?
+
+    //				reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.weapon,
+    //	{center: [this.x + pX, this.y + pY], radius: 1.5, state: (gameState.rules.ship.nrStates-1)/255});
+                }
+            }
+        }
+        return is_hit;
+	}
 
     return Ship;
 });
