@@ -1,8 +1,8 @@
 define([
-	"jquery", "Utils", "EvoCell", "story/StoryTeller", "underscore", 
+	"GLOBALS", "jquery", "Utils", "EvoCell", "story/StoryTeller", "underscore",
 	"knockback", "knockout", "data/FileStore",
 	"CellSpace/State", "CellSpace/Setup", "CellSpace/Utils"],
-function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, csUtils) {
+function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, csUtils) {
 	"use strict";
 
 	// used for breaking to 0 and then reverse
@@ -30,8 +30,8 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 			var clickedNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);	
 			var clickedPoint = utils.intersectClick(clickedNDC, gameState.viewMatrix, gameState.cameraAngle/2);
 			
-			var cx = Math.round(gameState.gameW*(clickedPoint.x+1)/2);
-			var cy = Math.round(gameState.gameH*(clickedPoint.y+1)/2);
+			var cx = Math.round(GLOBALS.gameW*(clickedPoint.x+1)/2);
+			var cy = Math.round(GLOBALS.gameH*(clickedPoint.y+1)/2);
 
 			// start new
 			if (!gameState.selection.active) 
@@ -79,7 +79,7 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 						destinationSize: gameState.selection.size,
 						texSource: dish, 
 						sourcePos: gameState.selection.pos, 
-						sourceRes: [gameState.gameW, gameState.gameH],
+						sourceRes: [GLOBALS.gameW, GLOBALS.gameH],
 					}); 
 
 					gameState.pause = oldPauseState;
@@ -277,8 +277,8 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 		appFolder.add(gameState, 'scrollX');
 		appFolder.add(gameState, 'scrollY');
 
-		appFolder.add(gameState, 'gameW').onFinishChange(csUtils.onGameSizeChanged);
-		appFolder.add(gameState, 'gameH').onFinishChange(csUtils.onGameSizeChanged);
+		appFolder.add(GLOBALS, 'gameW').onFinishChange(csUtils.onGameSizeChanged);
+		appFolder.add(GLOBALS, 'gameH').onFinishChange(csUtils.onGameSizeChanged);
 
 		var shipFolder = appFolder.addFolder('Ship');
         shipFolder.add(gameState.ship, 'x');
@@ -377,13 +377,13 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 					if (dish) {
 						if (gameState.drawModel.attributes.selectedDrawShape == "circle") {
 							gameState.reactor.mixDish(gameState.shaders.drawCircle, dish, {
-								center: [gameState.gameW*(clickedPoint.x+1)/2, gameState.gameH*(clickedPoint.y+1)/2], 
+								center: [GLOBALS.gameW*(clickedPoint.x+1)/2, GLOBALS.gameH*(clickedPoint.y+1)/2],
 								radius: gameState.drawModel.attributes.drawSizeX/2, state: state/255
 							});
 						}
 						else {
 							gameState.reactor.mixDish(gameState.shaders.drawRect, dish, {
-								rectPos: [gameState.gameW*(clickedPoint.x+1)/2, gameState.gameH*(clickedPoint.y+1)/2], 
+								rectPos: [GLOBALS.gameW*(clickedPoint.x+1)/2, GLOBALS.gameH*(clickedPoint.y+1)/2],
 								rectSize: [gameState.drawModel.attributes.drawSizeX, gameState.drawModel.attributes.drawSizeY], 
 								state: state/255
 							});
@@ -392,7 +392,7 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 				
 			}
 			else if (evt.button === 0) { // || mouseMode == "shoot") {
-				csUtils.fireShotAt(gameState.gameW*(clickedPoint.x+1)/2, gameState.gameH*(clickedPoint.y+1)/2);	
+				csUtils.fireShotAt(GLOBALS.gameW*(clickedPoint.x+1)/2, GLOBALS.gameH*(clickedPoint.y+1)/2);
 				// no autofire for now
 				//gameState.autoFireOn = 1 - gameState.autoFireOn;	
 			}	
@@ -403,9 +403,9 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 					destinationPos: [0, 0], 
 					destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
 					texSource: dish, 
-					sourcePos: [gameState.gameW*(clickedPoint.x+1)/2-gameState.dishes.buffer.width/2, 
-						gameState.gameH*(clickedPoint.y+1)/2-gameState.dishes.buffer.height/2], 
-					sourceRes: [gameState.gameW, gameState.gameH],
+					sourcePos: [GLOBALS.gameW*(clickedPoint.x+1)/2-gameState.dishes.buffer.width/2,
+						GLOBALS.gameH*(clickedPoint.y+1)/2-gameState.dishes.buffer.height/2],
+					sourceRes: [GLOBALS.gameW, GLOBALS.gameH],
 				}); 
 */
 
@@ -413,8 +413,8 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 			}		
 			// paste
 			else if (evt.button === 1) {
-				var tx = gameState.gameW*(clickedPoint.x+1)/2-gameState.selection.size[0]/2;
-				var ty = gameState.gameH*(clickedPoint.y+1)/2-gameState.selection.size[1]/2;
+				var tx = GLOBALS.gameW*(clickedPoint.x+1)/2-gameState.selection.size[0]/2;
+				var ty = GLOBALS.gameH*(clickedPoint.y+1)/2-gameState.selection.size[1]/2;
 
 				gameState.reactor.mixDish(gameState.shaders.copy, dish, {
 					destinationPos:[tx, ty], 
@@ -424,8 +424,8 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 					sourceRes: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
 				}); 
 				// gameState.reactor.mixDish(gameState.shaders.copy, dish, {
-				// 	destinationPos:[gameState.gameW*(clickedPoint.x+1)/2-gameState.dishes.buffer.width/2, 
-				// 		gameState.gameH*(clickedPoint.y+1)/2-gameState.dishes.buffer.height/2], 
+				// 	destinationPos:[GLOBALS.gameW*(clickedPoint.x+1)/2-gameState.dishes.buffer.width/2,
+				// 		GLOBALS.gameH*(clickedPoint.y+1)/2-gameState.dishes.buffer.height/2],
 				// 	destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
 				// 	texSource: gameState.dishes.buffer, 
 				// 	sourcePos: [0, 0], 
@@ -497,8 +497,8 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
         var ongoingTouches = new Array();
 
         function touch2GameCoordinates(touch, el) {
-            var xx =  gameState.gameW*(touch.pageX)/el.width;
-            var yy = gameState.gameH - (gameState.gameH*(touch.pageY)/el.height);
+            var xx =  GLOBALS.gameW*(touch.pageX)/el.width;
+            var yy = GLOBALS.gameH - (GLOBALS.gameH*(touch.pageY)/el.height);
 
             return [xx, yy];
         }
@@ -524,8 +524,8 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
                 //ctx.fill();
 
 
-                //var xx =  gameState.gameW*(touches[i].pageX)/el.width;
-                //var yy = gameState.gameH - (gameState.gameH*(touches[i].pageY)/el.height);
+                //var xx =  GLOBALS.gameW*(touches[i].pageX)/el.width;
+                //var yy = GLOBALS.gameH - (GLOBALS.gameH*(touches[i].pageY)/el.height);
 
                 workaroundFn2(csUtils.fireShotAt, touch2GameCoordinates(touches[i], el));
                 log("touchstart:"+i+".");
@@ -810,8 +810,8 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 			if (!gameState.shotDelay)
 			{
 				gameState.shotDelay = 3;
-				/*var px = (gameState.ship.x/gameState.gameW)*2 - 1;
-				var py = (gameState.ship.y/gameState.gameH)*2 - 1;
+				/*var px = (gameState.ship.x/GLOBALS.gameW)*2 - 1;
+				var py = (gameState.ship.y/GLOBALS.gameH)*2 - 1;
 				var sX = sDX * gameState.shotSpeed;
 				var sY = sDY*gameState.shotSpeed; 
 

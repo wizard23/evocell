@@ -1,35 +1,11 @@
-define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship"], function(Backbone, THREE, dat, utils, Ship) {
+define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "EvoCell"],
+    function(Backbone, THREE, dat, utils, Ship, GLOBALS, EC) {
 	"use strict";
-
-
-// 	// Define a Todo Model
-// var Layer = Backbone.Model.extend({
-//   // Default todo attribute values
-//   defaults: {
-//   	name: "no name given",
-//     palette: null,
-//     rule: null,
-//     dish: null,
-//   }
-// });
-
-
-//var Layers = 
-
-// Instantiate the Todo Model with a title, with the completed attribute
-// defaulting to false
-// var myTodo = new Todo({
-//   title: 'Check attributes property of the logged models in the console.'
-// });
-
-	var resPath = "../res_evocell/";
-	var libPath = "../" + resPath + "src/libs/";
-
 
 	var gameState = {
 		// APPSTATE ///////////
-		canvas: null,
-		reactor: null,
+		canvas: GLOBALS.canvasElement,
+		reactor: new EC.Reactor(GLOBALS.canvasElement, GLOBALS.gameW, GLOBALS.gameH),
 		gl: null,
 		renderLoop: null,
 		gui: new dat.GUI(),
@@ -59,7 +35,6 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship"], function(Back
 		autoFireOn: 0,
 		lastMouseNDC: new THREE.Vector2(),
 		
-		gameW: 256, gameH: 256,
 		screenW: window.innerWidth ? window.innerWidth : 1000,
 		screenH: window.innerHeight ? window.innerHeight :800,
 
@@ -87,11 +62,11 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship"], function(Back
 		// HACK: find better init solution
 		cnt: 100, // used for executing dishes.enemy only every nth tep
 
-		sndInit: new Audio(resPath + "sound/Digital_SFX_Set/laser3.mp3"), 
-		snd: new Audio(resPath + "sound/Digital_SFX_Set/laser6.mp3"), 
-		sndBomb: new Audio(resPath + "sound/Digital_SFX_Set/laser4.mp3"), 
-		sndHit: new Audio(resPath + "sound/Digital_SFX_Set/laser9.mp3"), 
-		sndHit2: new Audio(resPath + "sound/Digital_SFX_Set/laser9.mp3"),
+		sndInit: new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser3.mp3"),
+		snd: new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser6.mp3"),
+		sndBomb: new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser4.mp3"),
+		sndHit: new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser9.mp3"),
+		sndHit2: new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser9.mp3"),
 
 		// game model
 		civX: 0.1,
@@ -124,12 +99,6 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship"], function(Back
 			downPos: [0, 0],
 			lastPos: [0, 0],
 		},
-
-		// Example: local resources in the same directory
-		// resPath: "./"
-		// resources in res_evocell repository
-		resPath: resPath,
-		libPath: libPath,
 
 		// performance measures
 		perfStartJSTime: -0.001,

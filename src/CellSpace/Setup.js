@@ -1,16 +1,15 @@
-define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Utils"], 
-	function(utils, fileStore, EC, gameState, csUtils) {
+define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Utils", "GLOBALS"],
+	function(utils, fileStore, EC, gameState, csUtils, GLOBALS) {
 	"use strict";
 
 	var initDB = function() {
 		// hackinit
-		var resPath = gameState.resPath;
 		gameState.resFiles = [
-			resPath + "rules/enemy_ludwigBuildships", 
-			resPath + "rules/moore5-coolspaceships",
-			resPath + "rules/EvoloopN9",
-			resPath + "rules/GameOfLife",
-			resPath + "patterns/evoloop30.ecpattern",
+			GLOBALS.resPath + "rules/enemy_ludwigBuildships",
+			GLOBALS.resPath + "rules/moore5-coolspaceships",
+			GLOBALS.resPath + "rules/EvoloopN9",
+			GLOBALS.resPath + "rules/GameOfLife",
+			GLOBALS.resPath + "patterns/evoloop30.ecpattern",
 		];
 
 
@@ -30,20 +29,18 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 	};
 
 	// static
-	var setup = function(canvas, callback) {
-		
-		var resPath = gameState.resPath;
+	var setup = function(callback) {
 
 		var loader = new EC.ResLoader();
 		
-		loader.load("rules.enemy", resPath + "rules/enemy_ludwigBuildships", "ecfile");
-		//loader.load("rules.enemy", resPath + "rules/enemy_ludwigBuildships_lessActive", "ecfile");
-		//loader.load("rules.enemy", resPath + "rules/enemy_lounge23", "ecfile");
-		//loader.load("rules.enemy", resPath + "rules/enemy_evil", "ecfile");
-		//loader.load("rules.enemy", resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
+		loader.load("rules.enemy", GLOBALS.resPath + "rules/enemy_ludwigBuildships", "ecfile");
+		//loader.load("rules.enemy", GLOBALS.resPath + "rules/enemy_ludwigBuildships_lessActive", "ecfile");
+		//loader.load("rules.enemy", GLOBALS.resPath + "rules/enemy_lounge23", "ecfile");
+		//loader.load("rules.enemy", GLOBALS.resPath + "rules/enemy_evil", "ecfile");
+		//loader.load("rules.enemy", GLOBALS.resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
 		//loader.load("rules.enemy", "rules/enemy_d54_awesomeships", "ecfile");
-		//loader.load("rules.enemy", resPath + "rules/enemy_d52_replicator", "ecfile");
-		//loader.load("rules.enemy", resPath + "rules/enemy_holeshooter", "ecfile");
+		//loader.load("rules.enemy", GLOBALS.resPath + "rules/enemy_d52_replicator", "ecfile");
+		//loader.load("rules.enemy", GLOBALS.resPath + "rules/enemy_holeshooter", "ecfile");
 		//loader.load("rules.enemy", "rules/enemy_holeshooter", "ecfile");
 		//loader.load("rules.enemy", "rules/gridworld6", "ecfile");
 		//loader.load("rules.enemy", "rules/enemy_quaderwelt_moreactive", "ecfile");
@@ -51,20 +48,20 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 		//loader.load("rules.enemy", "rules/enemy_linesLounge_moreactive", "ecfile");
 		//loader.load("rules.enemy", "rules/enemy_linesLounge_moreactive-mutA_mut", "ecfile");
 		
-		loader.load("rules.background", resPath + "rules/enemy_linebuilder", "ecfile");
-		loader.load("rules.weapon", resPath + "rules/ship_avg4_nice", "ecfile");
+		loader.load("rules.background", GLOBALS.resPath + "rules/enemy_linebuilder", "ecfile");
+		loader.load("rules.weapon", GLOBALS.resPath + "rules/ship_avg4_nice", "ecfile");
 		
-		loader.load("rules.weaponExplosion", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
-		loader.load("rules.weaponExplosion", resPath + "rules/moore5-coolspaceships", "ecfile");
-		//loader.load("rules.weaponExplosion", resPath + "rules/explosion_avg2-far2", "ecfile");
-		//loader.load("rules.weaponExplosion", resPath + "rules/ship_avg4_nice", "ecfile");
+		loader.load("rules.weaponExplosion", GLOBALS.resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
+		loader.load("rules.weaponExplosion", GLOBALS.resPath + "rules/moore5-coolspaceships", "ecfile");
+		//loader.load("rules.weaponExplosion", GLOBALS.resPath + "rules/explosion_avg2-far2", "ecfile");
+		//loader.load("rules.weaponExplosion", GLOBALS.resPath + "rules/ship_avg4_nice", "ecfile");
 
 		
-		loader.load("rules.shipExplosion", resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
-		loader.load("rules.shipExplosion", resPath + "rules/moore5-coolspaceships", "ecfile");
+		loader.load("rules.shipExplosion", GLOBALS.resPath + "rules/cross4-wave-spaceshipshoot", "ecfile");
+		loader.load("rules.shipExplosion", GLOBALS.resPath + "rules/moore5-coolspaceships", "ecfile");
 
-		loader.load("rules.ship", resPath + "rules/ship_avg4_nice", "ecfile");
-		loader.load("rules.ship", resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
+		loader.load("rules.ship", GLOBALS.resPath + "rules/ship_avg4_nice", "ecfile");
+		loader.load("rules.ship", GLOBALS.resPath + "rules/22C3_mirrorsymetric_gliders-randomwaver", "ecfile");
 
 
 		// rules/ship_avg4_nice rules/ship_avg4_schweif
@@ -95,8 +92,7 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 		var setupFn = function (data) { 
 			// Setup core
-			var reactor = new  EC.Reactor(canvas, gameState.gameW, gameState.gameH);
-			gameState.reactor = reactor;
+			var reactor = gameState.reactor;
 			gameState.gl = reactor.gl;
 			gameState.canvas = reactor.canvas;
 
@@ -247,8 +243,8 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 			gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, 0.001);
 			gameState.dishes.background.randomize(gameState.rules.enemy.nrStates, 0.01);
-			gameState.ship.x = gameState.gameW/2;
-			gameState.ship.y = gameState.gameH/2;
+			gameState.ship.x = GLOBALS.gameW/2;
+			gameState.ship.y = GLOBALS.gameH/2;
 
 			callback();
 		};

@@ -1,6 +1,5 @@
-define([
-	"jquery-ui", "meSpeak", "CellSpace/State", "jquery-cycle"],
-	function($, meSpeak, gameState) {
+define(["jquery-ui", "meSpeak", "CellSpace/State", "jquery-cycle", "GLOBALS"],
+	function($, meSpeak, gameState, jqueryCycle, GLOBALS) {
 
 	function getSpeechURL(text, language) {
 		if (!language) language = "en";
@@ -9,8 +8,8 @@ define([
 		return x.replace(/ /g, "%20");
 	}
 
-	meSpeak.loadConfig(gameState.resPath + "src/libs/mespeak/mespeak_config.json");
-	meSpeak.loadVoice(gameState.resPath + 'src/libs/mespeak/voices/en/en-us.json');
+	meSpeak.loadConfig(GLOBALS.resPath + "src/libs/mespeak/mespeak_config.json");
+	meSpeak.loadVoice(GLOBALS.resPath + 'src/libs/mespeak/voices/en/en-us.json');
 
 	//meSpeak.speak("hello", {}, function() {alert();});
 
@@ -160,7 +159,7 @@ define([
 			texts.push(text);
 		
 			var id = "sc" + partIndex;
-			$("#container").append(htmlTemplate({text:text, image: gameState.resPath + "images/" + image, id:id}));
+			$("#container").append(htmlTemplate({text:text, image: GLOBALS.resPath + "images/" + image, id:id}));
 
 			//var url = getSpeechURL(text);
 			//var a = new Audio(url);

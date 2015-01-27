@@ -1,8 +1,8 @@
 define([
-	"jquery-ui", "Utils", "EvoCell", "story/StoryTeller", "underscore", 
+	"GLOBALS", "jquery-ui", "Utils", "EvoCell", "story/StoryTeller", "underscore",
 	"backbone", "knockback", "knockout", "data/FileStore", "three", "datgui", 
 	"CellSpace/State", "CellSpace/Setup", "CellSpace/Utils", "CellSpace/GUI"], 
-function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat, 
+function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	gameState, csSetup, csUtils, csUI) {
 
 	"use strict";
@@ -82,7 +82,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 					var xxx = Math.round(gameState.ship.x + pX);
 					var yyy = Math.round(gameState.ship.y + pY);
 
-					if (enemyPixel[(xxx+yyy*gameState.gameW)*4 + 3] !== 0) {
+					if (enemyPixel[(xxx+yyy*GLOBALS.gameW)*4 + 3] !== 0) {
 						gameState.playerEnergy -= 1;
 
 		//				reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.weapon, 
@@ -133,7 +133,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		//enemy shields generate
 		reactor.mixDish(gameState.shaders.shieldSpawn, gameState.dishes.enemyShield, {
 			texShield: gameState.dishes.enemyShield, texTarget: gameState.dishes.enemy,
-			width: gameState.gameW, height: gameState.gameH
+			width: GLOBALS.gameW, height: GLOBALS.gameH
 		});
 
 		// shield gets erroded by explosions
@@ -207,8 +207,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 		// DAT.gui workaround (stores ints as strings)
 		if (gameState.enableScrolling === 1 || gameState.enableScrolling === "1") {
-			var deltaX = Math.round(gameState.gameW/2 - gameState.ship.x);
-			var deltaY = Math.round(gameState.gameH/2 - gameState.ship.y);
+			var deltaX = Math.round(GLOBALS.gameW/2 - gameState.ship.x);
+			var deltaY = Math.round(GLOBALS.gameH/2 - gameState.ship.y);
 			if (deltaX || deltaY) {
 				gameState.ship.x  += deltaX;
 				gameState.ship.y  += deltaY;
@@ -226,8 +226,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 				var pScrollY = Math.round(gameState.parallaxY/parallaxDist);
 
 				if (pScrollX || pScrollY) {
-					var dX = -pScrollX/gameState.gameW;
-					var dY = -pScrollY/gameState.gameH;
+					var dX = -pScrollX/GLOBALS.gameW;
+					var dY = -pScrollY/GLOBALS.gameH;
 
 					reactor.mixDish(gameState.shaders.scroll, gameState.dishes.background,
 						{scroll: [dX, dY]});
@@ -238,8 +238,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 				csUtils.refreshGUI(["ship.x", "ship.y", "scrollX", "scrollY", "parallaxX", "parallaxY"]);
 
-				var dX = -deltaX/gameState.gameW;
-				var dY = -deltaY/gameState.gameH;
+				var dX = -deltaX/GLOBALS.gameW;
+				var dY = -deltaY/GLOBALS.gameH;
 				reactor.mixDish(gameState.shaders.scroll, gameState.dishes.ship, 
 					{scroll: [dX, dY]});		
 
@@ -285,8 +285,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		var shipClipX = 2*(gameState.ship.x-gameState.dishes.enemy.width/2)/gameState.dishes.enemy.width;
 		var shipClipY = 2*(gameState.ship.y-gameState.dishes.enemy.height/2)/gameState.dishes.enemy.height;
 
-		var scaleX = gameState.gameW / gameState.screenW;
-		var scaleY = gameState.gameH / gameState.screenH;
+		var scaleX = GLOBALS.gameW / gameState.screenW;
+		var scaleY = GLOBALS.gameH / gameState.screenH;
 
 		var transMatrix = new THREE.Matrix4().compose(new THREE.Vector3(
 				-shipClipX, -shipClipY, 0), 
@@ -366,7 +366,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 
 		reactor.paintDish(gameState.shaders["cameraRenderer" + gameState.renderer], gameState.dishes.render, gameState.dishes.render2, function(gl, shader) {
-			gl.uniform2f(gl.getUniformLocation(shader, "resolution"), gameState.gameW, gameState.gameH);
+			gl.uniform2f(gl.getUniformLocation(shader, "resolution"), GLOBALS.gameW, GLOBALS.gameH);
 			gl.uniformMatrix4fv(gl.getUniformLocation(shader, "projectionMatrix"), false, gameState.projectionMatrix.elements);
 			gl.uniformMatrix4fv(gl.getUniformLocation(shader, "modelViewMatrix"), false, gameState.viewMatrix.elements);
 		});

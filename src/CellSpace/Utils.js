@@ -1,8 +1,8 @@
 define([
-	"jquery-ui", "Utils", "EvoCell", "story/StoryTeller", "underscore", 
+	"GLOBALS", "jquery-ui", "Utils", "EvoCell", "story/StoryTeller", "underscore",
 	"backbone", "knockback", "knockout", "data/FileStore", "three", "datgui", 
 	"CellSpace/State"], 
-function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat, 
+function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	gameState) {
 		"use strict";
 
@@ -12,7 +12,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		if (gameState.autoFireOn) {
 			if (gameState.autoFireCounter === 0) {
 				var clickedPoint = intersectClick(gameState.lastMouseNDC);
-				fireShotAt(gameState.gameW*(clickedPoint.x+1)/2, gameState.gameH*(clickedPoint.y+1)/2);	
+				fireShotAt(GLOBALS.gameW*(clickedPoint.x+1)/2, GLOBALS.gameH*(clickedPoint.y+1)/2);
 
 				gameState.autoFireCounter = 5;
 			}
@@ -77,10 +77,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		gameState.cnt = 0;
 		gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, gameState.randomDensity);
 		gameState.dishes.background.randomize(gameState.rules.enemy.nrStates, 0.01);
-		if (gameState.ship.x < 0 || gameState.ship.x > gameState.gameW ||
-			gameState.ship.y < 0 || gameState.ship.y > gameState.gameH) {
-			gameState.ship.x = gameState.gameW/2;
-			gameState.ship.y = gameState.gameH/2;
+		if (gameState.ship.x < 0 || gameState.ship.x > GLOBALS.gameW ||
+			gameState.ship.y < 0 || gameState.ship.y > GLOBALS.gameH) {
+			gameState.ship.x = GLOBALS.gameW/2;
+			gameState.ship.y = GLOBALS.gameH/2;
 		}
 		utils.playSound(gameState.sndInit);
 	};
@@ -104,10 +104,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	var onGameSizeChanged = function() {
 		var reactor = gameState.reactor;
 
-		reactor.setDefaultDishSize(gameState.gameW, gameState.gameH);
+		reactor.setDefaultDishSize(GLOBALS.gameW, GLOBALS.gameH);
 
 		// hack reinit shots
-		gameState.shots = new EC.ParticleSystem(reactor, gameState.maxParticles, gameState.gameW, gameState.gameH);
+		gameState.shots = new EC.ParticleSystem(reactor, gameState.maxParticles, GLOBALS.gameW, GLOBALS.gameH);
 
 		// reinit instead of resize (we lose state but who cares?)
 		var dishes = gameState.dishes;
