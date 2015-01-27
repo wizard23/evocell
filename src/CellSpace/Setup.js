@@ -93,8 +93,6 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 		var setupFn = function (data) { 
 			// Setup core
 			var reactor = gameState.reactor;
-			gameState.gl = reactor.gl;
-			gameState.canvas = reactor.canvas;
 
 			csUtils.onScreenSizeChanged();
 			csUtils.onGameSizeChanged();

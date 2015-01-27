@@ -6,8 +6,6 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 		// APPSTATE ///////////
 		canvas: GLOBALS.canvasElement,
 		reactor: new EC.Reactor(GLOBALS.canvasElement, GLOBALS.gameW, GLOBALS.gameH),
-		gl: null,
-		renderLoop: null,
 		gui: new dat.GUI(),
 		//fpsMonotor: null,
 		keyboard: utils.keyboard,
@@ -16,17 +14,13 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 		dishes: {},
 		rules: {},
 		colors: {},
-		shots: null,
 
 		pause: false,
 		doOnestep: false,
 		
 		// GAMESTATE //////////
 		// shots
-		maxParticles: 1000,
 		shotSpeed: 3.4,
-		frontShots: 3,
-		frontShotAngle: 0.2,
 		shotN: 8,
 		bombFired: 0,
 		bAngle: 0, // direction of bomb fire
@@ -55,8 +49,7 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 
 		scrollX: 0, scrollY: 0,
 		parallaxX: 0, parallaxY: 0,
-		playerEnergy: 1000,
-		stepSize: 1.5, 
+		stepSize: 1.5,
 		
 		mouseMode: "shoot",	
 		// HACK: find better init solution
@@ -106,7 +99,10 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 		perfFinishedJSTime: -0.001,
 		showBuffer: false,
 		showRule: false,
-	};	
+	};
+
+	gameState.shots = new EC.ParticleSystem(gameState.reactor, GLOBALS.maxParticles, GLOBALS.gameW, GLOBALS.gameH);
+
 
 	return gameState;
 });

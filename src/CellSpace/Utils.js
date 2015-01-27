@@ -35,14 +35,14 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 		sX += gameState.ship.speedX;
 		sY += gameState.ship.speedY;
 
-		var aa = gameState.frontShots > 1 ? -gameState.frontShotAngle/2 : 0;
+		var aa = gameState.ship.frontShots > 1 ? -gameState.ship.frontShotAngle/2 : 0;
 
-		for (var i = 0; i < gameState.frontShots; i++) {
+		for (var i = 0; i < gameState.ship.frontShots; i++) {
 			gameState.shots.allocateParticle(gameState.ship.x-1*gameState.scrollX, gameState.ship.y-1*gameState.scrollY,
 				Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
 			
-			if (gameState.frontShots > 1)
-				aa += gameState.frontShotAngle/(gameState.frontShots-1);
+			if (gameState.ship.frontShots > 1)
+				aa += gameState.ship.frontShotAngle/(gameState.ship.frontShots-1);
 		}
 
 		utils.playSound(gameState.snd);
@@ -105,9 +105,6 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 		var reactor = gameState.reactor;
 
 		reactor.setDefaultDishSize(GLOBALS.gameW, GLOBALS.gameH);
-
-		// hack reinit shots
-		gameState.shots = new EC.ParticleSystem(reactor, gameState.maxParticles, GLOBALS.gameW, GLOBALS.gameH);
 
 		// reinit instead of resize (we lose state but who cares?)
 		var dishes = gameState.dishes;

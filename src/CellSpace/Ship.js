@@ -16,6 +16,10 @@ define( [], function (){
         // derived values
         this.dx = 0;
         this.dy = 0;
+        this.frontShots = 3;
+		this.frontShotAngle = 0.2;
+        this.shieldEnergy = 1000;
+        this.blasterEnergy = 1000;
     };
 
     return Ship;

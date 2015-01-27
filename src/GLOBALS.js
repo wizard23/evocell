@@ -1,3 +1,5 @@
+// this file defines global constants for CellSpace
+
 define(function(){
     // Example: local resources in the same directory
     // resPath: "./"
@@ -6,7 +8,8 @@ define(function(){
         resPath: "../res_evocell/",
         canvasElement: document.getElementById('c'),
         gameW: 256,
-        gameH: 256
+        gameH: 256,
+        maxParticles: 1000,
 
     };
     GLOBALS.libPath = "../" + GLOBALS.resPath + "src/libs/";

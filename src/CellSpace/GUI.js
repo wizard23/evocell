@@ -248,7 +248,8 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
 
 		var gui = gameState.gui;
 
-		gui.add(gameState, 'playerEnergy');
+		gui.add(gameState.ship, 'shieldEnergy', 0, 1000);
+		gui.add(gameState.ship, 'blasterEnergy', 0, 1000);
 
 		var appFolder = gui.addFolder('App');
 		appFolder.add(gameState, 'zoom', 0.05, 2).step(0.01);
@@ -265,8 +266,6 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
 		csUtils.refreshGUI(["rot"]);
 		// end of ugly hack 
 
-		appFolder.add(gameState, 'frontShots', 1, 12).step(1);
-		appFolder.add(gameState, 'frontShotAngle', 0, 2*Math.PI);
 		appFolder.add(gameState, 'randomDensity', 0, 1);
 
 		appFolder.add(gameState, "enemySpeed", 0, 12);
@@ -284,6 +283,8 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
         shipFolder.add(gameState.ship, 'x');
 		shipFolder.add(gameState.ship, 'y');
         shipFolder.add(gameState.ship, 'radius', 1, 20);
+        shipFolder.add(gameState.ship, 'frontShots', 1, 12).step(1);
+		shipFolder.add(gameState.ship, 'frontShotAngle', 0, 2*Math.PI);
 
 		var folder = gui.addFolder('Core');
 		var screenWCtrl = folder.add(gameState, 'screenW');

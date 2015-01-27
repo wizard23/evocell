@@ -74,7 +74,7 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 		if (gameState.cnt > 40) {
 			var pX, pY;
 
-			var oldEnergy = gameState.playerEnergy;
+			var oldEnergy = gameState.ship.shieldEnergy;
 
 			for (pX = -shipR; pX <= shipR; pX++) {
 				for (pY = -shipR; pY <= shipR; pY++) {
@@ -83,7 +83,7 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 					var yyy = Math.round(gameState.ship.y + pY);
 
 					if (enemyPixel[(xxx+yyy*GLOBALS.gameW)*4 + 3] !== 0) {
-						gameState.playerEnergy -= 1;
+						gameState.ship.shieldEnergy -= 1;
 
 		//				reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.weapon, 
 		//	{center: [gameState.ship.x + pX, gameState.ship.y + pY], radius: 1.5, state: (gameState.rules.ship.nrStates-1)/255});
@@ -92,18 +92,18 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 				}
 			}
 
-			if (oldEnergy !== gameState.playerEnergy) {
-				csUtils.refreshGUI(["playerEnergy"]);
+			if (oldEnergy !== gameState.ship.shieldEnergy) {
+				csUtils.refreshGUI(["shieldEnergy"]);
 			}
 
 			// did we just die?
-			if (gameState.playerEnergy < 0) {
+			if (gameState.ship.shieldEnergy < 0) {
 				var oldPause = gameState.pause;
 				gameState.pause = 1;
 				
 				storyTeller.RunDeath(function() {
-					gameState.playerEnergy = 1000;
-					csUtils.refreshGUI(["playerEnergy"]);	
+					gameState.ship.shieldEnergy = 1000;
+					csUtils.refreshGUI(["shieldEnergy"]);
 
 					csUtils.resetGame();
 					gameState.pause = oldPause;
