@@ -39,14 +39,21 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
         }
     };
     Ship.prototype.fireBomb = function(){
-        for (var i = 0; i < this.bombPower; i++){
-            this.bAngle += Math.PI * 2 / 1.61803398875;
-            this.shots.allocateSphere(1,
-                this.x -1*GLOBALS.scrollX, this.y -1*GLOBALS.scrollY,
-                GLOBALS.shotSpeed, this.bAngle,
-                this.speedX, this.speedY);
+        // spaw bomb-shot if enough blaster energy
+        var bombCost = this.bombPower*10;
+		if (this.blasterEnergy - bombCost > 0){
+		    this.blasterEnergy -= bombCost;
+            for (var i = 0; i < this.bombPower; i++){
+                this.bAngle += Math.PI * 2 / 1.61803398875;
+                this.shots.allocateSphere(1,
+                    this.x -1*GLOBALS.scrollX, this.y -1*GLOBALS.scrollY,
+                    GLOBALS.shotSpeed, this.bAngle,
+                    this.speedX, this.speedY);
+            }
+            utils.playSound(this.snd_bomb);
+        } else {
+            return  // TODO: play no-energy sound and show visual effect
         }
-        utils.playSound(this.snd_bomb);
     }
     Ship.prototype.fireShotAt = function(tx, ty) {
 		// spawn shot if enough energy available
