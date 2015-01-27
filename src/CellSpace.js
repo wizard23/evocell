@@ -54,22 +54,13 @@ require(
 	[
 		"jquery-ui",
 		"Utils",
-		"EvoCell",
-		"underscore",
-		"backbone",
-		"knockback",
-		"knockout",
-		"data/FileStore",
-		"three",
-		"datgui",
 		"CellSpace/State",
 		"CellSpace/Setup",
 		"CellSpace/GameLoop",
 		"CellSpace/GUI",
 		"CellSpace/Utils"
 	],
-	function($, utils, EC, _ , Backbone, kb, ko, fileStore, THREE, dat,
-        gameState, csSetup, csGame, csUI, csUtils) {
+	function($, utils, gameState, csSetup, csGame, csUI, csUtils) {
         "use strict";
 
         gameState.perfRequireTime = performance.now();
