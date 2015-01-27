@@ -752,31 +752,16 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
         }
 
 		if (keyboard.isPressed("I".charCodeAt())) {
-			gameState.shotN++;
+			gameState.ship.bombPower++;
 		}
 
 		if (keyboard.isPressed("K".charCodeAt())) {
-			gameState.shotN--;
-			if (gameState.shotN <= 0) gameState.shotN = 1;
+			gameState.ship.bombPower--;
+			if (gameState.ship.bombPower <= 0) gameState.bombPower = 1;
 		}
 
 		if (keyboard.isPressed("B".charCodeAt())) {
-			if (!gameState.bombFired) {
-				//gameState.bombFired = 1; // allow permanent fire for now
-				for (var i = 0; i < gameState.shotN; i++)
-				{
-					gameState.bAngle += Math.PI * 2 / 1.61803398875;
-					gameState.ship.shots.allocateSphere(1, 
-						gameState.ship.x -1*GLOBALS.scrollX, gameState.ship.y -1*GLOBALS.scrollY,
-						GLOBALS.shotSpeed, gameState.bAngle,
-						gameState.ship.speedX, gameState.ship.speedY);
-				}
-
-				utils.playSound(gameState.sndBomb);
-			}
-		}
-		else {
-			gameState.bombFired = 0;
+            gameState.ship.fireBomb();
 		}
 
 		if (keyboard.isPressed("1".charCodeAt()))

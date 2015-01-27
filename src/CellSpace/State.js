@@ -20,10 +20,6 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 		
 		// GAMESTATE //////////
 		// shots
-		shotN: 8,
-		bombFired: 0,
-		bAngle: 0, // direction of bomb fire
-
 		autoFireCounter: 0,
 		autoFireOn: 0,
 		lastMouseNDC: new THREE.Vector2(),
@@ -53,7 +49,6 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 		cnt: 100, // used for executing dishes.enemy only every nth tep
 
 		sndInit: new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser3.mp3"),
-		sndBomb: new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser4.mp3"),
 		sndHit: new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser9.mp3"),
 		sndHit2: new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser9.mp3"),
 
@@ -97,7 +92,7 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 		showRule: false,
 	};
 
-    gameState.ship = new Ship(0, 0, gameState.reactor);
+    gameState.ship = new Ship(0, 0, gameState.reactor, gameState);
 
 	return gameState;
 });

@@ -20,9 +20,12 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
 		this.frontShotAngle = 0.2;
         this.shieldEnergy = 1000;
         this.blasterEnergy = 1000;
-        this.snd = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser6.mp3");
+        this.snd_blaster = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser6.mp3");
+        this.snd_bomb = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser4.mp3");
         this.shots = new EC.ParticleSystem(reactor, GLOBALS.maxParticles, GLOBALS.gameW, GLOBALS.gameH);
         this.hit = false;  // boolean to indicate damage taken each frame
+        this.bAngle = 0; // direction of bomb fire
+        this.bombPower = 8;
     };
     Ship.prototype.step = function(){
         // runs once per gameLoop
@@ -35,6 +38,16 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
             this.hit = false;
         }
     };
+    Ship.prototype.fireBomb = function(){
+        for (var i = 0; i < this.bombPower; i++){
+            this.bAngle += Math.PI * 2 / 1.61803398875;
+            this.shots.allocateSphere(1,
+                this.x -1*GLOBALS.scrollX, this.y -1*GLOBALS.scrollY,
+                GLOBALS.shotSpeed, this.bAngle,
+                this.speedX, this.speedY);
+        }
+        utils.playSound(this.snd_bomb);
+    }
     Ship.prototype.fireShotAt = function(tx, ty) {
 		// spawn shot if enough energy available
 		var shotCost = this.frontShots*10;
@@ -60,7 +73,7 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
                     aa += this.frontShotAngle/(this.frontShots-1);
             }
 
-            utils.playSound(this.snd);
+            utils.playSound(this.snd_blaster);
         } else {
             return  // TODO: play no-energy sound and show visual effect
         }
