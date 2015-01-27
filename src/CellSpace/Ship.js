@@ -24,29 +24,28 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
         this.dy = 0;
         this.frontShots = 3;
 		this.frontShotAngle = 0.2;
-        this.shieldEnergy = 1000;
-        this.blasterEnergy = 1000;
+        this.shieldEnergy = Ship.MAX_SHIELD;
+        this.blasterEnergy = Ship.MAX_BLASTER;
         this.snd_blaster = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser6.mp3");
         this.snd_bomb = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser4.mp3");
         this.shots = new EC.ParticleSystem(args.reactor, GLOBALS.maxParticles, GLOBALS.gameW, GLOBALS.gameH);
-        this.hit = false;  // boolean to indicate damage taken each frame
         this.bAngle = 0; // direction of bomb fire
         this.bombPower = 8;
     };
+    // constants:
+    Ship.MAX_BLASTER = 100;
+    Ship.MAX_SHIELD = 500;
+
+    // public methods:
     Ship.prototype.step = function(){
         // runs once per gameLoop
-        if (this.blasterEnergy <= 1000){
+        if (this.blasterEnergy < Ship.MAX_BLASTER){
             this.blasterEnergy += 1;
-        }
-
-        if (this.hit) {
-            this.shieldEnergy -= 1;
-            this.hit = false;
         }
     };
     Ship.prototype.fireBomb = function(){
         // spaw bomb-shot if enough blaster energy
-        var bombCost = this.bombPower*10;
+        var bombCost = this.bombPower;
 		if (this.blasterEnergy - bombCost > 0){
 		    this.blasterEnergy -= bombCost;
             for (var i = 0; i < this.bombPower; i++){
@@ -63,7 +62,7 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
     }
     Ship.prototype.fireShotAt = function(tx, ty) {
 		// spawn shot if enough energy available
-		var shotCost = this.frontShots*10;
+		var shotCost = this.frontShots;
 		if (this.blasterEnergy - shotCost > 0){
 		    this.blasterEnergy -= shotCost;
             var dX = tx-this.x;
@@ -103,8 +102,8 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
                 var yyy = Math.round(this.y + pY);
 
                 if (pixelArry[(xxx+yyy*GLOBALS.gameW)*4 + 3] !== 0) {
-                    this.hit = true;
                     is_hit = true;  // TODO: can we use this.hit here?
+                    this.shieldEnergy -= 1;
 
     //				reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.weapon,
     //	{center: [this.x + pX, this.y + pY], radius: 1.5, state: (gameState.rules.ship.nrStates-1)/255});

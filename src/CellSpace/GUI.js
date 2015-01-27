@@ -1,8 +1,8 @@
 define([
-	"GLOBALS", "jquery", "Utils", "EvoCell", "story/StoryTeller", "underscore",
+	"CellSpace/Ship", "GLOBALS", "jquery", "Utils", "EvoCell", "story/StoryTeller", "underscore",
 	"knockback", "knockout", "data/FileStore",
 	"CellSpace/State", "CellSpace/Setup", "CellSpace/Utils"],
-function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, csUtils) {
+function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, csUtils) {
 	"use strict";
 
 	// used for breaking to 0 and then reverse
@@ -248,8 +248,8 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
 
 		var gui = gameState.gui;
 
-		gui.add(gameState.ship, 'shieldEnergy', 0, 1000);
-		gui.add(gameState.ship, 'blasterEnergy', 0, 1000);
+		gui.add(gameState.ship, 'shieldEnergy', 0, Ship.MAX_SHIELD);
+		gui.add(gameState.ship, 'blasterEnergy', 0, Ship.MAX_BLASTER);
 
 		var appFolder = gui.addFolder('App');
 		appFolder.add(gameState, 'zoom', 0.05, 2).step(0.01);
