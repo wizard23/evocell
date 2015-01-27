@@ -47,8 +47,8 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 		};
 
 		// too costly
-		//gameState.shots.collide(gameState.dishes.enemy, cb);
-		gameState.shots.step();
+		//gameState.ship.shots.collide(gameState.dishes.enemy, cb);
+		gameState.ship.shots.step();
 
 
 
@@ -59,14 +59,14 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
             {texNew: gameState.dishes.weaponExplosion, texPalette: gameState.colors.enemy.getTexture()});
 
 
-        var enemyPixel = gameState.shots.collide(gameState.dishes.colliding, GLOBALS.scrollX, GLOBALS.scrollY, cb, -1);
-		//var enemyPixel = gameState.shots.collide(gameState.dishes.weaponExplosion, GLOBALS.scrollX, GLOBALS.scrollY, cb, -1);
-		//var enemyPixel = gameState.shots.collide(gameState.dishes.enemy, 
+        var enemyPixel = gameState.ship.shots.collide(gameState.dishes.colliding, GLOBALS.scrollX, GLOBALS.scrollY, cb, -1);
+		//var enemyPixel = gameState.ship.shots.collide(gameState.dishes.weaponExplosion, GLOBALS.scrollX, GLOBALS.scrollY, cb, -1);
+		//var enemyPixel = gameState.ship.shots.collide(gameState.dishes.enemy, 
 		//	0, 0, cb);
 
-		gameState.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 
+		gameState.ship.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 
 			2*GLOBALS.scrollX, 2*GLOBALS.scrollY);
-		//gameState.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 0, 0);
+		//gameState.ship.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 0, 0);
 
 
 

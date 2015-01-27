@@ -766,7 +766,7 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
 				for (var i = 0; i < gameState.shotN; i++)
 				{
 					gameState.bAngle += Math.PI * 2 / 1.61803398875;
-					gameState.shots.allocateSphere(1, 
+					gameState.ship.shots.allocateSphere(1, 
 						gameState.ship.x -1*GLOBALS.scrollX, gameState.ship.y -1*GLOBALS.scrollY,
 						GLOBALS.shotSpeed, gameState.bAngle,
 						gameState.ship.speedX, gameState.ship.speedY);
@@ -818,7 +818,7 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
 				var sX = sDX * GLOBALS.shotSpeed;
 				var sY = sDY*GLOBALS.shotSpeed;
 
-				gameState.shots.allocateParticle(gameState.ship.x, gameState.ship.y, sX, sY);
+				gameState.ship.shots.allocateParticle(gameState.ship.x, gameState.ship.y, sX, sY);
 				*/
                 gameState.ship.fireShotAt(gameState.ship.x + sDX, gameState.ship.y + sDY);
 			}

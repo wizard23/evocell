@@ -53,7 +53,6 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 		cnt: 100, // used for executing dishes.enemy only every nth tep
 
 		sndInit: new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser3.mp3"),
-		snd: new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser6.mp3"),
 		sndBomb: new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser4.mp3"),
 		sndHit: new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser9.mp3"),
 		sndHit2: new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser9.mp3"),
@@ -98,8 +97,7 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 		showRule: false,
 	};
 
-	gameState.shots = new EC.ParticleSystem(gameState.reactor, GLOBALS.maxParticles, GLOBALS.gameW, GLOBALS.gameH);
-    gameState.ship = new Ship(0, 0, gameState);
+    gameState.ship = new Ship(0, 0, gameState.reactor);
 
 	return gameState;
 });

@@ -1,7 +1,7 @@
-define( ["Utils", "GLOBALS"], function (utils, GLOBALS){
+define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
     "use strict";
 
-    function Ship(x, y, gameState){
+    function Ship(x, y, reactor){
         // creates a new ship at x, y
 
         // ensures that the callee has invoked our Class' constructor function w/ the `new` keyword
@@ -20,10 +20,8 @@ define( ["Utils", "GLOBALS"], function (utils, GLOBALS){
 		this.frontShotAngle = 0.2;
         this.shieldEnergy = 1000;
         this.blasterEnergy = 1000;
-
-        // things piped in from gameState TODO: remove these somehow
-        this.snd = gameState.snd;
-        this.shots = gameState.shots;
+        this.snd = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser6.mp3");
+        this.shots = new EC.ParticleSystem(reactor, GLOBALS.maxParticles, GLOBALS.gameW, GLOBALS.gameH);
     };
     Ship.prototype.fireShotAt = function(tx, ty) {
 		// spawn shot
