@@ -14,34 +14,59 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
             throw new TypeError("Ship constructor cannot be called as a function.");
         }
 
+        // physical characteristics
         this.radius = 3;
+
+        // position
         this.x = args.x;
         this.y = args.y;
         this.direction = 0;
         this.speed = 0;
-        // derived values
         this.dx = 0;
         this.dy = 0;
+
+        // ship engine / movement
+        this.rotSpeed = 0.15;
+		this.accel = 0.1;
+		this.minSpeed = -1;
+		this.maxSpeed = 3;
+
+        // shielding
+        this.shieldEnergy = Ship.MAX_SHIELD;
+
+        // weapon systems
+        this.blasterEnergy = Ship.MAX_BLASTER;
+        this.blasterRegenRate = 1;
+        this.shots = new EC.ParticleSystem(args.reactor, GLOBALS.maxParticles, GLOBALS.gameW, GLOBALS.gameH);
+        // ===> primary blaster
         this.frontShots = 3;
 		this.frontShotAngle = 0.2;
-        this.shieldEnergy = Ship.MAX_SHIELD;
-        this.blasterEnergy = Ship.MAX_BLASTER;
-        this.snd_blaster = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser6.mp3");
-        this.snd_bomb = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser4.mp3");
-        this.shots = new EC.ParticleSystem(args.reactor, GLOBALS.maxParticles, GLOBALS.gameW, GLOBALS.gameH);
+        // ===> "bomb" shot
         this.bAngle = 0; // direction of bomb fire
         this.bombPower = 8;
+
+        // sounds
+        this.snd_blaster = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser6.mp3");
+        this.snd_bomb = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser4.mp3");
     };
     // constants:
-    Ship.MAX_BLASTER = 100;
+    Ship.MAX_BLASTER = 1000;
     Ship.MAX_SHIELD = 500;
+    Ship.ENERGY_PER_BLASTER = 10;
 
     // public methods:
     Ship.prototype.step = function(){
         // runs once per gameLoop
+
         if (this.blasterEnergy < Ship.MAX_BLASTER){
-            this.blasterEnergy += 1;
+            this.blasterEnergy += this.blasterRegenRate;
         }
+
+        // move ship
+        this.dx = this.speed * Math.cos(this.direction);
+		this.dy = this.speed * Math.sin(this.direction);
+		this.x += this.dx;
+		this.y += this.dy;
     };
     Ship.prototype.respawn = function(){
         // spawns new ship after death
@@ -50,7 +75,7 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
     }
     Ship.prototype.fireBomb = function(){
         // spaw bomb-shot if enough blaster energy
-        var bombCost = this.bombPower;
+        var bombCost = this.bombPower*Ship.ENERGY_PER_BLASTER;
 		if (this.blasterEnergy - bombCost > 0){
 		    this.blasterEnergy -= bombCost;
             for (var i = 0; i < this.bombPower; i++){
@@ -58,7 +83,7 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
                 this.shots.allocateSphere(1,
                     this.x -1*GLOBALS.scrollX, this.y -1*GLOBALS.scrollY,
                     GLOBALS.shotSpeed, this.bAngle,
-                    this.speedX, this.speedY);
+                    this.dx, this.dy);
             }
             utils.playSound(this.snd_bomb);
         } else {
@@ -67,7 +92,7 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
     }
     Ship.prototype.fireShotAt = function(tx, ty) {
 		// spawn shot if enough energy available
-		var shotCost = this.frontShots;
+		var shotCost = this.frontShots*Ship.ENERGY_PER_BLASTER;
 		if (this.blasterEnergy - shotCost > 0){
 		    this.blasterEnergy -= shotCost;
             var dX = tx-this.x;
@@ -77,8 +102,8 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
             var sX = GLOBALS.shotSpeed * dX/dL;
             var sY = GLOBALS.shotSpeed * dY/dL;
 
-            sX += this.speedX;
-            sY += this.speedY;
+            sX += this.dx
+            sY += this.dy;
 
             var aa = this.frontShots > 1 ? -this.frontShotAngle/2 : 0;
 

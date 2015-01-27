@@ -186,8 +186,8 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 			{tex1: gameState.dishes.ship, tex2: gameState.dishes.shipExplosion, state: 0/255, operation: OP_REPLACE});			
 
 
-		// DAT.gui workaround (stores ints as strings)
-		if (gameState.enableScrolling === 1 || gameState.enableScrolling === "1") {
+		// screen movement
+		if (gameState.enableScrolling === 1 || gameState.enableScrolling === "1") {  // DAT.gui workaround (stores ints as strings)
 			var deltaX = Math.round(GLOBALS.gameW/2 - gameState.ship.x);
 			var deltaY = Math.round(GLOBALS.gameH/2 - gameState.ship.y);
 			if (deltaX || deltaY) {
@@ -244,10 +244,6 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 					{scroll: [dX, dY]});	
 			}		
 		}
-
-		// move ship 
-		gameState.ship.x += gameState.ship.speedX;
-		gameState.ship.y += gameState.ship.speedY;
 	
 		gameState.cnt++;
 	};

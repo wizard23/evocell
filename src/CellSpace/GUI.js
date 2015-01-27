@@ -676,29 +676,24 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 		}
 
 
-		// direction/speed based controll of ship
-		var rotSpeed = 0.15;
-		var accel = 0.1;
-		var minSpeed = -1;
-		var maxSpeed = 3;
-
+		// direction/speed based control of ship
 		if (keyboard.isPressed(keyboard.UP)) {
-			gameState.ship.speed += accel;
-			if (gameState.ship.speed > maxSpeed)
-				gameState.ship.speed = maxSpeed;
+			gameState.ship.speed += gameState.ship.accel;
+			if (gameState.ship.speed > gameState.ship.maxSpeed)
+				gameState.ship.speed = gameState.ship.maxSpeed;
 		}
 		if (keyboard.isPressed(keyboard.DOWN)) {
 			if (gameState.ship.speed > 0) {
-				gameState.ship.speed -= accel;
+				gameState.ship.speed -= gameState.ship.accel;
 				if (gameState.ship.speed < 0) {
 					gameState.ship.speed = 0;
 					allowReturn = 0;
 				}
 			}
 			else if (allowReturn) {
-				gameState.ship.speed -= accel;
-				if (gameState.ship.speed < minSpeed)
-					gameState.ship.speed = minSpeed;
+				gameState.ship.speed -= gameState.ship.accel;
+				if (gameState.ship.speed < gameState.ship.minSpeed)
+					gameState.ship.speed = gameState.ship.minSpeed;
 			}
 		}
 		else {
@@ -706,10 +701,8 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 		}
 
 		// direction and speed of layer ship
-		if (keyboard.isPressed(keyboard.LEFT)) gameState.ship.direction += rotSpeed;
-		if (keyboard.isPressed(keyboard.RIGHT)) gameState.ship.direction -= rotSpeed;
-		gameState.ship.speedX = gameState.ship.speed * Math.cos(gameState.ship.direction);
-		gameState.ship.speedY = gameState.ship.speed * Math.sin(gameState.ship.direction);
+		if (keyboard.isPressed(keyboard.LEFT)) gameState.ship.direction += gameState.ship.rotSpeed;
+		if (keyboard.isPressed(keyboard.RIGHT)) gameState.ship.direction -= gameState.ship.rotSpeed;
 
 		// space
 		if (keyboard.isPressed(32)) {
