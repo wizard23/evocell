@@ -20,7 +20,6 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 		
 		// GAMESTATE //////////
 		// shots
-		shotSpeed: 3.4,
 		shotN: 8,
 		bombFired: 0,
 		bAngle: 0, // direction of bomb fire
@@ -46,7 +45,6 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 		enableScrolling: 1,
 		renderer: "Simple", // "Cell", "TV", "Simple", "Fast"
 
-		scrollX: 0, scrollY: 0,
 		parallaxX: 0, parallaxY: 0,
 		stepSize: 1.5,
 		

@@ -269,12 +269,14 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
 		appFolder.add(gameState, 'randomDensity', 0, 1);
 
 		appFolder.add(gameState, "enemySpeed", 0, 12);
+        appFolder.add(GLOBALS, 'shotSpeed', 0, 12);
+
 		appFolder.add(gameState, "weaponExplosionParam");
 	
 		appFolder.add(gameState, 'enableScrolling', {yes: 1, no: 0});
 		
-		appFolder.add(gameState, 'scrollX');
-		appFolder.add(gameState, 'scrollY');
+		appFolder.add(GLOBALS, 'scrollX');
+		appFolder.add(GLOBALS, 'scrollY');
 
 		appFolder.add(GLOBALS, 'gameW').onFinishChange(csUtils.onGameSizeChanged);
 		appFolder.add(GLOBALS, 'gameH').onFinishChange(csUtils.onGameSizeChanged);
@@ -765,8 +767,8 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
 				{
 					gameState.bAngle += Math.PI * 2 / 1.61803398875;
 					gameState.shots.allocateSphere(1, 
-						gameState.ship.x -1*gameState.scrollX, gameState.ship.y -1*gameState.scrollY,
-						gameState.shotSpeed, gameState.bAngle, 
+						gameState.ship.x -1*GLOBALS.scrollX, gameState.ship.y -1*GLOBALS.scrollY,
+						GLOBALS.shotSpeed, gameState.bAngle,
 						gameState.ship.speedX, gameState.ship.speedY);
 				}
 
@@ -813,8 +815,8 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
 				gameState.shotDelay = 3;
 				/*var px = (gameState.ship.x/GLOBALS.gameW)*2 - 1;
 				var py = (gameState.ship.y/GLOBALS.gameH)*2 - 1;
-				var sX = sDX * gameState.shotSpeed;
-				var sY = sDY*gameState.shotSpeed; 
+				var sX = sDX * GLOBALS.shotSpeed;
+				var sY = sDY*GLOBALS.shotSpeed;
 
 				gameState.shots.allocateParticle(gameState.ship.x, gameState.ship.y, sX, sY);
 				*/

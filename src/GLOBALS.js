@@ -10,7 +10,9 @@ define(function(){
         gameW: 256,
         gameH: 256,
         maxParticles: 1000,
-
+        scrollX: 0,
+        scrollY: 0,
+        shotSpeed: 3.4
     };
     GLOBALS.libPath = "../" + GLOBALS.resPath + "src/libs/";
 

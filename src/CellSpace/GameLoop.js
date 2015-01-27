@@ -59,13 +59,13 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
             {texNew: gameState.dishes.weaponExplosion, texPalette: gameState.colors.enemy.getTexture()});
 
 
-        var enemyPixel = gameState.shots.collide(gameState.dishes.colliding, gameState.scrollX, gameState.scrollY, cb, -1);
-		//var enemyPixel = gameState.shots.collide(gameState.dishes.weaponExplosion, gameState.scrollX, gameState.scrollY, cb, -1);
+        var enemyPixel = gameState.shots.collide(gameState.dishes.colliding, GLOBALS.scrollX, GLOBALS.scrollY, cb, -1);
+		//var enemyPixel = gameState.shots.collide(gameState.dishes.weaponExplosion, GLOBALS.scrollX, GLOBALS.scrollY, cb, -1);
 		//var enemyPixel = gameState.shots.collide(gameState.dishes.enemy, 
 		//	0, 0, cb);
 
 		gameState.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 
-			2*gameState.scrollX, 2*gameState.scrollY);
+			2*GLOBALS.scrollX, 2*GLOBALS.scrollY);
 		//gameState.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 0, 0);
 
 
@@ -213,8 +213,8 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 				gameState.ship.x  += deltaX;
 				gameState.ship.y  += deltaY;
 
-				gameState.scrollX  += deltaX;
-				gameState.scrollY  += deltaY;
+				GLOBALS.scrollX  += deltaX;
+				GLOBALS.scrollY  += deltaY;
 
 
 				gameState.parallaxX  += deltaX;
