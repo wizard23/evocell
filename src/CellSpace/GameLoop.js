@@ -26,6 +26,9 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 			reactor.step(gameState.rules.background, gameState.dishes.background);
 
 		// SHIP ///////////////////////////////////////////
+		gameState.ship.step();
+        csUtils.refreshGUI(['blasterEnergy']);
+
 		reactor.step(gameState.rules.weaponExplosion, gameState.dishes.weaponExplosion);
 		reactor.step(gameState.rules.weapon, gameState.dishes.weapon);
 		reactor.step(gameState.rules.shipExplosion, gameState.dishes.shipExplosion);
@@ -83,17 +86,14 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 					var yyy = Math.round(gameState.ship.y + pY);
 
 					if (enemyPixel[(xxx+yyy*GLOBALS.gameW)*4 + 3] !== 0) {
-						gameState.ship.shieldEnergy -= 1;
+						gameState.ship.hit = true;
+                        csUtils.refreshGUI(["shieldEnergy"]);
 
 		//				reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.weapon, 
 		//	{center: [gameState.ship.x + pX, gameState.ship.y + pY], radius: 1.5, state: (gameState.rules.ship.nrStates-1)/255});
 
 					}
 				}
-			}
-
-			if (oldEnergy !== gameState.ship.shieldEnergy) {
-				csUtils.refreshGUI(["shieldEnergy"]);
 			}
 
 			// did we just die?

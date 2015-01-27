@@ -22,30 +22,48 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
         this.blasterEnergy = 1000;
         this.snd = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser6.mp3");
         this.shots = new EC.ParticleSystem(reactor, GLOBALS.maxParticles, GLOBALS.gameW, GLOBALS.gameH);
+        this.hit = false;  // boolean to indicate damage taken each frame
+    };
+    Ship.prototype.step = function(){
+        // runs once per gameLoop
+        if (this.blasterEnergy <= 1000){
+            this.blasterEnergy += 1;
+        }
+
+        if (this.hit) {
+            this.shieldEnergy -= 1;
+            this.hit = false;
+        }
     };
     Ship.prototype.fireShotAt = function(tx, ty) {
-		// spawn shot
-		var dX = tx-this.x;
-		var dY = ty-this.y;
-		var dL = Math.sqrt(dX*dX+dY*dY);
+		// spawn shot if enough energy available
+		var shotCost = this.frontShots*10;
+		if (this.blasterEnergy - shotCost > 0){
+		    this.blasterEnergy -= shotCost;
+            var dX = tx-this.x;
+            var dY = ty-this.y;
+            var dL = Math.sqrt(dX*dX+dY*dY);
 
-		var sX = GLOBALS.shotSpeed * dX/dL;
-		var sY = GLOBALS.shotSpeed * dY/dL;
+            var sX = GLOBALS.shotSpeed * dX/dL;
+            var sY = GLOBALS.shotSpeed * dY/dL;
 
-		sX += this.speedX;
-		sY += this.speedY;
+            sX += this.speedX;
+            sY += this.speedY;
 
-		var aa = this.frontShots > 1 ? -this.frontShotAngle/2 : 0;
+            var aa = this.frontShots > 1 ? -this.frontShotAngle/2 : 0;
 
-		for (var i = 0; i < this.frontShots; i++) {
-			this.shots.allocateParticle(this.x-1*GLOBALS.scrollX, this.y-1*GLOBALS.scrollY,
-				Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
+            for (var i = 0; i < this.frontShots; i++) {
+                this.shots.allocateParticle(this.x-1*GLOBALS.scrollX, this.y-1*GLOBALS.scrollY,
+                    Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
 
-			if (this.frontShots > 1)
-				aa += this.frontShotAngle/(this.frontShots-1);
-		}
+                if (this.frontShots > 1)
+                    aa += this.frontShotAngle/(this.frontShots-1);
+            }
 
-		utils.playSound(this.snd);
+            utils.playSound(this.snd);
+        } else {
+            return  // TODO: play no-energy sound and show visual effect
+        }
 	};
 
     return Ship;
