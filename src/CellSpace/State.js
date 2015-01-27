@@ -45,7 +45,6 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 
 		enableScrolling: 1,
 		renderer: "Simple", // "Cell", "TV", "Simple", "Fast"
-        ship: new Ship(0, 0),
 
 		scrollX: 0, scrollY: 0,
 		parallaxX: 0, parallaxY: 0,
@@ -102,7 +101,7 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 	};
 
 	gameState.shots = new EC.ParticleSystem(gameState.reactor, GLOBALS.maxParticles, GLOBALS.gameW, GLOBALS.gameH);
-
+    gameState.ship = new Ship(0, 0, gameState);
 
 	return gameState;
 });

@@ -393,7 +393,7 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
 				
 			}
 			else if (evt.button === 0) { // || mouseMode == "shoot") {
-				csUtils.fireShotAt(GLOBALS.gameW*(clickedPoint.x+1)/2, GLOBALS.gameH*(clickedPoint.y+1)/2);
+				gameState.ship.fireShotAt(GLOBALS.gameW*(clickedPoint.x+1)/2, GLOBALS.gameH*(clickedPoint.y+1)/2);
 				// no autofire for now
 				//gameState.autoFireOn = 1 - gameState.autoFireOn;	
 			}	
@@ -528,7 +528,7 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
                 //var xx =  GLOBALS.gameW*(touches[i].pageX)/el.width;
                 //var yy = GLOBALS.gameH - (GLOBALS.gameH*(touches[i].pageY)/el.height);
 
-                workaroundFn2(csUtils.fireShotAt, touch2GameCoordinates(touches[i], el));
+                workaroundFn2(gameState.ship.fireShotAt, touch2GameCoordinates(touches[i], el));
                 log("touchstart:"+i+".");
             }
         };
@@ -554,7 +554,7 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
                     //ctx.strokeStyle = color;
                     //ctx.stroke();
 
-                    workaroundFn2(csUtils.fireShotAt, touch2GameCoordinates(touches[i], el));
+                    workaroundFn2(gameState.ship.fireShotAt, touch2GameCoordinates(touches[i], el));
 
                     ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
                     log(".");
@@ -645,7 +645,7 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
 		{
 			var tx = gameState.ship.x + Math.cos(gameState.ship.direction);
 			var ty = gameState.ship.y + Math.sin(gameState.ship.direction);
-			csUtils.fireShotAt(tx, ty); 
+			gameState.ship.fireShotAt(tx, ty);
 		}
 
 
@@ -818,7 +818,7 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, cs
 
 				gameState.shots.allocateParticle(gameState.ship.x, gameState.ship.y, sX, sY);
 				*/
-                csUtils.fireShotAt(gameState.ship.x + sDX, gameState.ship.y + sDY);
+                gameState.ship.fireShotAt(gameState.ship.x + sDX, gameState.ship.y + sDY);
 			}
 			else 
 				gameState.shotDelay--;
