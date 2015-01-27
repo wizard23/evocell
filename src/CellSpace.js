@@ -55,7 +55,6 @@ require(
 		"jquery-ui",
 		"Utils",
 		"EvoCell",
-		"story/StoryTeller",
 		"underscore",
 		"backbone",
 		"knockback",
@@ -69,7 +68,7 @@ require(
 		"CellSpace/GUI",
 		"CellSpace/Utils"
 	],
-	function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
+	function($, utils, EC, _ , Backbone, kb, ko, fileStore, THREE, dat,
         gameState, csSetup, csGame, csUI, csUtils) {
         "use strict";
 
@@ -105,3 +104,5 @@ require(
         //});
     }
 );
+
+require(["story/StoryTeller"]);
