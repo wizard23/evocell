@@ -72,6 +72,7 @@ require(
 
         // TODO: should we not put this in backbone ready function?
         // is jquery ready better?
+        // ^ I think it doesn't matter much here b/c the DOM will definitely be loaded before all these dependencies are ready. ~7yl4r
         //$(window).load(function(e) {
             var canvas = document.getElementById('c');
 

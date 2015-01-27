@@ -1,12 +1,11 @@
 define([
 	"jquery", "Utils", "EvoCell", "story/StoryTeller", "underscore", 
-	"backbone", "knockback", "knockout", "data/FileStore", "three", "datgui", 
-	"CellSpace/State", "CellSpace/Setup", "CellSpace/GameLoop", "CellSpace/Utils"], 
-function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat, 
-	gameState, csSetup, gameLoop, csUtils) {
+	"knockback", "knockout", "data/FileStore",
+	"CellSpace/State", "CellSpace/Setup", "CellSpace/Utils"],
+function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, csUtils) {
 	"use strict";
 
-	// used for breaking to 0 and then reversse
+	// used for breaking to 0 and then reverse
 	var allowReturn = 0;
 	var oldPauseState = false;
 	var buttonWasDown = 0;
