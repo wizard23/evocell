@@ -15,3 +15,4 @@ git clone https://github.com/EmergentOrganization/evocell
 git clone https://github.com/EmergentOrganization/res_evocell
 python -m SimpleHTTPServer
 ```
+Lastly, navigate to http://localhost:8000/evocell/ and test away!
