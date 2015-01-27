@@ -1,7 +1,6 @@
 define([
-	"jquery-ui", "Utils", "EvoCell", "underscore", "backbone", "knockback", 
-	"knockout", "meSpeak", "CellSpace/State", "jquery-cycle"], 
-	function($, utils, EC, _, Backbone, kb, ko, meSpeak, gameState) {
+	"jquery-ui", "meSpeak", "CellSpace/State", "jquery-cycle"],
+	function($, meSpeak, gameState) {
 
 	function getSpeechURL(text, language) {
 		if (!language) language = "en";
