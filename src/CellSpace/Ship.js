@@ -43,6 +43,11 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
             this.blasterEnergy += 1;
         }
     };
+    Ship.prototype.respawn = function(){
+        // spawns new ship after death
+        this.shieldEnergy = Ship.MAX_SHIELD;
+        this.blasterEnergy = Ship.MAX_BLASTER;
+    }
     Ship.prototype.fireBomb = function(){
         // spaw bomb-shot if enough blaster energy
         var bombCost = this.bombPower;

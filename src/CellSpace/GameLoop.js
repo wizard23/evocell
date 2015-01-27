@@ -83,7 +83,7 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
                     gameState.pause = 1;
 
                     storyTeller.RunDeath(function() {
-                        this.shieldEnergy = 1000;
+                        gameState.ship.respawn();
                         csUtils.refreshGUI(["shieldEnergy"]);
 
                         csUtils.resetGame();
