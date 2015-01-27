@@ -1,16 +1,22 @@
 define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
     "use strict";
 
-    function Ship(x, y, reactor){
+    function Ship(args){
         // creates a new ship at x, y
 
+        // check for required arguments
+        if (typeof args.x === undefined || typeof args.y === undefined || typeof args.reactor === undefined){
+            console.log('ERR: missing args:', args);
+            throw new Error("Required args not passed to Ship constructor");
+        }
         // ensures that the callee has invoked our Class' constructor function w/ the `new` keyword
         if (!(this instanceof Ship)) {
             throw new TypeError("Ship constructor cannot be called as a function.");
         }
+
         this.radius = 3;
-        this.x = x;
-        this.y = y;
+        this.x = args.x;
+        this.y = args.y;
         this.direction = 0;
         this.speed = 0;
         // derived values
@@ -22,7 +28,7 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
         this.blasterEnergy = 1000;
         this.snd_blaster = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser6.mp3");
         this.snd_bomb = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser4.mp3");
-        this.shots = new EC.ParticleSystem(reactor, GLOBALS.maxParticles, GLOBALS.gameW, GLOBALS.gameH);
+        this.shots = new EC.ParticleSystem(args.reactor, GLOBALS.maxParticles, GLOBALS.gameW, GLOBALS.gameH);
         this.hit = false;  // boolean to indicate damage taken each frame
         this.bAngle = 0; // direction of bomb fire
         this.bombPower = 8;

@@ -92,7 +92,7 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 		showRule: false,
 	};
 
-    gameState.ship = new Ship(0, 0, gameState.reactor, gameState);
+    gameState.ship = new Ship({x:0, y:0, reactor:gameState.reactor});
 
 	return gameState;
 });
