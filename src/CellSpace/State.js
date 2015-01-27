@@ -1,4 +1,4 @@
-define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, utils) {
+define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship"], function(Backbone, THREE, dat, utils, Ship) {
 	"use strict";
 
 
@@ -76,11 +76,7 @@ define(["backbone", "three", "datgui", "Utils"], function(Backbone, THREE, dat, 
 
 		enableScrolling: 1,
 		renderer: "Simple", // "Cell", "TV", "Simple", "Fast"
-		shipX: 0, shipY: 0,
-		shipRadius: 3,
-		shipDir: 0,
-		shipSpeed: 0,
-		shipSpeedX: 0, shipSpeedY: 0, // derived values
+        ship: new Ship(0, 0),
 
 		scrollX: 0, scrollY: 0,
 		parallaxX: 0, parallaxY: 0,

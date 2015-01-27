@@ -25,20 +25,20 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 	// TODO: gameState access
 	var fireShotAt = function(tx, ty) {
 		// spawn shot
-		var dX = tx-gameState.shipX;
-		var dY = ty-gameState.shipY;
+		var dX = tx-gameState.ship.x;
+		var dY = ty-gameState.ship.y;
 		var dL = Math.sqrt(dX*dX+dY*dY);
 
 		var sX = gameState.shotSpeed * dX/dL;
 		var sY = gameState.shotSpeed * dY/dL;
 
-		sX += gameState.shipSpeedX;
-		sY += gameState.shipSpeedY;
+		sX += gameState.ship.speedX;
+		sY += gameState.ship.speedY;
 
 		var aa = gameState.frontShots > 1 ? -gameState.frontShotAngle/2 : 0;
 
 		for (var i = 0; i < gameState.frontShots; i++) {
-			gameState.shots.allocateParticle(gameState.shipX-1*gameState.scrollX, gameState.shipY-1*gameState.scrollY, 
+			gameState.shots.allocateParticle(gameState.ship.x-1*gameState.scrollX, gameState.ship.y-1*gameState.scrollY,
 				Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
 			
 			if (gameState.frontShots > 1)
@@ -77,10 +77,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		gameState.cnt = 0;
 		gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, gameState.randomDensity);
 		gameState.dishes.background.randomize(gameState.rules.enemy.nrStates, 0.01);
-		if (gameState.shipX < 0 || gameState.shipX > gameState.gameW || 
-			gameState.shipY < 0 || gameState.shipY > gameState.gameH) {
-			gameState.shipX = gameState.gameW/2;
-			gameState.shipY = gameState.gameH/2;
+		if (gameState.ship.x < 0 || gameState.ship.x > gameState.gameW ||
+			gameState.ship.y < 0 || gameState.ship.y > gameState.gameH) {
+			gameState.ship.x = gameState.gameW/2;
+			gameState.ship.y = gameState.gameH/2;
 		}
 		utils.playSound(gameState.sndInit);
 	};

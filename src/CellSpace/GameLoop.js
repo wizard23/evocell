@@ -32,10 +32,10 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		reactor.step(gameState.rules.ship, gameState.dishes.ship);
 
 
-		var shipR = gameState.shipRadius;
+		var shipR = gameState.ship.radius;
 		// "DRAW" SHIP
 		reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.ship, 
-			{center: [gameState.shipX, gameState.shipY], radius: shipR, state: (gameState.rules.ship.nrStates-1)/255});
+			{center: [gameState.ship.x, gameState.ship.y], radius: shipR, state: (gameState.rules.ship.nrStates-1)/255});
 
 		var cb = function(pos) {
 			try
@@ -79,14 +79,14 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 			for (pX = -shipR; pX <= shipR; pX++) {
 				for (pY = -shipR; pY <= shipR; pY++) {
 
-					var xxx = Math.round(gameState.shipX + pX);
-					var yyy = Math.round(gameState.shipY + pY);
+					var xxx = Math.round(gameState.ship.x + pX);
+					var yyy = Math.round(gameState.ship.y + pY);
 
 					if (enemyPixel[(xxx+yyy*gameState.gameW)*4 + 3] !== 0) {
 						gameState.playerEnergy -= 1;
 
 		//				reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.weapon, 
-		//	{center: [gameState.shipX + pX, gameState.shipY + pY], radius: 1.5, state: (gameState.rules.ship.nrStates-1)/255});
+		//	{center: [gameState.ship.x + pX, gameState.ship.y + pY], radius: 1.5, state: (gameState.rules.ship.nrStates-1)/255});
 
 					}
 				}
@@ -207,11 +207,11 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 
 		// DAT.gui workaround (stores ints as strings)
 		if (gameState.enableScrolling === 1 || gameState.enableScrolling === "1") {
-			var deltaX = Math.round(gameState.gameW/2 - gameState.shipX);
-			var deltaY = Math.round(gameState.gameH/2 - gameState.shipY);
+			var deltaX = Math.round(gameState.gameW/2 - gameState.ship.x);
+			var deltaY = Math.round(gameState.gameH/2 - gameState.ship.y);
 			if (deltaX || deltaY) {
-				gameState.shipX  += deltaX;
-				gameState.shipY  += deltaY;
+				gameState.ship.x  += deltaX;
+				gameState.ship.y  += deltaY;
 
 				gameState.scrollX  += deltaX;
 				gameState.scrollY  += deltaY;
@@ -236,7 +236,7 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 					gameState.parallaxY -= pScrollY*parallaxDist;
 				}
 
-				csUtils.refreshGUI(["shipX", "shipY", "scrollX", "scrollY", "parallaxX", "parallaxY"]);
+				csUtils.refreshGUI(["ship.x", "ship.y", "scrollX", "scrollY", "parallaxX", "parallaxY"]);
 
 				var dX = -deltaX/gameState.gameW;
 				var dY = -deltaY/gameState.gameH;
@@ -265,8 +265,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		}
 
 		// move ship 
-		gameState.shipX += gameState.shipSpeedX;
-		gameState.shipY += gameState.shipSpeedY;
+		gameState.ship.x += gameState.ship.speedX;
+		gameState.ship.y += gameState.ship.speedY;
 	
 		gameState.cnt++;
 	};
@@ -282,8 +282,8 @@ function($, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THREE, dat,
 		var quaternion = new THREE.Quaternion();
 		quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0.7, 1 ).normalize(), gameState.rot );
 
-		var shipClipX = 2*(gameState.shipX-gameState.dishes.enemy.width/2)/gameState.dishes.enemy.width;
-		var shipClipY = 2*(gameState.shipY-gameState.dishes.enemy.height/2)/gameState.dishes.enemy.height;
+		var shipClipX = 2*(gameState.ship.x-gameState.dishes.enemy.width/2)/gameState.dishes.enemy.width;
+		var shipClipY = 2*(gameState.ship.y-gameState.dishes.enemy.height/2)/gameState.dishes.enemy.height;
 
 		var scaleX = gameState.gameW / gameState.screenW;
 		var scaleY = gameState.gameH / gameState.screenH;

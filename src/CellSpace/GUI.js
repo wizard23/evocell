@@ -250,14 +250,14 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 
 		gui.add(gameState, 'playerEnergy');
 
-		var folder = gui.addFolder('App');
-		folder.add(gameState, 'zoom', 0.05, 2).step(0.01);
+		var appFolder = gui.addFolder('App');
+		appFolder.add(gameState, 'zoom', 0.05, 2).step(0.01);
 
 		// ugly hack to make ro a two decimal nr in datgui
 		var oldRot = gameState.rot;
 		gameState.rot = 0.01;
 		// hack continues below
-		var ctrl = folder.add(gameState, 'rot', 0, Math.PI*2).step(0.01);
+		var ctrl = appFolder.add(gameState, 'rot', 0, Math.PI*2).step(0.01);
 		//ctrl.__precision = 3; // does not help
 		//ctrl.__impliedStep = 0.001; // does not help
 		// hack!
@@ -265,26 +265,27 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 		csUtils.refreshGUI(["rot"]);
 		// end of ugly hack 
 
-		folder.add(gameState, 'frontShots', 1, 12).step(1);
-		folder.add(gameState, 'frontShotAngle', 0, 2*Math.PI);
-		folder.add(gameState, 'shipRadius', 1, 20);
-		folder.add(gameState, 'randomDensity', 0, 1);
+		appFolder.add(gameState, 'frontShots', 1, 12).step(1);
+		appFolder.add(gameState, 'frontShotAngle', 0, 2*Math.PI);
+		appFolder.add(gameState, 'randomDensity', 0, 1);
 
-		folder.add(gameState, "enemySpeed", 0, 12);
-		folder.add(gameState, "weaponExplosionParam");
+		appFolder.add(gameState, "enemySpeed", 0, 12);
+		appFolder.add(gameState, "weaponExplosionParam");
 	
-		folder.add(gameState, 'enableScrolling', {yes: 1, no: 0});
-
-		folder.add(gameState, 'shipX');
-		folder.add(gameState, 'shipY');
+		appFolder.add(gameState, 'enableScrolling', {yes: 1, no: 0});
 		
-		folder.add(gameState, 'scrollX');
-		folder.add(gameState, 'scrollY');
+		appFolder.add(gameState, 'scrollX');
+		appFolder.add(gameState, 'scrollY');
 
-		folder.add(gameState, 'gameW').onFinishChange(csUtils.onGameSizeChanged);
-		folder.add(gameState, 'gameH').onFinishChange(csUtils.onGameSizeChanged);
+		appFolder.add(gameState, 'gameW').onFinishChange(csUtils.onGameSizeChanged);
+		appFolder.add(gameState, 'gameH').onFinishChange(csUtils.onGameSizeChanged);
 
-		folder = gui.addFolder('Core');
+		var shipFolder = appFolder.addFolder('Ship');
+        shipFolder.add(gameState.ship, 'x');
+		shipFolder.add(gameState.ship, 'y');
+        shipFolder.add(gameState.ship, 'radius', 1, 20);
+
+		var folder = gui.addFolder('Core');
 		var screenWCtrl = folder.add(gameState, 'screenW');
 		var screenHCtrl = folder.add(gameState, 'screenH');
 		folder.add(gameState, 'renderer', {Fast: "Fast", Simple:"Simple", TV:"TV", Cell:"Cell"});
@@ -641,8 +642,8 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 		// shoot straight ahead
 		if (keyboard.isPressed("X".charCodeAt()))
 		{
-			var tx = gameState.shipX + Math.cos(gameState.shipDir);
-			var ty = gameState.shipY + Math.sin(gameState.shipDir);
+			var tx = gameState.ship.x + Math.cos(gameState.ship.direction);
+			var ty = gameState.ship.y + Math.sin(gameState.ship.direction);
 			csUtils.fireShotAt(tx, ty); 
 		}
 
@@ -679,22 +680,22 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 		var maxSpeed = 3;
 
 		if (keyboard.isPressed(keyboard.UP)) {
-			gameState.shipSpeed += accel;
-			if (gameState.shipSpeed > maxSpeed)
-				gameState.shipSpeed = maxSpeed;
+			gameState.ship.speed += accel;
+			if (gameState.ship.speed > maxSpeed)
+				gameState.ship.speed = maxSpeed;
 		}
 		if (keyboard.isPressed(keyboard.DOWN)) {
-			if (gameState.shipSpeed > 0) {
-				gameState.shipSpeed -= accel;
-				if (gameState.shipSpeed < 0) {
-					gameState.shipSpeed = 0;
+			if (gameState.ship.speed > 0) {
+				gameState.ship.speed -= accel;
+				if (gameState.ship.speed < 0) {
+					gameState.ship.speed = 0;
 					allowReturn = 0;
 				}
 			}
 			else if (allowReturn) {
-				gameState.shipSpeed -= accel;
-				if (gameState.shipSpeed < minSpeed)
-					gameState.shipSpeed = minSpeed;
+				gameState.ship.speed -= accel;
+				if (gameState.ship.speed < minSpeed)
+					gameState.ship.speed = minSpeed;
 			}
 		}
 		else {
@@ -702,10 +703,10 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 		}
 
 		// direction and speed of layer ship
-		if (keyboard.isPressed(keyboard.LEFT)) gameState.shipDir += rotSpeed;
-		if (keyboard.isPressed(keyboard.RIGHT)) gameState.shipDir -= rotSpeed;
-		gameState.shipSpeedX = gameState.shipSpeed * Math.cos(gameState.shipDir);
-		gameState.shipSpeedY = gameState.shipSpeed * Math.sin(gameState.shipDir);		
+		if (keyboard.isPressed(keyboard.LEFT)) gameState.ship.direction += rotSpeed;
+		if (keyboard.isPressed(keyboard.RIGHT)) gameState.ship.direction -= rotSpeed;
+		gameState.ship.speedX = gameState.ship.speed * Math.cos(gameState.ship.direction);
+		gameState.ship.speedY = gameState.ship.speed * Math.sin(gameState.ship.direction);
 
 		// space
 		if (keyboard.isPressed(32)) {
@@ -763,9 +764,9 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 				{
 					gameState.bAngle += Math.PI * 2 / 1.61803398875;
 					gameState.shots.allocateSphere(1, 
-						gameState.shipX -1*gameState.scrollX, gameState.shipY -1*gameState.scrollY, 
+						gameState.ship.x -1*gameState.scrollX, gameState.ship.y -1*gameState.scrollY,
 						gameState.shotSpeed, gameState.bAngle, 
-						gameState.shipSpeedX, gameState.shipSpeedY);
+						gameState.ship.speedX, gameState.ship.speedY);
 				}
 
 				utils.playSound(gameState.sndBomb);
@@ -809,14 +810,14 @@ function($, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, cs
 			if (!gameState.shotDelay)
 			{
 				gameState.shotDelay = 3;
-				/*var px = (gameState.shipX/gameState.gameW)*2 - 1;
-				var py = (gameState.shipY/gameState.gameH)*2 - 1;
+				/*var px = (gameState.ship.x/gameState.gameW)*2 - 1;
+				var py = (gameState.ship.y/gameState.gameH)*2 - 1;
 				var sX = sDX * gameState.shotSpeed;
 				var sY = sDY*gameState.shotSpeed; 
 
-				gameState.shots.allocateParticle(gameState.shipX, gameState.shipY, sX, sY);
+				gameState.shots.allocateParticle(gameState.ship.x, gameState.ship.y, sX, sY);
 				*/
-                csUtils.fireShotAt(gameState.shipX + sDX, gameState.shipY + sDY);
+                csUtils.fireShotAt(gameState.ship.x + sDX, gameState.ship.y + sDY);
 			}
 			else 
 				gameState.shotDelay--;
