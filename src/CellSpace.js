@@ -57,7 +57,8 @@ require(
 		"CellSpace/Setup",
 		"CellSpace/GameLoop",
 		"CellSpace/GUI",
-		"CellSpace/Utils"
+		"CellSpace/Utils",
+		"devMode"
 	],
 	function(utils, gameState, csSetup, csGame, csUI, csUtils) {
         "use strict";
