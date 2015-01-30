@@ -24,7 +24,13 @@ define( [], function (){
 
         this.highScore = 0;  // best score this session
 
-        this.displayElement = document.getElementById('shipGUI');
+        this.displayElement = document.getElementById('score-display');
+    /*    this.displayElement.style.position = 'fixed';
+        bottom: 8px;
+        left: 40%;
+        color: #ffffff;
+        font-size: 15px;
+        z-index: 19999;*/
     }
 
     // constants

@@ -1,6 +1,6 @@
 // extends ship class to add functions only available to a player ship (scoring/controls/UI/etc)
 
-define( ["GLOBALS", "CellSpace/Ship", "CellSpace/Score"], function (GLOBALS, Ship, Score){
+define( ["jquery", "GLOBALS", "CellSpace/Ship", "CellSpace/Score"], function (jquery, GLOBALS, Ship, Score){
     "use strict";
 
     function PlayerShip(args){
@@ -15,20 +15,44 @@ define( ["GLOBALS", "CellSpace/Ship", "CellSpace/Score"], function (GLOBALS, Shi
         this.score = new Score(args);
         Ship.call(this, args);
 
-        this.gui = new dat.GUI({ autoPlace: false });
+        this.HUD = new dat.GUI({ autoPlace: false });
 
-        this.gui.add(this, 'shieldEnergy', 0, Ship.MAX_SHIELD).listen();
-		this.gui.add(this, 'blasterEnergy', 0, Ship.MAX_BLASTER).listen();
+		this.HUD.add(this, 'blasterEnergy', 0, Ship.MAX_BLASTER).listen();
+        this.HUD.add(this, 'shieldEnergy', 0, Ship.MAX_SHIELD).listen();
 
-		this.gui.add(this.score, 'score').listen();
-		this.gui.add(this.score, 'kills').listen();
-		this.gui.add(this.score, 'distance').listen();
-		this.gui.add(this.score, 'highScore').listen();
-
-        this.guiContainer = document.getElementById('shipGUI');
-        this.guiContainer.appendChild(this.gui.domElement);
+        this.HUDContainer = document.getElementById('shipGUI');
+        this.HUDContainer.appendChild(this.HUD.domElement);
         this.repositionHUD();
-        //console.log(this);
+
+        // === custom style the dat.gui HUD ===
+        $("#" + this.HUDContainer.id + " .dg.main .close-button").hide();
+        var datEl = $("#" + this.HUDContainer.id + " .dg.main");
+        datEl.css("width", '100%');  // TODO: this doesn't work...
+
+        var sliders = $("#" + this.HUDContainer.id + " .dg .slider");
+        sliders.css("width", "245px");  // TODO: replace this with better code below
+        //sliders.css("width", datEl.css("width"));  // TODO re-enable this after width setting fixed (above)
+        sliders.css("float","none");
+
+        // slider value numbers
+        var values = $("#" + this.HUDContainer.id + " .dg input");
+        values.css("background-color", "transparent");
+        values.css("color", "white");
+
+        // tags
+        var propNames = $("#" + this.HUDContainer.id + " .dg .property-name")
+        propNames.css("position","fixed");
+        propNames.css("overflow","visible");
+        propNames.css("text-shadow","none");
+        propNames.css("color", "white");
+
+        // custom color the bars
+        var barColors = ['green', 'blue'];
+        $("#" + this.HUDContainer.id + " .dg .slider-fg").each(function(index, element){
+            $(element).css('background-color', barColors[index]);
+        });
+
+        window.ship = this;
     };
     // inheritance:
     PlayerShip.prototype = Object.create(Ship.prototype);
@@ -43,10 +67,10 @@ define( ["GLOBALS", "CellSpace/Ship", "CellSpace/Score"], function (GLOBALS, Shi
     PlayerShip.prototype.repositionHUD = function(){
         // for some reason CSS won't do the trick here so we need to do it manually...
         var x_pos, y_pos;
-        this.guiContainer.style.position = "absolute";
-        this.guiContainer.style.left = '1%';
-        this.guiContainer.style.bottom = '8px';
-        this.guiContainer.style.zIndex = 199;
+        this.HUDContainer.style.position = "absolute";
+        this.HUDContainer.style.left = '1%';
+        this.HUDContainer.style.bottom = '8px';
+        this.HUDContainer.style.zIndex = 199;
     }
 
     PlayerShip.prototype.control = function(keyboard){

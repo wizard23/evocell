@@ -206,9 +206,13 @@ select option:nth-child(even) {  }
 }
 
 #score-display{
-    postion: fixed;
+    position: fixed;
     bottom: 8px;
-    left: 40%;
+    left: 70%;
+    width: 30%;
+    text-align: right;
     color: #ffffff;
     font-size: 15px;
+    z-index: 19999;
+    font-family:monospace;
 }
