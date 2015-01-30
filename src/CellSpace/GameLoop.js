@@ -32,17 +32,14 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 	    csUtils.refreshGUI(['score']);
 	    csUtils.refreshGUI(['distance']);
 	    csUtils.refreshGUI(['kills']);
+	    csUtils.refreshGUI(['highScore']);
 
 		reactor.step(gameState.rules.weaponExplosion, gameState.dishes.weaponExplosion);
 		reactor.step(gameState.rules.weapon, gameState.dishes.weapon);
 		reactor.step(gameState.rules.shipExplosion, gameState.dishes.shipExplosion);
 		reactor.step(gameState.rules.ship, gameState.dishes.ship);
 
-
-		var shipR = gameState.ship.radius;
-		// "DRAW" SHIP
-		reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.ship, 
-			{center: [gameState.ship.x, gameState.ship.y], radius: shipR, state: (gameState.rules.ship.nrStates-1)/255});
+        gameState.ship.draw(gameState);
 
 		var cb = function(pos) {
 			try
@@ -52,12 +49,6 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 				utils.playSound(gameState.sndHit);
 			} catch(ex) {}
 		};
-
-		// too costly
-		//gameState.ship.shots.collide(gameState.dishes.enemy, cb);
-		gameState.ship.shots.step();
-
-
 
         reactor.mixDish(gameState.shaders.clear, gameState.dishes.colliding, {color: [0,0,0,0]});
         reactor.mixDish(gameState.shaders.mix, gameState.dishes.colliding,

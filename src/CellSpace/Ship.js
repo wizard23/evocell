@@ -67,6 +67,11 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
 		this.dy = this.speed * Math.sin(this.direction);
 		this.x += this.dx;
 		this.y += this.dy;
+
+		// handle ship shots
+        // too costly
+		//gameState.ship.shots.collide(gameState.dishes.enemy, cb);
+		this.shots.step();
     };
     Ship.prototype.respawn = function(){
         // spawns new ship after death
@@ -121,6 +126,12 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
             return  // TODO: play no-energy sound and show visual effect
         }
 	};
+	Ship.prototype.draw = function(gameState){
+	    // draws the ship in the given gameState
+		gameState.reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.ship,
+			{center: [this.x, this.y], radius: this.radius, state: (gameState.rules.ship.nrStates-1)/255}
+        );
+	}
 	Ship.prototype.collide = function(pixelArry){
 	    // collides the ship with given pixel array
 	    // returns true if collision, else returns false

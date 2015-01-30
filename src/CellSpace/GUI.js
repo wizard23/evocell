@@ -254,6 +254,7 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 		gui.add(gameState.ship.score, 'score');
 		gui.add(gameState.ship.score, 'kills');
 		gui.add(gameState.ship.score, 'distance');
+		gui.add(gameState.ship.score, 'highScore');
 
 		var appFolder = gui.addFolder('App');
 		appFolder.add(gameState, 'zoom', 0.05, 2).step(0.01);

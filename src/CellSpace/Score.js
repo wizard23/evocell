@@ -21,6 +21,8 @@ define( [], function (){
         this.score = 0;  // the aggregate score
         this.distance = 0;  // distance traveled by player
         this.kills = 0;  // enemy killcount
+
+        this.highScore = 0;  // best score this session
     }
 
     // constants
@@ -39,10 +41,14 @@ define( [], function (){
         this.score += movement * Score.MOVEMENT_BONUS;
 
         // TODO: hit / kill count
+
+        if (this.score > this.highScore){
+            this.highScore = this.score;
+        }
     }
 
     Score.prototype.reset = function(){
-        // resets score(s)  to 0
+        // resets score(s)
         this.score = 0;
         this.distance = 0;
         this.kills = 0;

@@ -1,4 +1,4 @@
-var perfStartedJSTime = performance.now();	
+window.perfStartedJSTime = performance.now();  // TODO: this should be a local var passed to the GameState constructor
 
 require.config({
 	baseUrl: 'src',
@@ -18,7 +18,7 @@ require.config({
 	shim: {
 		datgui: {
 			exports: "dat",
-		}, 
+		},
         "jquery-ui": {
             exports: "$",
             deps: ['jquery', '../../res_evocell/src/libs/farbtastic']
@@ -35,10 +35,10 @@ require.config({
 		},
 		knockback: {
 			exports: "kb",
-			deps: ["backbone"],			
+			deps: ["backbone"],
 		},
 		knockout: {
-			exports: "ko",			
+			exports: "ko",
 		},
 		meSpeak: {
 			exports: "meSpeak",
@@ -52,7 +52,6 @@ require.config({
 
 require(
 	[
-		"jquery-ui",
 		"Utils",
 		"CellSpace/State",
 		"CellSpace/Setup",
@@ -60,38 +59,25 @@ require(
 		"CellSpace/GUI",
 		"CellSpace/Utils"
 	],
-	function($, utils, gameState, csSetup, csGame, csUI, csUtils) {
+	function(utils, gameState, csSetup, csGame, csUI, csUtils) {
         "use strict";
+        csSetup.setup(function () {
+            csUI.setupGui();
 
-        gameState.perfRequireTime = performance.now();
-        gameState.perfStartedJSTime = perfStartedJSTime;
-
-        // MAIN LOOP (must be less than 20 LOC :)
-
-        // TODO: extract this in CellSpace.App which bundles State, Setup, UI, ...
-
-        // TODO: should we not put this in backbone ready function?
-        // is jquery ready better?
-        // ^ I think it doesn't matter much here b/c the DOM will definitely be loaded before all these dependencies are ready. ~7yl4r
-        //$(window).load(function(e) {
-            csSetup.setup(function () {
-                csUI.setupGui();
-
-                gameState.mainLoop = new utils.AnimationLoop(0, function() {
-                    csUI.pollUserInteraction();
-                    if (!gameState.pause || gameState.doOneStep) {
-                        csGame.step();
-                        gameState.doOneStep = false;
-                    }
-                    csGame.render();
-                });
-
-                gameState.perfFinishedJSTime = performance.now();
-                csUtils.refreshGUI(["perfStartedJSTime","perfFinishedJSTime", "perfRequireTime"]);
-
-                gameState.mainLoop.start();
+            gameState.mainLoop = new utils.AnimationLoop(0, function() {
+                csUI.pollUserInteraction();
+                if (!gameState.pause || gameState.doOneStep) {
+                    csGame.step();
+                    gameState.doOneStep = false;
+                }
+                csGame.render();
             });
-        //});
+
+            gameState.perfFinishedJSTime = performance.now();
+            csUtils.refreshGUI(["perfStartedJSTime","perfFinishedJSTime", "perfRequireTime"]);
+
+            gameState.mainLoop.start();
+        });
     }
 );
 

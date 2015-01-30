@@ -1,8 +1,6 @@
 // build wirg:
 // node r.js -o build.js
 
-
-
 ({
     baseUrl: "src",
     name: "CellSpace",
