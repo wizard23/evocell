@@ -23,6 +23,8 @@ define( [], function (){
         this.kills = 0;  // enemy killcount
 
         this.highScore = 0;  // best score this session
+
+        this.displayElement = document.getElementById('shipGUI');
     }
 
     // constants
@@ -45,6 +47,13 @@ define( [], function (){
         if (this.score > this.highScore){
             this.highScore = this.score;
         }
+
+        this.draw();
+    }
+
+    Score.prototype.draw = function(){
+        this.displayElement.innerHTML = 'score:' + this.score + '    best:' + this.highScore + '<br>' +
+            'distance traveled:' + this.distance + '    kills:' + this.kills;
     }
 
     Score.prototype.reset = function(){

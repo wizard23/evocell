@@ -204,3 +204,11 @@ select option:nth-child(even) {  }
 .devModeSection{
     display:none;
 }
+
+#score-display{
+    postion: fixed;
+    bottom: 8px;
+    left: 40%;
+    color: #ffffff;
+    font-size: 15px;
+}
