@@ -199,3 +199,8 @@ select option:nth-child(even) {  }
 	opacity: 0;
 	filter: alpha(opacity=0);
 }
+
+/* dev options */
+.devModeSection{
+    display:none;
+}

@@ -14,6 +14,21 @@ define( ["GLOBALS", "CellSpace/Ship", "CellSpace/Score"], function (GLOBALS, Shi
         }
         this.score = new Score(args);
         Ship.call(this, args);
+
+        this.gui = new dat.GUI({ autoPlace: false });
+
+        this.gui.add(this, 'shieldEnergy', 0, Ship.MAX_SHIELD).listen();
+		this.gui.add(this, 'blasterEnergy', 0, Ship.MAX_BLASTER).listen();
+
+		this.gui.add(this.score, 'score').listen();
+		this.gui.add(this.score, 'kills').listen();
+		this.gui.add(this.score, 'distance').listen();
+		this.gui.add(this.score, 'highScore').listen();
+
+        this.guiContainer = document.getElementById('shipGUI');
+        this.guiContainer.appendChild(this.gui.domElement);
+        this.repositionHUD();
+        //console.log(this);
     };
     // inheritance:
     PlayerShip.prototype = Object.create(Ship.prototype);
@@ -25,6 +40,15 @@ define( ["GLOBALS", "CellSpace/Ship", "CellSpace/Score"], function (GLOBALS, Shi
         this.score.step({ship:this});
         return Ship.prototype.step.call(this);
     };
+    PlayerShip.prototype.repositionHUD = function(){
+        // for some reason CSS won't do the trick here so we need to do it manually...
+        var x_pos, y_pos;
+        this.guiContainer.style.position = "absolute";
+        this.guiContainer.style.left = '1%';
+        this.guiContainer.style.bottom = '8px';
+        this.guiContainer.style.zIndex = 199;
+    }
+
     PlayerShip.prototype.control = function(keyboard){
 	    // checks given keyboard inputs for ship controls
 

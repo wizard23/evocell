@@ -246,14 +246,6 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 
 		var gui = gameState.gui;
 
-		gui.add(gameState.ship, 'shieldEnergy', 0, Ship.MAX_SHIELD).listen();
-		gui.add(gameState.ship, 'blasterEnergy', 0, Ship.MAX_BLASTER).listen();
-
-		gui.add(gameState.ship.score, 'score').listen();
-		gui.add(gameState.ship.score, 'kills').listen();
-		gui.add(gameState.ship.score, 'distance').listen();
-		gui.add(gameState.ship.score, 'highScore').listen();
-
 		var appFolder = gui.addFolder('App');
 		appFolder.add(gameState, 'zoom', 0.05, 2).step(0.01);
 
