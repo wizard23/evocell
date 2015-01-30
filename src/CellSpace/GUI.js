@@ -87,6 +87,68 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 		}
 	};
 
+	var setupDevGUI = function(){
+	    // sets up advanced controls not normally available to players
+	    var gui = gameState.devGUI;
+
+		var appFolder = gui.addFolder('App');
+		appFolder.add(gameState, 'zoom', 0.05, 2).step(0.01);
+
+		// ugly hack to make ro a two decimal nr in datgui
+		var oldRot = gameState.rot;
+		gameState.rot = 0.01;
+		// hack continues below
+		var ctrl = appFolder.add(gameState, 'rot', 0, Math.PI*2).step(0.01);
+		//ctrl.__precision = 3; // does not help
+		//ctrl.__impliedStep = 0.001; // does not help
+		// hack!
+		gameState.rot = oldRot;
+		csUtils.refreshGUI(["rot"]);
+		// end of ugly hack
+
+		appFolder.add(gameState, 'randomDensity', 0, 1);
+
+		appFolder.add(gameState, "enemySpeed", 0, 12);
+        appFolder.add(GLOBALS, 'shotSpeed', 0, 12);
+
+		appFolder.add(gameState, "weaponExplosionParam");
+
+		appFolder.add(gameState, 'enableScrolling', {yes: 1, no: 0});
+
+		appFolder.add(GLOBALS, 'scrollX').listen();
+		appFolder.add(GLOBALS, 'scrollY').listen();
+
+		appFolder.add(GLOBALS, 'gameW').onFinishChange(csUtils.onGameSizeChanged);
+		appFolder.add(GLOBALS, 'gameH').onFinishChange(csUtils.onGameSizeChanged);
+
+		var shipFolder = appFolder.addFolder('Ship');
+        shipFolder.add(gameState.ship, 'x').listen();
+		shipFolder.add(gameState.ship, 'y').listen();
+        shipFolder.add(gameState.ship, 'radius', 1, 20);
+        shipFolder.add(gameState.ship, 'frontShots', 1, 12).step(1);
+		shipFolder.add(gameState.ship, 'frontShotAngle', 0, 2*Math.PI);
+
+		var folder = gui.addFolder('Core');
+		var screenWCtrl = folder.add(gameState, 'screenW');
+		var screenHCtrl = folder.add(gameState, 'screenH');
+		folder.add(gameState, 'renderer', {Fast: "Fast", Simple:"Simple", TV:"TV", Cell:"Cell"});
+
+		folder = gui.addFolder('Debug');
+		folder.add(gameState, 'perfStartJSTime');
+		folder.add(gameState, 'perfRequireTime');
+		folder.add(gameState, 'perfFinishedJSTime');
+		folder.add(gameState, "showBuffer");
+		folder.add(gameState, "showRule");
+        folder.add(gameState, "parallaxX").listen();
+        folder.add(gameState, "parallaxY").listen();
+
+        var onResized = function(value) {
+			gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
+		};
+		screenWCtrl.onFinishChange(onResized);
+		screenHCtrl.onFinishChange(onResized);
+	}
+
 	var setupGui = function() {
 		window.addEventListener("resize", function () {
 			gameState.screenW = window.innerWidth;
@@ -104,7 +166,6 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 			});
 
 		}, false);
-
 
 		document.getElementById("loadPattern").addEventListener('click', function(evt) {
 			var ruleName = gameState.drawModel.get("selectedRules")[0];
@@ -125,7 +186,6 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 				}
 			});
 		}, false);
-
 
 		document.getElementById("savePattern").addEventListener('click', function(evt) {
 			var ruleName = prompt('Pattern can haz name?','pattern_');
@@ -161,7 +221,6 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 				});
 			}
 		}, false);
-
 
 		$('#importRule').change(function(evt) {
 			var files = evt.target.files; // FileList object
@@ -218,7 +277,9 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 			csSetup.initDB();
 		}, false);
 
-
+        if( GLOBALS.devMode ){
+            setupDevGUI();
+        }
 
 		var nonPersistables = [
 			"canvas","reactor","gl","gui","keyboard","shaders","dishes","rules","colors","shots",
@@ -242,66 +303,6 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 				});
 			});
 		}, false);
-
-
-		var gui = gameState.gui;
-
-		var appFolder = gui.addFolder('App');
-		appFolder.add(gameState, 'zoom', 0.05, 2).step(0.01);
-
-		// ugly hack to make ro a two decimal nr in datgui
-		var oldRot = gameState.rot;
-		gameState.rot = 0.01;
-		// hack continues below
-		var ctrl = appFolder.add(gameState, 'rot', 0, Math.PI*2).step(0.01);
-		//ctrl.__precision = 3; // does not help
-		//ctrl.__impliedStep = 0.001; // does not help
-		// hack!
-		gameState.rot = oldRot;
-		csUtils.refreshGUI(["rot"]);
-		// end of ugly hack 
-
-		appFolder.add(gameState, 'randomDensity', 0, 1);
-
-		appFolder.add(gameState, "enemySpeed", 0, 12);
-        appFolder.add(GLOBALS, 'shotSpeed', 0, 12);
-
-		appFolder.add(gameState, "weaponExplosionParam");
-	
-		appFolder.add(gameState, 'enableScrolling', {yes: 1, no: 0});
-
-		appFolder.add(GLOBALS, 'scrollX').listen();
-		appFolder.add(GLOBALS, 'scrollY').listen();
-
-		appFolder.add(GLOBALS, 'gameW').onFinishChange(csUtils.onGameSizeChanged);
-		appFolder.add(GLOBALS, 'gameH').onFinishChange(csUtils.onGameSizeChanged);
-
-		var shipFolder = appFolder.addFolder('Ship');
-        shipFolder.add(gameState.ship, 'x').listen();
-		shipFolder.add(gameState.ship, 'y').listen();
-        shipFolder.add(gameState.ship, 'radius', 1, 20);
-        shipFolder.add(gameState.ship, 'frontShots', 1, 12).step(1);
-		shipFolder.add(gameState.ship, 'frontShotAngle', 0, 2*Math.PI);
-
-		var folder = gui.addFolder('Core');
-		var screenWCtrl = folder.add(gameState, 'screenW');
-		var screenHCtrl = folder.add(gameState, 'screenH');
-		folder.add(gameState, 'renderer', {Fast: "Fast", Simple:"Simple", TV:"TV", Cell:"Cell"});
-
-		folder = gui.addFolder('Debug');
-		folder.add(gameState, 'perfStartJSTime');
-		folder.add(gameState, 'perfRequireTime');
-		folder.add(gameState, 'perfFinishedJSTime');
-		folder.add(gameState, "showBuffer");
-		folder.add(gameState, "showRule");
-        folder.add(gameState, "parallaxX").listen();
-        folder.add(gameState, "parallaxY").listen();
-
-		var onResized = function(value) {
-			gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
-		};
-		screenWCtrl.onFinishChange(onResized);
-		screenHCtrl.onFinishChange(onResized);
 
 		var view_model = kb.viewModel(gameState.drawModel);
 		//view_model.full_name = ko.computed((->return "#{@first_name()} #{@last_name()}"), view_model)

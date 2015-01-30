@@ -5,7 +5,7 @@ define(function(){
     // resPath: "./"
     // resources in res_evocell repository
     var GLOBALS = {
-        devMode: true,  // true to enable loading of dev options, false to disable
+        devMode: false,  // true to enable loading of dev options, false to disable
         resPath: "../res_evocell/",
         canvasElement: document.getElementById('c'),
         gameW: 256,

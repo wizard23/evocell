@@ -58,9 +58,10 @@ require(
 		"CellSpace/GameLoop",
 		"CellSpace/GUI",
 		"CellSpace/Utils",
-		"devMode"
+		"devMode",
+		"GLOBALS"
 	],
-	function(utils, gameState, csSetup, csGame, csUI, csUtils) {
+	function(utils, gameState, csSetup, csGame, csUI, csUtils, devMode, GLOBALS) {
         "use strict";
         csSetup.setup(function () {
             csUI.setupGui();
@@ -76,8 +77,12 @@ require(
 
             gameState.perfFinishedJSTime = performance.now();
             window.gameState = gameState;
-            // update "perfStartedJSTime","perfFinishedJSTime", "perfRequireTime"
-            gameState.gui.__folders.Debug.__controllers.forEach(function(currentValue){currentValue.updateDisplay()});
+
+            if (GLOBALS.devMode){
+                // update "perfStartedJSTime","perfFinishedJSTime", "perfRequireTime"
+                gameState.devGUI.__folders.Debug.__controllers.forEach(function(currentValue){currentValue.updateDisplay()});
+            }
+
             gameState.mainLoop.start();
         });
     }

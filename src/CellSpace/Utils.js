@@ -33,18 +33,20 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 	};
 
 	var refreshGUI = function(names) {
-		names = names ? (names.length ? names : [names]) : [];
+	    if (GLOBALS.devMode){
+            names = names ? (names.length ? names : [names]) : [];
 
-		var refresh = function(controller) {
-			if (_.contains(names, controller.property)) {
-				controller.updateDisplay();
-			}
-		};
+            var refresh = function(controller) {
+                if (_.contains(names, controller.property)) {
+                    controller.updateDisplay();
+                }
+            };
 
-		_.each(gameState.gui.__controllers, refresh);
-		_.each(gameState.gui.__folders, function(folder) {
-			_.each(folder.__controllers, refresh);
-		});
+            _.each(gameState.devGUI.__controllers, refresh);
+            _.each(gameState.devGUI.__folders, function(folder) {
+                _.each(folder.__controllers, refresh);
+            });
+        }
 	};
 
 	var resetGame = function() {

@@ -6,7 +6,6 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/PlayerShip", "GLOBALS
 		// APPSTATE ///////////
 		canvas: GLOBALS.canvasElement,
 		reactor: new EC.Reactor(GLOBALS.canvasElement, GLOBALS.gameW, GLOBALS.gameH),
-		gui: new dat.GUI(),
 		//fpsMonotor: null,
 		keyboard: utils.keyboard,
 
@@ -95,6 +94,10 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/PlayerShip", "GLOBALS
     gameState.ship = new PlayerShip({x:GLOBALS.gameW/2, y:GLOBALS.gameH/2, reactor:gameState.reactor});
     gameState.perfRequireTime = performance.now();
     gameState.perfStartedJSTime = window.perfStartedJSTime;
+
+    if (GLOBALS.devMode){
+        gameState.devGUI = new dat.GUI();
+    }
 
 	return gameState;
 });
