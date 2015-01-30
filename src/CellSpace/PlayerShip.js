@@ -51,8 +51,6 @@ define( ["jquery", "GLOBALS", "CellSpace/Ship", "CellSpace/Score"], function (jq
         $("#" + this.HUDContainer.id + " .dg .slider-fg").each(function(index, element){
             $(element).css('background-color', barColors[index]);
         });
-
-        window.ship = this;
     };
     // inheritance:
     PlayerShip.prototype = Object.create(Ship.prototype);
@@ -79,8 +77,8 @@ define( ["jquery", "GLOBALS", "CellSpace/Ship", "CellSpace/Score"], function (jq
 	    // shoot straight ahead
 		if (keyboard.isPressed("X".charCodeAt()))
 		{
-			var tx = this.x + Math.cos(this.direction);
-			var ty = this.y + Math.sin(this.direction);
+			var tx = this.screenX + Math.cos(this.direction);
+			var ty = this.screenY + Math.sin(this.direction);
 			this.fireShotAt(tx, ty);
 		}
 
@@ -140,14 +138,14 @@ define( ["jquery", "GLOBALS", "CellSpace/Ship", "CellSpace/Score"], function (jq
 			{
 				this.shotDelay = 3;
 				/*
-				var px = (this.x/GLOBALS.gameW)*2 - 1;
-				var py = (this.y/GLOBALS.gameH)*2 - 1;
+				var px = (this.screenX/GLOBALS.gameW)*2 - 1;
+				var py = (this.screenY/GLOBALS.gameH)*2 - 1;
 				var sX = sDX * GLOBALS.shotSpeed;
 				var sY = sDY*GLOBALS.shotSpeed;
 
-				this.shots.allocateParticle(this.x, this.y, sX, sY);
+				this.shots.allocateParticle(this.screenX, this.screenY, sX, sY);
 				*/
-                this.fireShotAt(this.x + sDX, this.y + sDY);
+                this.fireShotAt(this.screenX + sDX, this.screenY + sDY);
 			}
 			else
 				this.shotDelay--;

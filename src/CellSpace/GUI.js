@@ -115,15 +115,14 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 
 		appFolder.add(gameState, 'enableScrolling', {yes: 1, no: 0});
 
-		appFolder.add(GLOBALS, 'scrollX').listen();
-		appFolder.add(GLOBALS, 'scrollY').listen();
-
 		appFolder.add(GLOBALS, 'gameW').onFinishChange(csUtils.onGameSizeChanged);
 		appFolder.add(GLOBALS, 'gameH').onFinishChange(csUtils.onGameSizeChanged);
 
-		var shipFolder = appFolder.addFolder('Ship');
+		var shipFolder = gui.addFolder('Ship');
         shipFolder.add(gameState.ship, 'x').listen();
 		shipFolder.add(gameState.ship, 'y').listen();
+		shipFolder.add(gameState.ship, 'screenX').listen();
+		shipFolder.add(gameState.ship, 'screenY').listen();
         shipFolder.add(gameState.ship, 'radius', 1, 20);
         shipFolder.add(gameState.ship, 'frontShots', 1, 12).step(1);
 		shipFolder.add(gameState.ship, 'frontShotAngle', 0, 2*Math.PI);

@@ -12,7 +12,9 @@ body {
 
 	overflow:hidden;
 	width:30em;
-	position: fixed; top: 0px;left: 0px; z-index:10; 
+	position: fixed;
+	top: 0px;
+	left: 0px;
 	color: white;
 
 	z-index: 120;

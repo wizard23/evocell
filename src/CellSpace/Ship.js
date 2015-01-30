@@ -5,7 +5,7 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
         // creates a new ship at args.x, args.y
 
         // check for required arguments
-        if (typeof args.x === undefined || typeof args.y === undefined || typeof args.reactor === undefined){
+        if (typeof args.screenX === undefined || typeof args.screenY === undefined || typeof args.reactor === undefined){
             console.log('ERR: missing args:', args);
             throw new Error("Required args not passed to Ship constructor");
         }
@@ -18,8 +18,10 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
         this.radius = 3;
 
         // position
-        this.x = args.x;
-        this.y = args.y;
+        this.x = args.x || 0;
+        this.y = args.y || 0;
+        this.screenX = args.screenX;
+        this.screenY = args.screenY;
         this.direction = 0;
         this.speed = 0;
         this.dx = 0;
@@ -68,8 +70,8 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
         // move ship
         this.dx = this.speed * Math.cos(this.direction);
 		this.dy = this.speed * Math.sin(this.direction);
-		this.x += this.dx;
-		this.y += this.dy;
+		this.screenX += this.dx;
+		this.screenY += this.dy;
 
 		// handle ship shots
         // too costly
@@ -83,10 +85,10 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
         this.blasterEnergy = Ship.MAX_BLASTER;
 
         // move back to middle if off screen
-        if (this.x < 0 || this.x > GLOBALS.gameW ||
-			this.y < 0 || this.y > GLOBALS.gameH) {
-			this.x = GLOBALS.gameW/2;
-			this.y = GLOBALS.gameH/2;
+        if (this.screenX < 0 || this.screenX > GLOBALS.gameW ||
+			this.screenY < 0 || this.screenY > GLOBALS.gameH) {
+			this.screenX = GLOBALS.gameW/2;
+			this.screenY = GLOBALS.gameH/2;
 		}
     }
     Ship.prototype.fireBomb = function(){
@@ -97,7 +99,7 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
             for (var i = 0; i < this.bombPower; i++){
                 this.bAngle += Math.PI * 2 / 1.61803398875;
                 this.shots.allocateSphere(1,
-                    this.x -1*GLOBALS.scrollX, this.y -1*GLOBALS.scrollY,
+                    this.screenX -1*this.x, this.screenY -1*this.y,
                     GLOBALS.shotSpeed, this.bAngle,
                     this.dx, this.dy);
             }
@@ -111,8 +113,8 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
 		var shotCost = this.frontShots*Ship.ENERGY_PER_BLASTER;
 		if (this.blasterEnergy - shotCost > 0){
 		    this.blasterEnergy -= shotCost;
-            var dX = tx-this.x;
-            var dY = ty-this.y;
+            var dX = tx-this.screenX;
+            var dY = ty-this.screenY;
             var dL = Math.sqrt(dX*dX+dY*dY);
 
             var sX = GLOBALS.shotSpeed * dX/dL;
@@ -124,7 +126,7 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
             var aa = this.frontShots > 1 ? -this.frontShotAngle/2 : 0;
 
             for (var i = 0; i < this.frontShots; i++) {
-                this.shots.allocateParticle(this.x-1*GLOBALS.scrollX, this.y-1*GLOBALS.scrollY,
+                this.shots.allocateParticle(this.screenX-1*this.x, this.screenY-1*this.y,
                     Math.cos(aa)*sX + Math.sin(aa)*sY, -Math.sin(aa)*sX + Math.cos(aa)*sY);
 
                 if (this.frontShots > 1)
@@ -139,12 +141,12 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
 	Ship.prototype.draw = function(gameState){
 	    // draws the ship in the given gameState
 		gameState.reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.ship,
-			{center: [this.x, this.y], radius: this.radius, state: (gameState.rules.ship.nrStates-1)/255}
+			{center: [this.screenX, this.screenY], radius: this.radius, state: (gameState.rules.ship.nrStates-1)/255}
         );
 
         // draw shots
         this.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon,
-			2*GLOBALS.scrollX, 2*GLOBALS.scrollY);
+			2*this.x, 2*this.y);
 		//this.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 0, 0);
 	}
 	Ship.prototype.collide = function(pixelArry){
@@ -155,15 +157,15 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
         for (pX = -this.radius; pX <= this.radius; pX++) {
             for (pY = -this.radius; pY <= this.radius; pY++) {
 
-                var xxx = Math.round(this.x + pX);
-                var yyy = Math.round(this.y + pY);
+                var xxx = Math.round(this.screenX + pX);
+                var yyy = Math.round(this.screenY + pY);
 
                 if (pixelArry[(xxx+yyy*GLOBALS.gameW)*4 + 3] !== 0) {
                     is_hit = true;  // TODO: can we use this.hit here?
                     this.shieldEnergy -= 1;
 
     //				reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.weapon,
-    //	{center: [this.x + pX, this.y + pY], radius: 1.5, state: (gameState.rules.ship.nrStates-1)/255});
+    //	{center: [this.screenX + pX, this.screenY + pY], radius: 1.5, state: (gameState.rules.ship.nrStates-1)/255});
                 }
             }
         }

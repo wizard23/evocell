@@ -51,8 +51,8 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
             {texNew: gameState.dishes.weaponExplosion, texPalette: gameState.colors.enemy.getTexture()});
 
 
-        var enemyPixel = gameState.ship.shots.collide(gameState.dishes.colliding, GLOBALS.scrollX, GLOBALS.scrollY, cb, -1);
-		//var enemyPixel = gameState.ship.shots.collide(gameState.dishes.weaponExplosion, GLOBALS.scrollX, GLOBALS.scrollY, cb, -1);
+        var enemyPixel = gameState.ship.shots.collide(gameState.dishes.colliding, gameState.ship.x, gameState.ship.y, cb, -1);
+		//var enemyPixel = gameState.ship.shots.collide(gameState.dishes.weaponExplosion, gameState.ship.x, gameState.ship.y, cb, -1);
 		//var enemyPixel = gameState.ship.shots.collide(gameState.dishes.enemy, 
 		//	0, 0, cb);
 
@@ -170,14 +170,14 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 
 		// screen movement
 		if (gameState.enableScrolling === 1 || gameState.enableScrolling === "1") {  // DAT.gui workaround (stores ints as strings)
-			var deltaX = Math.round(GLOBALS.gameW/2 - gameState.ship.x);
-			var deltaY = Math.round(GLOBALS.gameH/2 - gameState.ship.y);
+			var deltaX = Math.round(GLOBALS.gameW/2 - gameState.ship.screenX);
+			var deltaY = Math.round(GLOBALS.gameH/2 - gameState.ship.screenY);
 			if (deltaX || deltaY) {
+				gameState.ship.screenX  += deltaX;
+				gameState.ship.screenY  += deltaY;
+
 				gameState.ship.x  += deltaX;
 				gameState.ship.y  += deltaY;
-
-				GLOBALS.scrollX  += deltaX;
-				GLOBALS.scrollY  += deltaY;
 
 
 				gameState.parallaxX  += deltaX;
@@ -239,8 +239,8 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 		var quaternion = new THREE.Quaternion();
 		quaternion.setFromAxisAngle( new THREE.Vector3( 0, 0.7, 1 ).normalize(), gameState.rot );
 
-		var shipClipX = 2*(gameState.ship.x-gameState.dishes.enemy.width/2)/gameState.dishes.enemy.width;
-		var shipClipY = 2*(gameState.ship.y-gameState.dishes.enemy.height/2)/gameState.dishes.enemy.height;
+		var shipClipX = 2*(gameState.ship.screenX-gameState.dishes.enemy.width/2)/gameState.dishes.enemy.width;
+		var shipClipY = 2*(gameState.ship.screenY-gameState.dishes.enemy.height/2)/gameState.dishes.enemy.height;
 
 		var scaleX = GLOBALS.gameW / gameState.screenW;
 		var scaleY = GLOBALS.gameH / gameState.screenH;
