@@ -131,6 +131,11 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
 		gameState.reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.ship,
 			{center: [this.x, this.y], radius: this.radius, state: (gameState.rules.ship.nrStates-1)/255}
         );
+
+        // draw shots
+        this.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon,
+			2*GLOBALS.scrollX, 2*GLOBALS.scrollY);
+		//gameState.ship.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 0, 0);
 	}
 	Ship.prototype.collide = function(pixelArry){
 	    // collides the ship with given pixel array

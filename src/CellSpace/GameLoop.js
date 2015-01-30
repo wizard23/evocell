@@ -62,11 +62,6 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 		//var enemyPixel = gameState.ship.shots.collide(gameState.dishes.enemy, 
 		//	0, 0, cb);
 
-		gameState.ship.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 
-			2*GLOBALS.scrollX, 2*GLOBALS.scrollY);
-		//gameState.ship.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 0, 0);
-
-
 		// collide ship
 		if (gameState.cnt > 40) {
 			if (gameState.ship.collide(enemyPixel)){
