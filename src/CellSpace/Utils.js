@@ -51,11 +51,7 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 		gameState.cnt = 0;
 		gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, gameState.randomDensity);
 		gameState.dishes.background.randomize(gameState.rules.enemy.nrStates, 0.01);
-		if (gameState.ship.x < 0 || gameState.ship.x > GLOBALS.gameW ||
-			gameState.ship.y < 0 || gameState.ship.y > GLOBALS.gameH) {
-			gameState.ship.x = GLOBALS.gameW/2;
-			gameState.ship.y = GLOBALS.gameH/2;
-		}
+        gameState.ship.respawn();
 		utils.playSound(gameState.sndInit);
 	};
 

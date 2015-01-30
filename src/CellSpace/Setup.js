@@ -241,8 +241,6 @@ define(["Utils", "data/FileStore", "EvoCell", "CellSpace/State", "CellSpace/Util
 
 			gameState.dishes.enemy.randomize(gameState.rules.enemy.nrStates, 0.001);
 			gameState.dishes.background.randomize(gameState.rules.enemy.nrStates, 0.01);
-			gameState.ship.x = GLOBALS.gameW/2;
-			gameState.ship.y = GLOBALS.gameH/2;
 
 			callback();
 		};

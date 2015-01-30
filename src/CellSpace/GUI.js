@@ -398,9 +398,7 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 				
 			}
 			else if (evt.button === 0) { // || mouseMode == "shoot") {
-				gameState.ship.fireShotAt(GLOBALS.gameW*(clickedPoint.x+1)/2, GLOBALS.gameH*(clickedPoint.y+1)/2);
-				// no autofire for now
-				//gameState.autoFireOn = 1 - gameState.autoFireOn;	
+				gameState.ship.lClick(clickedPoint);
 			}	
 			// copy
 			else if (evt.button === 2) {

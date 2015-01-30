@@ -2,7 +2,7 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
     "use strict";
 
     function Ship(args){
-        // creates a new ship at x, y
+        // creates a new ship at args.x, args.y
 
         // check for required arguments
         if (typeof args.x === undefined || typeof args.y === undefined || typeof args.reactor === undefined){
@@ -81,6 +81,13 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
         this.score.reset();
         this.shieldEnergy = Ship.MAX_SHIELD;
         this.blasterEnergy = Ship.MAX_BLASTER;
+
+        // move back to middle if off screen
+        if (this.x < 0 || this.x > GLOBALS.gameW ||
+			this.y < 0 || this.y > GLOBALS.gameH) {
+			this.x = GLOBALS.gameW/2;
+			this.y = GLOBALS.gameH/2;
+		}
     }
     Ship.prototype.fireBomb = function(){
         // spaw bomb-shot if enough blaster energy
@@ -243,6 +250,12 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
 		}
 		else
 			this.shotDelay = 0;
+	}
+	Ship.prototype.lClick = function(clickedPoint){
+	    // does whatever the ship should do when user clicks somewhere (shoot)
+	    this.fireShotAt(GLOBALS.gameW*(clickedPoint.x+1)/2, GLOBALS.gameH*(clickedPoint.y+1)/2);
+        // no autofire for now
+        //gameState.autoFireOn = 1 - gameState.autoFireOn;
 	}
 
     return Ship;

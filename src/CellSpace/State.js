@@ -92,7 +92,7 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/PlayerShip", "GLOBALS
 		showRule: false,
 	};
 
-    gameState.ship = new PlayerShip({x:0, y:0, reactor:gameState.reactor});
+    gameState.ship = new PlayerShip({x:GLOBALS.gameW/2, y:GLOBALS.gameH/2, reactor:gameState.reactor});
     gameState.perfRequireTime = performance.now();
     gameState.perfStartedJSTime = window.perfStartedJSTime;
 
