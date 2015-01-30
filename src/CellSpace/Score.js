@@ -44,7 +44,7 @@ define( [], function (){
         this.score += 1;
 
         // movement bonus
-        var movement = args.ship.dy*args.ship.dy + args.ship.dx*args.ship.dx;  // cheap estimate
+        var movement = Math.floor(args.ship.dy*args.ship.dy + args.ship.dx*args.ship.dx);  // cheap estimate
         this.distance += movement;
         this.score += movement * Score.MOVEMENT_BONUS;
 
