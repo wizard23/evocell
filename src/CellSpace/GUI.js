@@ -246,13 +246,13 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 
 		var gui = gameState.gui;
 
-		gui.add(gameState.ship, 'shieldEnergy', 0, Ship.MAX_SHIELD);
-		gui.add(gameState.ship, 'blasterEnergy', 0, Ship.MAX_BLASTER);
+		gui.add(gameState.ship, 'shieldEnergy', 0, Ship.MAX_SHIELD).listen();
+		gui.add(gameState.ship, 'blasterEnergy', 0, Ship.MAX_BLASTER).listen();
 
-		gui.add(gameState.ship.score, 'score');
-		gui.add(gameState.ship.score, 'kills');
-		gui.add(gameState.ship.score, 'distance');
-		gui.add(gameState.ship.score, 'highScore');
+		gui.add(gameState.ship.score, 'score').listen();
+		gui.add(gameState.ship.score, 'kills').listen();
+		gui.add(gameState.ship.score, 'distance').listen();
+		gui.add(gameState.ship.score, 'highScore').listen();
 
 		var appFolder = gui.addFolder('App');
 		appFolder.add(gameState, 'zoom', 0.05, 2).step(0.01);
@@ -277,16 +277,16 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 		appFolder.add(gameState, "weaponExplosionParam");
 	
 		appFolder.add(gameState, 'enableScrolling', {yes: 1, no: 0});
-		
-		appFolder.add(GLOBALS, 'scrollX');
-		appFolder.add(GLOBALS, 'scrollY');
+
+		appFolder.add(GLOBALS, 'scrollX').listen();
+		appFolder.add(GLOBALS, 'scrollY').listen();
 
 		appFolder.add(GLOBALS, 'gameW').onFinishChange(csUtils.onGameSizeChanged);
 		appFolder.add(GLOBALS, 'gameH').onFinishChange(csUtils.onGameSizeChanged);
 
 		var shipFolder = appFolder.addFolder('Ship');
-        shipFolder.add(gameState.ship, 'x');
-		shipFolder.add(gameState.ship, 'y');
+        shipFolder.add(gameState.ship, 'x').listen();
+		shipFolder.add(gameState.ship, 'y').listen();
         shipFolder.add(gameState.ship, 'radius', 1, 20);
         shipFolder.add(gameState.ship, 'frontShots', 1, 12).step(1);
 		shipFolder.add(gameState.ship, 'frontShotAngle', 0, 2*Math.PI);
@@ -302,6 +302,8 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 		folder.add(gameState, 'perfFinishedJSTime');
 		folder.add(gameState, "showBuffer");
 		folder.add(gameState, "showRule");
+        folder.add(gameState, "parallaxX").listen();
+        folder.add(gameState, "parallaxY").listen();
 
 		var onResized = function(value) {
 			gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);

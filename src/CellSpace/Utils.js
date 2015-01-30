@@ -36,7 +36,7 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 		names = names ? (names.length ? names : [names]) : [];
 
 		var refresh = function(controller) {
-			if (_.contains(names, controller.property)) { 
+			if (_.contains(names, controller.property)) {
 				controller.updateDisplay();
 			}
 		};
@@ -68,7 +68,7 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 
 	var onScreenSizeChanged = function() {
 		gameState.reactor.setRenderSize(gameState.screenW, gameState.screenH);
-		refreshGUI(["screenW", "screenH"]);	
+		refreshGUI(["screenW", "screenH"]);
 	};
 
 	var onGameSizeChanged = function() {

@@ -27,12 +27,6 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 
 		// SHIP ///////////////////////////////////////////
 		gameState.ship.step();
-        csUtils.refreshGUI(['blasterEnergy']);  // TODO: move this into ship class
-        // update score  TODO: move this into score class
-	    csUtils.refreshGUI(['score']);
-	    csUtils.refreshGUI(['distance']);
-	    csUtils.refreshGUI(['kills']);
-	    csUtils.refreshGUI(['highScore']);
 
 		reactor.step(gameState.rules.weaponExplosion, gameState.dishes.weaponExplosion);
 		reactor.step(gameState.rules.weapon, gameState.dishes.weapon);
@@ -65,7 +59,6 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 		// collide ship
 		if (gameState.cnt > 40) {
 			if (gameState.ship.collide(enemyPixel)){
-                csUtils.refreshGUI(["shieldEnergy"]);
 
                 // did we just die?
                 if (gameState.ship.shieldEnergy < 0) {
@@ -74,7 +67,6 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 
                     storyTeller.RunDeath(function() {
                         gameState.ship.respawn();
-                        csUtils.refreshGUI(["shieldEnergy"]);
 
                         csUtils.resetGame();
                         gameState.pause = oldPause;
@@ -206,8 +198,6 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 					gameState.parallaxX  -= pScrollX*parallaxDist;
 					gameState.parallaxY -= pScrollY*parallaxDist;
 				}
-
-				csUtils.refreshGUI(["ship.x", "ship.y", "scrollX", "scrollY", "parallaxX", "parallaxY"]);
 
 				var dX = -deltaX/GLOBALS.gameW;
 				var dY = -deltaY/GLOBALS.gameH;

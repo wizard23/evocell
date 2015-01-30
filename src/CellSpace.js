@@ -74,8 +74,9 @@ require(
             });
 
             gameState.perfFinishedJSTime = performance.now();
-            csUtils.refreshGUI(["perfStartedJSTime","perfFinishedJSTime", "perfRequireTime"]);
-
+            window.gameState = gameState;
+            // update "perfStartedJSTime","perfFinishedJSTime", "perfRequireTime"
+            gameState.gui.__folders.Debug.__controllers.forEach(function(currentValue){currentValue.updateDisplay()});
             gameState.mainLoop.start();
         });
     }

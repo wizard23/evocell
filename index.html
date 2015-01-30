@@ -45,9 +45,9 @@
         </div>
     </div>
     <div id="toolContainer">
-        <div class="toolWindow" id="map">
+        <div class="toolWindow" id="mapWindow">
             <h3 class="toolMenuHeader">Map</h3>
-            <div class="toolMenuContent">
+            <div id="map" class="toolMenuContent">
                 sector not yet explored...
             </div>
         </div>
@@ -119,7 +119,7 @@
         fps: <span id="fpsMonitor">n/a</span><br>
     </div>
     <div style="border:0px solid black; position: fixed; top: 20px;right: 0px; z-index:10000; color:#DDDDDD; font-family:monospace;">
-        fps: <span id="log">n/a</span><br>
+        <span id="log"></span>
     </div>
 
     <script>
