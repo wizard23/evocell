@@ -27,7 +27,11 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 
 		// SHIP ///////////////////////////////////////////
 		gameState.ship.step();
-        csUtils.refreshGUI(['blasterEnergy']);
+        csUtils.refreshGUI(['blasterEnergy']);  // TODO: move this into ship class
+        // update score  TODO: move this into score class
+	    csUtils.refreshGUI(['score']);
+	    csUtils.refreshGUI(['distance']);
+	    csUtils.refreshGUI(['kills']);
 
 		reactor.step(gameState.rules.weaponExplosion, gameState.dishes.weaponExplosion);
 		reactor.step(gameState.rules.weapon, gameState.dishes.weapon);

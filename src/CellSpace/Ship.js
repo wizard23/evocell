@@ -70,6 +70,7 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
     };
     Ship.prototype.respawn = function(){
         // spawns new ship after death
+        this.score.reset();
         this.shieldEnergy = Ship.MAX_SHIELD;
         this.blasterEnergy = Ship.MAX_BLASTER;
     }

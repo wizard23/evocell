@@ -1,5 +1,5 @@
-define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "EvoCell"],
-    function(Backbone, THREE, dat, utils, Ship, GLOBALS, EC) {
+define(["backbone", "three", "datgui", "Utils", "CellSpace/PlayerShip", "GLOBALS", "EvoCell"],
+    function(Backbone, THREE, dat, utils, PlayerShip, GLOBALS, EC) {
 	"use strict";
 
 	var gameState = {
@@ -92,7 +92,7 @@ define(["backbone", "three", "datgui", "Utils", "CellSpace/Ship", "GLOBALS", "Ev
 		showRule: false,
 	};
 
-    gameState.ship = new Ship({x:0, y:0, reactor:gameState.reactor});
+    gameState.ship = new PlayerShip({x:0, y:0, reactor:gameState.reactor});
 
 	return gameState;
 });
