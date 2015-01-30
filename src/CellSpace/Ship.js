@@ -48,6 +48,9 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
         // sounds
         this.snd_blaster = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser6.mp3");
         this.snd_bomb = new Audio(GLOBALS.resPath + "sound/Digital_SFX_Set/laser4.mp3");
+
+        this.allowReturn = 0;  // used for breaking to 0 and then reverse
+        this.shotDelay = 0;  // delay between shots
     };
     // constants:
     Ship.MAX_BLASTER = 1000;
@@ -70,7 +73,7 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
 
 		// handle ship shots
         // too costly
-		//gameState.ship.shots.collide(gameState.dishes.enemy, cb);
+		//this.shots.collide(gameState.dishes.enemy, cb);
 		this.shots.step();
     };
     Ship.prototype.respawn = function(){
@@ -135,7 +138,7 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
         // draw shots
         this.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon,
 			2*GLOBALS.scrollX, 2*GLOBALS.scrollY);
-		//gameState.ship.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 0, 0);
+		//this.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 0, 0);
 	}
 	Ship.prototype.collide = function(pixelArry){
 	    // collides the ship with given pixel array
@@ -158,6 +161,88 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
             }
         }
         return is_hit;
+	}
+	Ship.prototype.control = function(keyboard){
+	    // checks given keyboard inputs for ship controls
+
+	    // shoot straight ahead
+		if (keyboard.isPressed("X".charCodeAt()))
+		{
+			var tx = this.x + Math.cos(this.direction);
+			var ty = this.y + Math.sin(this.direction);
+			this.fireShotAt(tx, ty);
+		}
+
+        // direction/speed based control of ship
+		if (keyboard.isPressed(keyboard.UP)) {
+			this.speed += this.accel;
+			if (this.speed > this.maxSpeed)
+				this.speed = this.maxSpeed;
+		}
+		if (keyboard.isPressed(keyboard.DOWN)) {
+			if (this.speed > 0) {
+				this.speed -= this.accel;
+				if (this.speed < 0) {
+					this.speed = 0;
+					this.allowReturn = 0;
+				}
+			}
+			else if (this.allowReturn) {
+				this.speed -= this.accel;
+				if (this.speed < this.minSpeed)
+					this.speed = this.minSpeed;
+			}
+		}
+		else {
+			this.allowReturn = 1;
+		}
+
+		// direction and speed of layer ship
+		if (keyboard.isPressed(keyboard.LEFT)) this.direction += this.rotSpeed;
+		if (keyboard.isPressed(keyboard.RIGHT)) this.direction -= this.rotSpeed;
+
+        // bomb shot
+		if (keyboard.isPressed("B".charCodeAt())) {
+            this.fireBomb();
+		}
+
+        // wasd shots
+		var sDX = 0, sDY = 0;
+		if (keyboard.isPressed("D".charCodeAt()))
+		{
+			sDX = 1;
+		}
+		if (keyboard.isPressed("A".charCodeAt()))
+		{
+			sDX = -1;
+		}
+		if (keyboard.isPressed("W".charCodeAt()))
+		{
+			sDY = 1;
+		}
+		if (keyboard.isPressed("S".charCodeAt()))
+		{
+			sDY = -1;
+		}
+		if (sDX || sDY) {
+			if (!this.shotDelay)
+			{
+				this.shotDelay = 3;
+				/*
+				var px = (this.x/GLOBALS.gameW)*2 - 1;
+				var py = (this.y/GLOBALS.gameH)*2 - 1;
+				var sX = sDX * GLOBALS.shotSpeed;
+				var sY = sDY*GLOBALS.shotSpeed;
+
+				this.shots.allocateParticle(this.x, this.y, sX, sY);
+				*/
+                this.fireShotAt(this.x + sDX, this.y + sDY);
+			}
+			else
+				this.shotDelay--;
+		}
+		else
+			this.shotDelay = 0;
 	}
 
     return Ship;

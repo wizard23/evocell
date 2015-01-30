@@ -5,8 +5,6 @@ define([
 function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameState, csSetup, csUtils) {
 	"use strict";
 
-	// used for breaking to 0 and then reverse
-	var allowReturn = 0;
 	var oldPauseState = false;
 	var buttonWasDown = 0;
     var bounceEsc = 0;
@@ -647,14 +645,7 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 		else
 			once = 1;	
 
-		// shoot straight ahead
-		if (keyboard.isPressed("X".charCodeAt()))
-		{
-			var tx = gameState.ship.x + Math.cos(gameState.ship.direction);
-			var ty = gameState.ship.y + Math.sin(gameState.ship.direction);
-			gameState.ship.fireShotAt(tx, ty);
-		}
-
+        gameState.ship.control(keyboard);
 
 		if (keyboard.isPressed("O".charCodeAt()))
 		{
@@ -679,35 +670,6 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 			gameState.rot -= 0.05;
 			csUtils.refreshGUI(["zoom"]);
 		}
-
-
-		// direction/speed based control of ship
-		if (keyboard.isPressed(keyboard.UP)) {
-			gameState.ship.speed += gameState.ship.accel;
-			if (gameState.ship.speed > gameState.ship.maxSpeed)
-				gameState.ship.speed = gameState.ship.maxSpeed;
-		}
-		if (keyboard.isPressed(keyboard.DOWN)) {
-			if (gameState.ship.speed > 0) {
-				gameState.ship.speed -= gameState.ship.accel;
-				if (gameState.ship.speed < 0) {
-					gameState.ship.speed = 0;
-					allowReturn = 0;
-				}
-			}
-			else if (allowReturn) {
-				gameState.ship.speed -= gameState.ship.accel;
-				if (gameState.ship.speed < gameState.ship.minSpeed)
-					gameState.ship.speed = gameState.ship.minSpeed;
-			}
-		}
-		else {
-			allowReturn = 1;
-		}
-
-		// direction and speed of layer ship
-		if (keyboard.isPressed(keyboard.LEFT)) gameState.ship.direction += gameState.ship.rotSpeed;
-		if (keyboard.isPressed(keyboard.RIGHT)) gameState.ship.direction -= gameState.ship.rotSpeed;
 
 		// space
 		if (keyboard.isPressed(32)) {
@@ -758,10 +720,6 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 			if (gameState.ship.bombPower <= 0) gameState.bombPower = 1;
 		}
 
-		if (keyboard.isPressed("B".charCodeAt())) {
-            gameState.ship.fireBomb();
-		}
-
 		if (keyboard.isPressed("1".charCodeAt()))
 		{
 			gameState.mouseMode = "shoot";
@@ -775,41 +733,6 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 			gameState.mouseMode = "copy";
 		}
 
-		var sDX = 0, sDY = 0;			
-		if (keyboard.isPressed("D".charCodeAt()))
-		{
-			sDX = 1;
-		}
-		if (keyboard.isPressed("A".charCodeAt()))
-		{
-			sDX = -1;
-		}	
-		if (keyboard.isPressed("W".charCodeAt()))
-		{
-			sDY = 1;
-		}	
-		if (keyboard.isPressed("S".charCodeAt()))
-		{
-			sDY = -1;
-		}
-		if (sDX || sDY) {
-			if (!gameState.shotDelay)
-			{
-				gameState.shotDelay = 3;
-				/*var px = (gameState.ship.x/GLOBALS.gameW)*2 - 1;
-				var py = (gameState.ship.y/GLOBALS.gameH)*2 - 1;
-				var sX = sDX * GLOBALS.shotSpeed;
-				var sY = sDY*GLOBALS.shotSpeed;
-
-				gameState.ship.shots.allocateParticle(gameState.ship.x, gameState.ship.y, sX, sY);
-				*/
-                gameState.ship.fireShotAt(gameState.ship.x + sDX, gameState.ship.y + sDY);
-			}
-			else 
-				gameState.shotDelay--;
-		}
-		else
-			gameState.shotDelay = 0;
 	};
 
 	return {
