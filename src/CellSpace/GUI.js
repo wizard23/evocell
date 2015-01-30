@@ -676,11 +676,6 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 			//gameState.dishes.enemyShield.randomize(, gameState.randomDensity);
 		}
 
-		if (keyboard.isPressed("S".charCodeAt())) {
-			gameState.reactor.mixDish(gameState.shaders.clear, gameState.dishes.enemyShield, 
-				{color: [0,0,0,24/255]});
-		}
-
 		// escape
 		if (keyboard.isPressed(27))
 		{

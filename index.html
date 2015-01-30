@@ -45,7 +45,13 @@
         </div>
     </div>
     <div id="toolContainer">
-        <div class="toolWindow activeWindow" id="AboutWindow">
+        <div class="toolWindow" id="map">
+            <h3 class="toolMenuHeader">Map</h3>
+            <div class="toolMenuContent">
+                sector not yet explored...
+            </div>
+        </div>
+        <div class="toolWindow" id="AboutWindow">
                 <h3 class="toolMenuHeader">About</h3>
             <div class="toolMenuContent">
                 CellSpace is a HTML5/JS/WebGL space shooter game built on <a href="http://en.wikipedia.org/wiki/Cellular_automaton">cellular automata</a>. All rule lookups and most of the collission detections are calculated on the GPU :)
@@ -72,7 +78,7 @@
             </div>
         </div>
         <div class="toolWindow"  id="ToolWindow">
-            <h3 class="toolMenuHeader">Tools</h3>
+            <h3 class="toolMenuHeader">DevTools</h3>
             <div class="toolMenuContent">
                 <a id="stepLink" class="buttons"><i class="fa fa-step-forward fa-2x"></i></a>&nbsp;
                 <a id="playPause" class="buttons"><i class="fa fa-pause fa-2x"></i></a>&nbsp;
