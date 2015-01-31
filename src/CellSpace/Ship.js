@@ -161,13 +161,17 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
                 var yyy = Math.round(this.screenY + pY);
 
                 if (pixelArry[(xxx+yyy*GLOBALS.gameW)*4 + 3] !== 0) {
-                    is_hit = true;  // TODO: can we use this.hit here?
+                    is_hit = true;
                     this.shieldEnergy -= 1;
 
     //				reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.weapon,
     //	{center: [this.screenX + pX, this.screenY + pY], radius: 1.5, state: (gameState.rules.ship.nrStates-1)/255});
                 }
             }
+        }
+        if (is_hit){
+            console.log('/t/tOW!');
+            // TODO: play sound & show visual effect
         }
         return is_hit;
 	}

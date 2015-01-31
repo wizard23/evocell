@@ -35,12 +35,14 @@ function(GLOBALS, $, utils, EC, storyTeller,_ , Backbone, kb, ko, fileStore, THR
 
         gameState.ship.draw(gameState);
 
+        // callback function for bullet collision
 		var cb = function(pos) {
 			try
 			{
 				gameState.sndHit.playbackRate = 2.0;
 				gameState.sndHit.volume = 0.5;
 				utils.playSound(gameState.sndHit);
+				gameState.ship.score.kills += 1;
 			} catch(ex) {}
 		};
 

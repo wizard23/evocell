@@ -24,6 +24,8 @@ define( [], function (){
 
         this.highScore = 0;  // best score this session
 
+        this._killsScored = 0;  // number of kills which have been accounted for in the main score (used to add new kills to the score)
+
         this.displayElement = document.getElementById('score-display');
     /*    this.displayElement.style.position = 'fixed';
         bottom: 8px;
@@ -36,6 +38,7 @@ define( [], function (){
     // constants
     Score.DIFFICULTY_LEVEL = {EASY:1, NORMAL:2, HARD:3};
     Score.MOVEMENT_BONUS = 2;
+    Score.KILL_BONUS = 20;
 
     // public methods
     Score.prototype.step = function(args){
@@ -48,7 +51,12 @@ define( [], function (){
         this.distance += movement;
         this.score += movement * Score.MOVEMENT_BONUS;
 
-        // TODO: hit / kill count
+        // add points for new kills
+        var newKills = this.kills - this._killsScored;
+        if (newKills > 0){
+            this.score += newKills*newKills * Score.KILL_BONUS;  // newKills^2 to incentivize multikills
+            this._killsScored = this.kills;
+        }
 
         if (this.score > this.highScore){
             this.highScore = this.score;
