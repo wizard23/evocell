@@ -170,7 +170,7 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
             }
         }
         if (is_hit){
-            console.log('/t/tOW!');
+            ;
             // TODO: play sound & show visual effect
         }
         return is_hit;

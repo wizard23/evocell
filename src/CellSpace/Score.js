@@ -38,7 +38,7 @@ define( [], function (){
     // constants
     Score.DIFFICULTY_LEVEL = {EASY:1, NORMAL:2, HARD:3};
     Score.MOVEMENT_BONUS = 2;
-    Score.KILL_BONUS = 20;
+    Score.KILL_BONUS = 50;
 
     // public methods
     Score.prototype.step = function(args){
@@ -54,7 +54,7 @@ define( [], function (){
         // add points for new kills
         var newKills = this.kills - this._killsScored;
         if (newKills > 0){
-            this.score += newKills*newKills * Score.KILL_BONUS;  // newKills^2 to incentivize multikills
+            this.score += newKills * Score.KILL_BONUS;
             this._killsScored = this.kills;
         }
 
