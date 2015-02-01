@@ -138,6 +138,12 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
             return  // TODO: play no-energy sound and show visual effect
         }
 	};
+	Ship.prototype.shootAt = function(angle){
+	    // fires blasters at given angle (in deg). convenience method that is less efficient than fireShotAt(x,y)
+        var y = this.screenX + Math.cos(angle)  // cos(<) = x/h; h=1;
+        var x = this.screenY + Math.sin(angle)  // sin(<) = y/h; h=1;
+        this.fireShotAt(x, y);
+	}
 	Ship.prototype.draw = function(gameState){
 	    // draws the ship in the given gameState
 		gameState.reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.ship,
