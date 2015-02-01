@@ -347,6 +347,7 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 				});
 
                toggleClass(element, 'activeWindow');
+               editor.resize();  // resize the ai script editor
             }, false);
 		});
 

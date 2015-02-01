@@ -46,6 +46,19 @@
         </div>
     </div>
     <div id="toolContainer">
+        <!-- script editor box -->
+        <div class="toolWindow activeWindow">
+            <h3 class="toolMenuHeader">AI script</h3>
+            <div class="toolMenuContent">
+                <div id="script-editor">
+function foo(items) {
+    var x = "All this is syntax highlighted";
+    return x;
+}
+                </div>
+            </div>
+        </div>
+
         <div class="toolWindow" id="mapWindow">
             <h3 class="toolMenuHeader">Map</h3>
             <div id="map" class="toolMenuContent">
@@ -127,6 +140,14 @@
     <div style="border:0px solid black; position: fixed; top: 20px;right: 0px; z-index:10000; color:#DDDDDD; font-family:monospace;">
         <span id="log"></span>
     </div>
+
+    <!-- ace editor setup -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        var editor = ace.edit("script-editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/javascript");
+    </script>
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

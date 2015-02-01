@@ -218,3 +218,8 @@ select option:nth-child(even) {  }
     z-index: 19999;
     font-family:monospace;
 }
+
+#script-editor {
+    width: 100%;
+    height: 300px;
+}
