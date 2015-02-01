@@ -119,13 +119,7 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 		appFolder.add(GLOBALS, 'gameH').onFinishChange(csUtils.onGameSizeChanged);
 
 		var shipFolder = gui.addFolder('Ship');
-        shipFolder.add(gameState.ship, 'x').listen();
-		shipFolder.add(gameState.ship, 'y').listen();
-		shipFolder.add(gameState.ship, 'screenX').listen();
-		shipFolder.add(gameState.ship, 'screenY').listen();
-        shipFolder.add(gameState.ship, 'radius', 1, 20);
-        shipFolder.add(gameState.ship, 'frontShots', 1, 12).step(1);
-		shipFolder.add(gameState.ship, 'frontShotAngle', 0, 2*Math.PI);
+        gameState.ship.addDebugGUI(shipFolder);
 
 		var folder = gui.addFolder('Core');
 		var screenWCtrl = folder.add(gameState, 'screenW');
