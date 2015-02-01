@@ -207,9 +207,11 @@ define(["gl/GLHelper", "gl/Dish", "gl/Rule"], function(glhelper, Dish, Rule) {
 			var aPosLoc = gl.getAttribLocation(shader, "aPos");
 			gl.enableVertexAttribArray( aPosLoc );
 			var aTexLoc = gl.getAttribLocation(shader, "aTexCoord");
-			gl.enableVertexAttribArray( aTexLoc );
+			if (aTexLoc != -1){  // check for optimized-out vars
+				gl.enableVertexAttribArray( aTexLoc );
+				gl.vertexAttribPointer(aTexLoc, 2, gl.FLOAT, gl.FALSE, 0, this.texCoordOffset);
+			}
 			gl.vertexAttribPointer(aPosLoc, 3, gl.FLOAT, gl.FALSE, 0, 0);
-			gl.vertexAttribPointer(aTexLoc, 2, gl.FLOAT, gl.FALSE, 0, this.texCoordOffset);
 			gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 		}
 		else 
