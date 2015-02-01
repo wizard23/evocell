@@ -13,6 +13,7 @@ define( ["jquery", "GLOBALS", "CellSpace/PlayerShip", "CellSpace/Score"], functi
             args.difficulty = Score.DIFFICULTY_LEVEL.NORMAL;
         }
         PlayerShip.call(this, args);
+        this.stepN = 0;
     };
     // inheritance:
     UserScriptedShip.prototype = Object.create(PlayerShip.prototype);
@@ -20,7 +21,10 @@ define( ["jquery", "GLOBALS", "CellSpace/PlayerShip", "CellSpace/Score"], functi
     // what is this and do I need it?
     //UserScriptedShip.prototype.constructor = UserScriptedShip;
 
-    UserScriptedShip.prototype.control = window.userScript;
+    UserScriptedShip.prototype.control = function(args){
+        this.stepN += 1;
+        window.userScript.call(this,args);
+    }
 
 /*	UserScriptedShip.prototype.lClick = function(clickedPoint){
 	    // does whatever the ship should do when user clicks somewhere (shoot)
