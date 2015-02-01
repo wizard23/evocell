@@ -77,32 +77,16 @@ define( ["jquery", "GLOBALS", "CellSpace/Ship", "CellSpace/Score"], function (jq
 	    // shoot straight ahead
 		if (keyboard.isPressed("X".charCodeAt()))
 		{
-			var tx = this.screenX + Math.cos(this.direction);
-			var ty = this.screenY + Math.sin(this.direction);
-			this.fireShotAt(tx, ty);
+		    this.shootAt(this.direction)
 		}
 
         // direction/speed based control of ship
 		if (keyboard.isPressed(keyboard.UP)) {
-			this.speed += this.accel;
-			if (this.speed > this.maxSpeed)
-				this.speed = this.maxSpeed;
+            this.speedUp();
 		}
 		if (keyboard.isPressed(keyboard.DOWN)) {
-			if (this.speed > 0) {
-				this.speed -= this.accel;
-				if (this.speed < 0) {
-					this.speed = 0;
-					this.allowReturn = 0;
-				}
-			}
-			else if (this.allowReturn) {
-				this.speed -= this.accel;
-				if (this.speed < this.minSpeed)
-					this.speed = this.minSpeed;
-			}
-		}
-		else {
+            this.slowDown();
+		} else {
 			this.allowReturn = 1;
 		}
 

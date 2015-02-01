@@ -46,6 +46,37 @@
         </div>
     </div>
     <div id="toolContainer">
+        <!-- script editor box -->
+        <div class="toolWindow activeWindow">
+            <h3 class="toolMenuHeader">AI script</h3>
+            <div class="toolMenuContent">
+                Why play the game when you can program the bot to play the game for you?
+                <div id="script-editor">// edit me and upload to the bot!
+                    
+// shoot occasionally
+if (this.stepN == 5){
+    this.shootAt(this.direction);
+}
+
+// movement
+if (this.stepN < 10){
+    this.speedUp();
+} else if (this.stepN < 20){
+    this.slowDown();
+}else{
+    this.rotate(30);
+    this.stepN = 0;  // then start over!
+}
+
+
+
+                </div>
+                <button onclick="eval('window.userScript=function(){'+editor.getValue()+'}');">upload to AI bot</button><br>
+                <input type="checkbox" name="input-toggle" value="inputIsOn" onclick="inputOn = !inputOn;">
+                enable keyboard/mouse inputs to game<br>
+            </div>
+        </div>
+
         <div class="toolWindow" id="mapWindow">
             <h3 class="toolMenuHeader">Map</h3>
             <div id="map" class="toolMenuContent">
@@ -127,6 +158,34 @@
     <div style="border:0px solid black; position: fixed; top: 20px;right: 0px; z-index:10000; color:#DDDDDD; font-family:monospace;">
         <span id="log"></span>
     </div>
+
+    <!-- ace editor setup -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        var inputOn = false;  // input kill switch
+
+        // set initial userScript (should be same as in text box)
+        window.userScript = function() {
+            // shoot occasionally
+            if (this.stepN == 5){
+                this.shootAt(this.direction);
+            }
+
+            // movement
+            if (this.stepN < 10){
+                this.speedUp();
+            } else if (this.stepN < 20){
+                this.slowDown();
+            }else{
+                this.rotate(30);
+                this.stepN = 0;  // then start over!
+            }
+        };
+
+        var editor = ace.edit("script-editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/javascript");
+    </script>
 
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

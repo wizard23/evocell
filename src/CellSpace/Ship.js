@@ -138,6 +138,12 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
             return  // TODO: play no-energy sound and show visual effect
         }
 	};
+	Ship.prototype.shootAt = function(angle){
+	    // fires blasters at given angle (in deg). convenience method that is less efficient than fireShotAt(x,y)
+        var x = this.screenX + Math.cos(angle)  // cos(<) = x/h; h=1;
+        var y = this.screenY + Math.sin(angle)  // sin(<) = y/h; h=1;
+        this.fireShotAt(x, y);
+	}
 	Ship.prototype.draw = function(gameState){
 	    // draws the ship in the given gameState
 		gameState.reactor.mixDish(gameState.shaders.drawCircle, gameState.dishes.ship,
@@ -149,6 +155,42 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
 			2*this.x, 2*this.y);
 		//this.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 0, 0);
 	}
+
+    Ship.prototype.speedUp = function(){
+        if (this.speed < this.maxSpeed)
+            this.speed += this.accel;
+    }
+    
+    Ship.prototype.slowDown = function(){
+        if (this.speed > 0) {
+            this.speed -= this.accel;
+            if (this.speed < 0) {
+                this.speed = 0;
+                this.allowReturn = 0;
+            }
+        }
+        else if (this.allowReturn) {
+            this.speed -= this.accel;
+            if (this.speed < this.minSpeed)
+                this.speed = this.minSpeed;
+        }
+    }
+
+    Ship.prototype.addDebugGUI = function(folder){
+        // display only
+        folder.add(this, 'x').listen();
+		folder.add(this, 'y').listen();
+		folder.add(this, 'screenX').listen();
+		folder.add(this, 'screenY').listen();
+        folder.add(this, 'direction').listen();
+		folder.add(this, 'speed').listen();
+
+		// interactive vars
+        folder.add(this, 'radius', 1, 20);
+        folder.add(this, 'frontShots', 1, 12).step(1);
+		folder.add(this, 'frontShotAngle', 0, 2*Math.PI);
+    }
+
 	Ship.prototype.collide = function(pixelArry){
 	    // collides the ship with given pixel array
 	    // returns true if collision, else returns false
