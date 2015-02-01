@@ -14,6 +14,7 @@ define( ["jquery", "GLOBALS", "CellSpace/PlayerShip", "CellSpace/Score"], functi
         }
         PlayerShip.call(this, args);
         this.stepN = 0;
+        this.halting = false;
     };
     // inheritance:
     UserScriptedShip.prototype = Object.create(PlayerShip.prototype);
@@ -23,7 +24,22 @@ define( ["jquery", "GLOBALS", "CellSpace/PlayerShip", "CellSpace/Score"], functi
 
     UserScriptedShip.prototype.control = function(args){
         this.stepN += 1;
+        if (this.halting){
+            if (this.speed > 0){
+                this.slowDown();
+            } else {
+                this.halting = false;
+            }
+        }
         window.userScript.call(this,args);
+    }
+
+    UserScriptedShip.prototype.halt = function(){
+        this.halting = true;
+    }
+
+    UserScriptedShip.prototype.rotate = function(deg){
+        this.direction += deg;
     }
 
 /*	UserScriptedShip.prototype.lClick = function(clickedPoint){

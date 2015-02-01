@@ -51,14 +51,23 @@
             <h3 class="toolMenuHeader">AI script</h3>
             <div class="toolMenuContent">
                 <div id="script-editor">// edit me and upload to the bot!
-if (this.stepN < 2){  // shoot a little bit
+                    
+// shoot occasionally
+if (this.stepN == 5){
     this.shootAt(this.direction);
-} else if (this.stepN == 10){  // move some
-    this.move(1, this.direction);
-} else {  // spin a tad
-    this.rotate(90);
+}
+
+// movement
+if (this.stepN < 10){
+    this.speedUp();
+} else if (this.stepN < 20){
+    this.slowDown();
+}else{
+    this.rotate(30);
     this.stepN = 0;  // then start over!
 }
+
+
 
                 </div>
                 <button onclick="eval('window.userScript=function(){'+editor.getValue()+'}');">upload to AI bot</button><br>
@@ -156,12 +165,18 @@ if (this.stepN < 2){  // shoot a little bit
 
         // set initial userScript (should be same as in text box)
         window.userScript = function() {
-            if (this.stepN < 2){  // shoot a little bit
+            // shoot occasionally
+            if (this.stepN == 5){
                 this.shootAt(this.direction);
-            } else if (this.stepN == 10){  // move some
-                this.move(1, this.direction);
-            } else {  // spin a tad
-                this.rotate(90);
+            }
+
+            // movement
+            if (this.stepN < 10){
+                this.speedUp();
+            } else if (this.stepN < 20){
+                this.slowDown();
+            }else{
+                this.rotate(30);
                 this.stepN = 0;  // then start over!
             }
         };
