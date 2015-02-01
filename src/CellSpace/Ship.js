@@ -155,6 +155,27 @@ define( ["Utils", "GLOBALS", "EvoCell"], function (utils, GLOBALS, EC){
 			2*this.x, 2*this.y);
 		//this.shots.draw(gameState.shaders.drawPoints, gameState.dishes.weapon, 0, 0);
 	}
+
+    Ship.prototype.speedUp = function(){
+        if (this.speed < this.maxSpeed)
+            this.speed += this.accel;
+    }
+    
+    Ship.prototype.slowDown = function(){
+        if (this.speed > 0) {
+            this.speed -= this.accel;
+            if (this.speed < 0) {
+                this.speed = 0;
+                this.allowReturn = 0;
+            }
+        }
+        else if (this.allowReturn) {
+            this.speed -= this.accel;
+            if (this.speed < this.minSpeed)
+                this.speed = this.minSpeed;
+        }
+    }
+
 	Ship.prototype.collide = function(pixelArry){
 	    // collides the ship with given pixel array
 	    // returns true if collision, else returns false
