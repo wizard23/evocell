@@ -50,12 +50,18 @@
         <div class="toolWindow activeWindow">
             <h3 class="toolMenuHeader">AI script</h3>
             <div class="toolMenuContent">
-                <div id="script-editor">
-function foo(items) {
-    var x = "All this is syntax highlighted";
-    return x;
+                <div id="script-editor">// edit me and upload to the bot!
+if (this.stepN < 2){  // shoot a little bit
+    this.shootAt(this.direction);
+} else if (this.stepN == 10){  // move some
+    this.move(1, this.direction);
+} else {  // spin a tad
+    this.rotate(90);
+    this.stepN = 0;  // then start over!
 }
+
                 </div>
+                <button onclick="eval('window.userScript=function(){'+editor.getValue()+'}');">upload to AI bot</button><br>
                 <input type="checkbox" name="input-toggle" value="inputIsOn" onclick="inputOn = !inputOn;">
                 enable keyboard/mouse inputs to game<br>
             </div>
@@ -146,7 +152,20 @@ function foo(items) {
     <!-- ace editor setup -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" type="text/javascript" charset="utf-8"></script>
     <script>
-        var inputOn = false;
+        var inputOn = false;  // input kill switch
+
+        // set initial userScript (should be same as in text box)
+        window.userScript = function() {
+            if (this.stepN < 2){  // shoot a little bit
+                this.shootAt(this.direction);
+            } else if (this.stepN == 10){  // move some
+                this.move(1, this.direction);
+            } else {  // spin a tad
+                this.rotate(90);
+                this.stepN = 0;  // then start over!
+            }
+        };
+
         var editor = ace.edit("script-editor");
         editor.setTheme("ace/theme/monokai");
         editor.getSession().setMode("ace/mode/javascript");

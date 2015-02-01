@@ -617,13 +617,12 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 
 	var once = 1;
 	var pollUserInteraction = function() {
+        var keyboard = gameState.keyboard;
+        gameState.ship.control(keyboard);
 	    if (inputOn){  // checks global inputOn set by checkbox
-
-            var keyboard = gameState.keyboard;
 
             csUtils.pollAutoFire();
     // USER INPUT Poll Keyboard //////////////////////////////////////////////////
-
 
             // TODO: move this to animaion independed poll function
             if (keyboard.isPressed("Z".charCodeAt()))
@@ -642,9 +641,6 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
             }
             else
                 once = 1;
-
-            gameState.ship.control(keyboard);
-
             if (keyboard.isPressed("O".charCodeAt()))
             {
                 gameState.zoom -= 0.03;
