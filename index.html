@@ -56,6 +56,8 @@ function foo(items) {
     return x;
 }
                 </div>
+                <input type="checkbox" name="input-toggle" value="inputIsOn" onclick="inputOn = !inputOn;">
+                enable keyboard/mouse inputs to game<br>
             </div>
         </div>
 
@@ -144,6 +146,7 @@ function foo(items) {
     <!-- ace editor setup -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js" type="text/javascript" charset="utf-8"></script>
     <script>
+        var inputOn = false;
         var editor = ace.edit("script-editor");
         editor.setTheme("ace/theme/monokai");
         editor.getSession().setMode("ace/mode/javascript");

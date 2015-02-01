@@ -359,81 +359,84 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 		gameState.fpsMonotor = new utils.FPSMonitor("fpsMonitor");
 
 		function handleCanvasMouseDown(evt) {
-			var coords = gameState.canvas.relMouseCoords(evt);
-			var x = coords.x;
-			var y = gameState.screenH - coords.y;
+		    if (inputOn) {  // checks global input kill switch
 
-			var activeTool = getActiveWindowId();
+                var coords = gameState.canvas.relMouseCoords(evt);
+                var x = coords.x;
+                var y = gameState.screenH - coords.y;
 
-			var clickedNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);	
-			var clickedPoint = utils.intersectClick(clickedNDC, gameState.viewMatrix, gameState.cameraAngle/2);
+                var activeTool = getActiveWindowId();
 
-			var dish = getActiveDish();
+                var clickedNDC = utils.getNDCFromMouseEvent(gameState.canvas, evt, gameState.screenW, gameState.screenH);
+                var clickedPoint = utils.intersectClick(clickedNDC, gameState.viewMatrix, gameState.cameraAngle/2);
 
-			if (activeTool === "ToolWindow" && evt.button === 0) {
-					var state = 0;
-					var firstSel = gameState.drawModel.attributes.selectedStates[0];
-					if (firstSel) state = firstSel;
+                var dish = getActiveDish();
 
-					if (dish) {
-						if (gameState.drawModel.attributes.selectedDrawShape == "circle") {
-							gameState.reactor.mixDish(gameState.shaders.drawCircle, dish, {
-								center: [GLOBALS.gameW*(clickedPoint.x+1)/2, GLOBALS.gameH*(clickedPoint.y+1)/2],
-								radius: gameState.drawModel.attributes.drawSizeX/2, state: state/255
-							});
-						}
-						else {
-							gameState.reactor.mixDish(gameState.shaders.drawRect, dish, {
-								rectPos: [GLOBALS.gameW*(clickedPoint.x+1)/2, GLOBALS.gameH*(clickedPoint.y+1)/2],
-								rectSize: [gameState.drawModel.attributes.drawSizeX, gameState.drawModel.attributes.drawSizeY], 
-								state: state/255
-							});
-						}
-					}
-				
+                if (activeTool === "ToolWindow" && evt.button === 0) {
+                        var state = 0;
+                        var firstSel = gameState.drawModel.attributes.selectedStates[0];
+                        if (firstSel) state = firstSel;
+
+                        if (dish) {
+                            if (gameState.drawModel.attributes.selectedDrawShape == "circle") {
+                                gameState.reactor.mixDish(gameState.shaders.drawCircle, dish, {
+                                    center: [GLOBALS.gameW*(clickedPoint.x+1)/2, GLOBALS.gameH*(clickedPoint.y+1)/2],
+                                    radius: gameState.drawModel.attributes.drawSizeX/2, state: state/255
+                                });
+                            }
+                            else {
+                                gameState.reactor.mixDish(gameState.shaders.drawRect, dish, {
+                                    rectPos: [GLOBALS.gameW*(clickedPoint.x+1)/2, GLOBALS.gameH*(clickedPoint.y+1)/2],
+                                    rectSize: [gameState.drawModel.attributes.drawSizeX, gameState.drawModel.attributes.drawSizeY],
+                                    state: state/255
+                                });
+                            }
+                        }
+
+                }
+                else if (evt.button === 0) { // || mouseMode == "shoot") {
+                    gameState.ship.lClick(clickedPoint);
+                }
+                // copy
+                else if (evt.button === 2) {
+                    /*
+                    gameState.reactor.mixDish(gameState.shaders.copy, gameState.dishes.buffer, {
+                        destinationPos: [0, 0],
+                        destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
+                        texSource: dish,
+                        sourcePos: [GLOBALS.gameW*(clickedPoint.x+1)/2-gameState.dishes.buffer.width/2,
+                            GLOBALS.gameH*(clickedPoint.y+1)/2-gameState.dishes.buffer.height/2],
+                        sourceRes: [GLOBALS.gameW, GLOBALS.gameH],
+                    });
+    */
+
+                    updateSelection(evt);
+                }
+                // paste
+                else if (evt.button === 1) {
+                    var tx = GLOBALS.gameW*(clickedPoint.x+1)/2-gameState.selection.size[0]/2;
+                    var ty = GLOBALS.gameH*(clickedPoint.y+1)/2-gameState.selection.size[1]/2;
+
+                    gameState.reactor.mixDish(gameState.shaders.copy, dish, {
+                        destinationPos:[tx, ty],
+                        destinationSize: gameState.selection.size,
+                        texSource: gameState.dishes.buffer,
+                        sourcePos: [0, 0],
+                        sourceRes: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
+                    });
+                    // gameState.reactor.mixDish(gameState.shaders.copy, dish, {
+                    // 	destinationPos:[GLOBALS.gameW*(clickedPoint.x+1)/2-gameState.dishes.buffer.width/2,
+                    // 		GLOBALS.gameH*(clickedPoint.y+1)/2-gameState.dishes.buffer.height/2],
+                    // 	destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
+                    // 	texSource: gameState.dishes.buffer,
+                    // 	sourcePos: [0, 0],
+                    // 	sourceRes: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
+                    // });
+                }
+
+                evt.preventDefault();
+                evt.stopPropagation();
 			}
-			else if (evt.button === 0) { // || mouseMode == "shoot") {
-				gameState.ship.lClick(clickedPoint);
-			}	
-			// copy
-			else if (evt.button === 2) {
-				/*
-				gameState.reactor.mixDish(gameState.shaders.copy, gameState.dishes.buffer, {
-					destinationPos: [0, 0], 
-					destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
-					texSource: dish, 
-					sourcePos: [GLOBALS.gameW*(clickedPoint.x+1)/2-gameState.dishes.buffer.width/2,
-						GLOBALS.gameH*(clickedPoint.y+1)/2-gameState.dishes.buffer.height/2],
-					sourceRes: [GLOBALS.gameW, GLOBALS.gameH],
-				}); 
-*/
-
-				updateSelection(evt);
-			}		
-			// paste
-			else if (evt.button === 1) {
-				var tx = GLOBALS.gameW*(clickedPoint.x+1)/2-gameState.selection.size[0]/2;
-				var ty = GLOBALS.gameH*(clickedPoint.y+1)/2-gameState.selection.size[1]/2;
-
-				gameState.reactor.mixDish(gameState.shaders.copy, dish, {
-					destinationPos:[tx, ty], 
-					destinationSize: gameState.selection.size,
-					texSource: gameState.dishes.buffer, 
-					sourcePos: [0, 0], 
-					sourceRes: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
-				}); 
-				// gameState.reactor.mixDish(gameState.shaders.copy, dish, {
-				// 	destinationPos:[GLOBALS.gameW*(clickedPoint.x+1)/2-gameState.dishes.buffer.width/2,
-				// 		GLOBALS.gameH*(clickedPoint.y+1)/2-gameState.dishes.buffer.height/2],
-				// 	destinationSize: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
-				// 	texSource: gameState.dishes.buffer, 
-				// 	sourcePos: [0, 0], 
-				// 	sourceRes: [gameState.dishes.buffer.width, gameState.dishes.buffer.height],
-				// }); 
-			}		
-			
-			evt.preventDefault();
-			evt.stopPropagation();
 		}
 		gameState.canvas.addEventListener('mousedown', handleCanvasMouseDown, false);
 
@@ -614,113 +617,115 @@ function(Ship, GLOBALS, $, utils, EC, storyTeller,_ , kb, ko, fileStore, gameSta
 
 	var once = 1;
 	var pollUserInteraction = function() {
-		var keyboard = gameState.keyboard;
+	    if (inputOn){  // checks global inputOn set by checkbox
 
-		csUtils.pollAutoFire();
-// USER INPUT Poll Keyboard //////////////////////////////////////////////////
-		
+            var keyboard = gameState.keyboard;
 
-		// TODO: move this to animaion independed poll function
-		if (keyboard.isPressed("Z".charCodeAt()))
-		{
-			if (once) {
-				once=0;
-				csUtils.gameStep();
-			}
-		}
-		else if (keyboard.isPressed("Q".charCodeAt()))
-		{
-			if (once) {
-				once=0;
-				csUtils.gamePlayPause();
-			}
-		}
-		else
-			once = 1;	
+            csUtils.pollAutoFire();
+    // USER INPUT Poll Keyboard //////////////////////////////////////////////////
 
-        gameState.ship.control(keyboard);
 
-		if (keyboard.isPressed("O".charCodeAt()))
-		{
-			gameState.zoom -= 0.03;
-			csUtils.refreshGUI(["zoom"]);
-		}
-
-		if (keyboard.isPressed("L".charCodeAt()))
-		{
-			gameState.zoom += 0.03;
-			csUtils.refreshGUI(["zoom"]);
-		}
-
-		if (keyboard.isPressed("N".charCodeAt()))
-		{
-			gameState.rot += 0.05;
-			csUtils.refreshGUI(["zoom"]);
-		}
-
-		if (keyboard.isPressed("M".charCodeAt()))
-		{
-			gameState.rot -= 0.05;
-			csUtils.refreshGUI(["zoom"]);
-		}
-
-		// space
-		if (keyboard.isPressed(32)) {
-			csUtils.resetGame();
-
-			//gameState.dishes.enemyShield.randomize(, gameState.randomDensity);
-		}
-
-		// escape
-		if (keyboard.isPressed(27))
-		{
-            if (!bounceEsc) {
-                bounceEsc = 1;
-
-                // reset selection
-                if (gameState.selection.active) {
-                    gameState.selection.active = 0;
-                }
-                else {
-
-                    var dishes = gameState.dishes;
-                    var blockedDishes = [dishes.buffer, dishes.background];
-
-                    var saveDishes = _.filter(dishes, function (d) {
-                        return !_.contains(blockedDishes, d);
-                    });
-                    _.each(saveDishes, function (dish) {
-                        dish.setAll(0);
-                    });
+            // TODO: move this to animaion independed poll function
+            if (keyboard.isPressed("Z".charCodeAt()))
+            {
+                if (once) {
+                    once=0;
+                    csUtils.gameStep();
                 }
             }
-		}
-        else {
-            bounceEsc = 0;
+            else if (keyboard.isPressed("Q".charCodeAt()))
+            {
+                if (once) {
+                    once=0;
+                    csUtils.gamePlayPause();
+                }
+            }
+            else
+                once = 1;
+
+            gameState.ship.control(keyboard);
+
+            if (keyboard.isPressed("O".charCodeAt()))
+            {
+                gameState.zoom -= 0.03;
+                csUtils.refreshGUI(["zoom"]);
+            }
+
+            if (keyboard.isPressed("L".charCodeAt()))
+            {
+                gameState.zoom += 0.03;
+                csUtils.refreshGUI(["zoom"]);
+            }
+
+            if (keyboard.isPressed("N".charCodeAt()))
+            {
+                gameState.rot += 0.05;
+                csUtils.refreshGUI(["zoom"]);
+            }
+
+            if (keyboard.isPressed("M".charCodeAt()))
+            {
+                gameState.rot -= 0.05;
+                csUtils.refreshGUI(["zoom"]);
+            }
+
+            // space
+            if (keyboard.isPressed(32)) {
+                csUtils.resetGame();
+
+                //gameState.dishes.enemyShield.randomize(, gameState.randomDensity);
+            }
+
+            // escape
+            if (keyboard.isPressed(27))
+            {
+                if (!bounceEsc) {
+                    bounceEsc = 1;
+
+                    // reset selection
+                    if (gameState.selection.active) {
+                        gameState.selection.active = 0;
+                    }
+                    else {
+
+                        var dishes = gameState.dishes;
+                        var blockedDishes = [dishes.buffer, dishes.background];
+
+                        var saveDishes = _.filter(dishes, function (d) {
+                            return !_.contains(blockedDishes, d);
+                        });
+                        _.each(saveDishes, function (dish) {
+                            dish.setAll(0);
+                        });
+                    }
+                }
+            }
+            else {
+                bounceEsc = 0;
+            }
+
+            if (keyboard.isPressed("I".charCodeAt())) {
+                gameState.ship.bombPower++;
+            }
+
+            if (keyboard.isPressed("K".charCodeAt())) {
+                gameState.ship.bombPower--;
+                if (gameState.ship.bombPower <= 0) gameState.bombPower = 1;
+            }
+
+            if (keyboard.isPressed("1".charCodeAt()))
+            {
+                gameState.mouseMode = "shoot";
+            }
+            if (keyboard.isPressed("P".charCodeAt()))
+            {
+                gameState.mouseMode = "paste";
+            }
+            if (keyboard.isPressed("C".charCodeAt()))
+            {
+                gameState.mouseMode = "copy";
+            }
         }
-
-		if (keyboard.isPressed("I".charCodeAt())) {
-			gameState.ship.bombPower++;
-		}
-
-		if (keyboard.isPressed("K".charCodeAt())) {
-			gameState.ship.bombPower--;
-			if (gameState.ship.bombPower <= 0) gameState.bombPower = 1;
-		}
-
-		if (keyboard.isPressed("1".charCodeAt()))
-		{
-			gameState.mouseMode = "shoot";
-		}
-		if (keyboard.isPressed("P".charCodeAt()))
-		{
-			gameState.mouseMode = "paste";
-		}
-		if (keyboard.isPressed("C".charCodeAt()))
-		{
-			gameState.mouseMode = "copy";
-		}
-
 	};
 
 	return {
