@@ -52,20 +52,20 @@
             <div class="toolMenuContent">
                 Why play the game when you can program the bot to play the game for you?
                 <div id="script-editor">// edit me and upload to the bot!
-                    
+
 // shoot occasionally
 if (this.stepN == 5){
-    this.shootAt(this.direction);
+this.shootAt(this.direction);
 }
 
 // movement
-if (this.stepN < 10){
-    this.speedUp();
-} else if (this.stepN < 20){
-    this.slowDown();
+if (this.stepN < 20){
+this.speedUp();
+} else if (this.stepN < 40){
+this.slowDown();
 }else{
-    this.rotate(30);
-    this.stepN = 0;  // then start over!
+this.rotate(30*Math.random());
+this.stepN = 0;  // then start over!
 }
 
 
@@ -172,12 +172,12 @@ if (this.stepN < 10){
             }
 
             // movement
-            if (this.stepN < 10){
+            if (this.stepN < 20){
                 this.speedUp();
-            } else if (this.stepN < 20){
+            } else if (this.stepN < 40){
                 this.slowDown();
             }else{
-                this.rotate(30);
+                this.rotate(30*Math.random());
                 this.stepN = 0;  // then start over!
             }
         };
