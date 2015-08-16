@@ -8,9 +8,9 @@ define(function(){
         devMode: true,  // true to enable loading of dev options, false to disable
         resPath: "../res_evocell/",
         canvasElement: document.getElementById('c'),
-        gameW: 256,
-        gameH: 256,
-        maxParticles: 1000,
+        gameW: 850,
+        gameH: 650,
+        maxParticles: 2000,
         shotSpeed: 3.4
     };
     GLOBALS.libPath = "../" + GLOBALS.resPath + "src/libs/";
