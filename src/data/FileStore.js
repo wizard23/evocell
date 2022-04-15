@@ -27,7 +27,8 @@ define(["underscore", "backbone"], function(_, bb) {
 
     db.onerror = function(event) {
       // Generic error handler for all errors targeted at this database's requests!
-      alert("Database error: " + event.target.errorCode);
+      console.log("Database error: " + event.target.errorCode);
+      //alert("Database error: " + event.target.errorCode);
     };
   };
 
